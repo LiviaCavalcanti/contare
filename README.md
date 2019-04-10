@@ -16,7 +16,7 @@ Wagner Magno<br>
 -------------------------------------------------------------------------------------
 
 ### DESCRIÇÃO DO PROJETO
-Uma aplicação web denominada Contare, que tem como finalidade auxiliar o usuário a organizar as finanças de um usuário, permitindo a criação, edição e remoção de despesas pessoais e em grupo.
+Uma aplicação web denominada Contare, que tem como finalidade auxiliar o usuário a organizar as suas finanças, permitindo a criação, edição e remoção de despesas pessoais e em grupo.
 
 --------------------------------------------------------------------------------------
 
