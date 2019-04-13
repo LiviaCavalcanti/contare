@@ -1,0 +1,27 @@
+.navbar{
+    border: 1px solid;
+    background-color: #153475;
+    width: 100.4%;
+}    
+
+.navbar h1{
+    width: 68%;
+    display: inline-block;
+    color: #9A4934;
+    padding-left: 2%;
+}
+
+.navbar .div-button{
+    display: inline-block;
+    width: 30%;
+}
+
+.navbar button {
+    width: 34%;
+    border-radius: 5px;
+    height: 35px;
+    border: 0px;
+    background-color: #49535D;
+    color: white;
+    margin-left: 11%;
+}

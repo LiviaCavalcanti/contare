@@ -1,0 +1,18 @@
+.content{
+}
+
+.content img{
+    width: 99%;
+    position: absolute;
+    height: 100%;
+}
+
+.content .conteudo{
+    color: #aaabac;
+    border: 1px solid;
+    position: absolute;
+    width: 29%;
+    background-color: rgba(34, 44, 71, 0.9);
+    margin-left: 70%;
+    height: 100%;
+}
