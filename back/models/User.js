@@ -1,32 +1,33 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
-    nome: {
+    name: {
         type: String,
         required: true,
     },
     description: {
         type: String,
         required: true,
-    }, 
-    senha: {
+    },
+    password: {
         type: String,
         required: true,
     },
-    expenses: {
-        type: Number,
+    expenses: [{
+        type: mongoose.Schema.Types.ObjectId,
         required: false,
-        default: 0,
-    },
+        ref: "Expense",
+    }],
     rent: {
         type: Number,
         required: false,
         default: 0,
     },
     expensesGroupsId: [{
-        type: Schema.Types.ObjectId,
-        ref: 'ExpenseGroupSchema'
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ExpenseGroup',
+        required: false,
     }],
-})
+});
 
-mongoose.model('UserSchema', UserSchema)
+mongoose.model('User', UserSchema);

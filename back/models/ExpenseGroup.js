@@ -15,18 +15,24 @@ const ExpenseGroupSchema = new mongoose.Schema({
         default: 0,
     },
     expenses: [{
-        type: Schema.Types.ObjectId,
-        required: true,
-        ref: 'ExpenseSchema',
+        type: mongoose.Schema.Types.ObjectId,
+        required: false,
+        ref: 'Expense',
     }],
     owner: {
-        type: Schema.Types.ObjectId,
-        ref: 'UserSchema'
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
     },
     participants: [{
-        type: Schema.Types.ObjectId,
-        ref: 'UserSchema',
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
     }],
+    createdAt:{
+      type: Date,
+      default: Date.now,
+      required: true,
+    },
 })
 
-mongoose.model('ExpenseGroupSchema', ExpenseGroupSchema)
+mongoose.model('ExpenseGroup', ExpenseGroupSchema);

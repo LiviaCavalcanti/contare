@@ -1,10 +1,13 @@
-const express = require("express")
-const routes = express.Router()
+const express = require("express");
+const router = express.Router();
+const UserController = require("./controllers/UserController");
+const ExpenseController = require("./controllers/ExpenseController");
 
-const UserController = require("./controllers/UserController")
+router.post("/signup", UserController.store);
+router.get("/user/:id", UserController.show);
+router.put("/user/:id", UserController.update);
+router.get("/user/:id/expenses", UserController.showExpenses);
 
-routes.post("/singup", UserController.store)
-router.get("/user/:id", UserController.show)
-router.put("user/:id", UserController.update)
+router.put("/user/:id/create_expense", ExpenseController.store);
 
-module.exports = routes
+module.exports = router;
