@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require("bcryptjs");
 
+
 const UserSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -21,11 +22,11 @@ const UserSchema = new mongoose.Schema({
         required: true,
         select: false,
     },
-    expenses: {
-        type: Number,
+    expensesGroupsId: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ExpenseGroup',
         required: false,
-        default: 0,
-    },
+    }],
     rent: {
         type: Number,
         required: false,
@@ -41,3 +42,4 @@ UserSchema.pre("save",async function(next){
 const User = mongoose.model("User", UserSchema);
 
 module.exports = User;
+
