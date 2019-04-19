@@ -26,7 +26,7 @@ $ sudo apt-get install \
 $ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 ```
 
-###### 1.2.1. Verifique que você agora possui a chave digital do Docker
+##### 1.2.1. Verifique que você agora possui a chave digital do Docker
 
 ```sh
 $ sudo apt-key fingerprint 0EBFCD88
@@ -39,7 +39,7 @@ uid           [ unknown] Docker Release (CE deb) <docker@docker.com>
 sub   rsa4096 2017-02-22 [S]
 ```
 
-##### 1.3. Adicione agora o repositório do Docker a sua lista de repositórios
+#### 1.3. Adicione agora o repositório do Docker a sua lista de repositórios
 
 ```sh
 $ sudo add-apt-repository \
