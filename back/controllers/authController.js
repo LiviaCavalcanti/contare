@@ -4,7 +4,7 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 
 
-
+//  TODO: checar uso de funções de usuário direto de User em 25, 28, 39 ao inves do user controller show(x2) e store
 
 
 const router = express.Router();
