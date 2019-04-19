@@ -21,10 +21,9 @@ module.exports = {
         return res.json(user)
     },
 
-    //Nao funciona bem
-    async showExpenses(req, res){
-      const allUserExpenses = await User.findById(req.params.id);
+    async delete(req, res){
+        const user = await User.findByIdAndDelete(req.params.id);
 
-      return res.json(allUserExpenses.expenses);
-    },
+        return res.json(user);
+    }
 }

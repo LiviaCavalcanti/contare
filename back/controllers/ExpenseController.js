@@ -1,11 +1,15 @@
 const mongoose = require("mongoose");
 
-const User = mongoose.model("User");
 const Expense = mongoose.model("Expense");
 
 module.exports = {
-    async show(req, res) {
-        const expense = await Expense.findById(req.params.id);
+    async showALL(req, res) {
+        
+        return res.status(501).send("Not implemented yet!")
+    },
+
+    async showONE(req, res) {
+        const expense = await Expense.findById(req.params.expID);
 
         return res.json(expense);
     },
@@ -24,11 +28,19 @@ module.exports = {
         //   return res.json(expense);
         // }
 
+        return res.status(501).send("Not implemented yet!");
+
     },
 
     async update(req, res) {
-        const expense = await Expense.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const expense = await Expense.findByIdAndUpdate(req.params.expID, req.body, { new: true });
 
         return res.json(expense);
     },
+
+    async delete(req,res){
+        const expense = await Expense.findByIdAndDelete(req.params.expID);
+
+        return res.json(expense);
+    }
 };
