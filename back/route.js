@@ -1,10 +1,27 @@
-const express = require("express")
-const routes = express.Router()
+const express = require("express");
+const router = express.Router();
+const UserController = require("./controllers/UserController");
+const ExpenseController = require("./controllers/ExpenseController");
 
-const UserController = require("./controllers/UserController")
+// Usuario ------------
+router.get("/user/:id", UserController.show);
+router.post("/signup", UserController.store);
+router.put("/user/:id", UserController.update);
+router.delete("/user/:id", UserController.delete);
+//---------
 
-routes.post("/singup", UserController.store)
-router.get("/user/:id", UserController.show)
-router.put("user/:id", UserController.update)
+// Tarefas
+router.get("/user/:userID/expenses", ExpenseController.showALL);
+router.get("/user/:userID/expenses/:expID", ExpenseController.showONE);
+router.post("/user/:userID/expenses", ExpenseController.store);
+router.put("/user/:userID/expenses/:expID", ExpenseController.update);
+router.delete("/user/:userID/expenses/:expID", ExpenseController.delete);
 
-module.exports = routes
+// Grupos
+router.get("/user/:userID/groups", ExpenseController.showALL);
+router.get("/user/:userID/groups/:grpID", ExpenseController.showONE);
+router.post("/user/:userID/groups", ExpenseController.store);
+router.put("/user/:userID/expenses/:grpID", ExpenseController.update);
+router.delete("/user/:userID/expenses/:grpID", ExpenseController.delete);
+
+module.exports = router;

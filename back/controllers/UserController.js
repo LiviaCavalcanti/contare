@@ -7,7 +7,7 @@ module.exports = {
         const user = await User.findById(req.params.id)
 
         return res.json(user)
-    },  
+    },
 
     async store(req, res) {
         const user = await User.create(req.body)
@@ -20,4 +20,10 @@ module.exports = {
 
         return res.json(user)
     },
+
+    async delete(req, res){
+        const user = await User.findByIdAndDelete(req.params.id);
+
+        return res.json(user);
+    }
 }
