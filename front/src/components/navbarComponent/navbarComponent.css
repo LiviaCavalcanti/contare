@@ -1,27 +1,26 @@
-.navbar{
-    border: 1px solid;
-    background-color: #153475;
-    width: 100.4%;
-}    
-
-.navbar h1{
-    width: 68%;
-    display: inline-block;
-    color: #9A4934;
-    padding-left: 2%;
+#nav-button {
+    margin-left: 30px;
 }
 
-.navbar .div-button{
-    display: inline-block;
-    width: 30%;
+#brand{
+    font-family: 'Montserrat', sans-serif;
+    font-size: 23px;
+    font-weight: 1000;
+    color:white;
 }
 
-.navbar button {
-    width: 34%;
-    border-radius: 5px;
-    height: 35px;
-    border: 0px;
-    background-color: #49535D;
-    color: white;
-    margin-left: 11%;
+#brand:hover {
+    text-decoration: none;
+}
+
+#navbar {
+    background-color:#101b3f !important;
+}
+
+.nav-button {
+    color:white;
+}
+
+.nav-button:hover{
+    color:white;
 }
