@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { Route, Switch, BrowserRouter } from 'react-router-dom';
 
 import App from './App';
-import Pagina404Component from './components/pagina404Component/pagina404Component';
 import RegisterScreen from './components/registerComponent/registerComponent'
 import NavbarComponent from './components/navbarComponent/navbarComponent'
+import Page404Component from './components/page404Component/page404Component';
+import DescriptionProject from './components/descriptionProjectComponent/descriptionProjectComponent';
+import LoginScreen from './components/loginComponent/loginComponent';
 
 export class Routes extends Component {
     render() {
@@ -14,10 +16,10 @@ export class Routes extends Component {
             <NavbarComponent/>
 
                 <Switch>
-                    <Route path="/" exact={true} component={App} />
-                    <Route path="/app" component={App} />
-                    <Route path="/register" component={RegisterScreen} />
-                    <Route path="*" component={Pagina404Component} />
+                    <Route path="/" exact={true} component={() => <App component={DescriptionProject}/>} />
+                    <Route path="/register" component={() => <App component={RegisterScreen}/>}/>
+                    <Route path="/login" component={() => <App component={LoginScreen}/>}/>
+                    <Route path="*" component={Page404Component} />
                 </Switch>
             </ BrowserRouter>
         )

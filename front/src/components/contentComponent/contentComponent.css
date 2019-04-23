@@ -2,18 +2,36 @@
 }
 
 .content img{
-    width: 99%;
+    width: 100%;
     position: absolute;
     height: 100%;
 }
 
 .content .conteudo{
     color: #aaabac;
-    border: 1px solid;
     position: absolute;
-    width: 29%;
+    width: 30%;
     background-color: rgba(34, 44, 71, 0.9);
-    margin-left: 71%;
     height: 100%;
+    right: 0;
+    padding: 13px;
+}
+
+@media only screen and (max-width: 1000px) {
+    .content .conteudo{
+        width: 40%;
+    }
+}
+
+@media only screen and (max-width: 750px) {
+    .content .conteudo{
+        width: 60%;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .content .conteudo{
+        width: 90%;
+    }
 }
 

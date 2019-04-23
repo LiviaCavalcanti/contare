@@ -24,3 +24,7 @@
 .nav-button:hover{
     color:white;
 }
+
+.navbar-collapse {
+    text-align: right;
+}

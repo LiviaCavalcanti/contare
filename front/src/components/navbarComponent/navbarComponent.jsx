@@ -23,8 +23,8 @@ class NavbarComponent extends Component {
               Contare </NavLink>
 
             <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
-                <Button id="nav-button"> <NavLink to="/register" className="nav-button">Registrar-se</NavLink> </Button>
-                <Button id="nav-button"> <NavLink to="/" className="nav-button">Entrar</NavLink> </Button>
+                <Button > <NavLink to="/register" className="nav-button">Registrar-se</NavLink> </Button>
+                <Button id="nav-button"> <NavLink to="/login" className="nav-button">Entrar</NavLink> </Button>
             </Navbar.Collapse>
           </Navbar>
          )
