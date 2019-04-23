@@ -1,50 +1,66 @@
 import React, {Component} from "react"
 import {Form, Button} from "react-bootstrap"
 import './registerComponent.css'
+import { registerUser, notifyFailure } from '../../services/index'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.min.css'; 
+
 
 class RegisterScreen extends Component {
+    constructor(props){
+        super(props)
+        this.handleSubmit = this.handleSubmit.bind(this)
+    }
+
+
+    handleSubmit(event) {
+        const name = event.currentTarget.elements[0].value
+        const email = event.currentTarget.elements[1].value
+        const pass = event.currentTarget.elements[2].value
+        const confirmPass = event.currentTarget.elements[3].value
+
+        if(pass !== confirmPass) {
+            notifyFailure("Senhas não conferem!")
+            event.preventDefault()
+        } else {
+            registerUser(name, email, pass)
+            event.preventDefault()
+        }
+    }
+
     render(){
         return(
-            <div id="login">
-                <h3 class="text-center text-white pt-5">Registre-se</h3>
-                <div class="container">
-                    <div id="login-row" class="row justify-content-center align-items-center">
-                        <div id="login-column" class="col-md-6">
-                            <div id="login-box" class="col-md-12">
-                                <form id="login-form" class="form" action="" method="post">
-                                    <h3 class="text-center text-info">Preencha os campos abaixo</h3>
-                                    <div class="form-group">
-                                        <label for="username" class="text-info">Email:</label><br/>
-                                        <input type="text" name="username" id="username" class="form-control"/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="password" class="text-info">Senha:</label><br/>
-                                        <input type="text" name="password" id="password" class="form-control"/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="password" class="text-info">Senha:</label><br/>
-                                        <input type="text" name="password" id="password" class="form-control"/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="password" class="text-info">Senha:</label><br/>
-                                        <input type="text" name="password" id="password" class="form-control"/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="password" class="text-info">Senha:</label><br/>
-                                        <input type="text" name="password" id="password" class="form-control"/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="remember-me" class="text-info"><span>Remember me</span> <span><input id="remember-me" name="remember-me" type="checkbox"/></span></label><br/>
-                                        <input type="submit" name="submit" class="btn btn-info btn-md" value="submit"/>
-                                    </div>
-                                    <div id="register-link" class="text-right">
-                                        <a href="#" class="text-info">Register here</a>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div>
+                <h1>Registre-se</h1>
+            <Form onSubmit={e => this.handleSubmit(e)}>
+            <Form.Group controlId="formBasicName">
+                    <Form.Label>Insira seu nome</Form.Label>
+                    <Form.Control required={true} type="text" placeholder="Insira seu nome" />
+
+                </Form.Group>
+
+                <Form.Group controlId="formBasicEmail">
+                    <Form.Label>Insira seu e-mail</Form.Label>
+                    <Form.Control required={true} type="email" placeholder="Insira um e-mail válido" />
+
+                </Form.Group>
+
+                <Form.Group controlId="formBasicPassword">
+                    <Form.Label>Insira sua senha</Form.Label>
+                    <Form.Control required={true} type="password" placeholder="Escolha uma senha" />
+                </Form.Group>
+
+                <Form.Group controlId="formBasicPasswordConfirm">
+                    <Form.Label>Confirme sua senha</Form.Label>
+                    <Form.Control required={true} type="password" placeholder="Confirme sua senha escolhida" />
+                </Form.Group>
+     
+                <Button variant="primary" type="submit">
+                    Cadastrar
+                </Button>
+            </Form>
+
+            <ToastContainer />
             </div>
         )
     }
