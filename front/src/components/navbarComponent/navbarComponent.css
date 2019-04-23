@@ -1,7 +1,6 @@
 .navbar{
-    border: 1px solid;
     background-color: #153475;
-    width: 100.4%;
+    width: 100%;
 }    
 
 .navbar h1{
@@ -24,4 +23,5 @@
     background-color: #49535D;
     color: white;
     margin-left: 11%;
+    cursor: pointer;
 }
