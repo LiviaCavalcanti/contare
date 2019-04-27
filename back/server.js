@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const requireDir = require('require-dir');
+mongoose.Promise = global.Promise;
 
 // Iniciando aplicacao
 const app = express();

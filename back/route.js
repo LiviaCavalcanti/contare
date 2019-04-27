@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const UserController = require("./controllers/UserController");
 const ExpenseController = require("./controllers/ExpenseController");
+const authController = require("./controllers/authController")
 
 // Usuario ------------
 router.get("/user/:id", UserController.show);
@@ -23,5 +24,8 @@ router.get("/user/:userID/groups/:grpID", ExpenseController.showONE);
 router.post("/user/:userID/groups", ExpenseController.store);
 router.put("/user/:userID/expenses/:grpID", ExpenseController.update);
 router.delete("/user/:userID/expenses/:grpID", ExpenseController.delete);
+
+router.post("/register", authController.register);
+router.post("/authenticate", authController.authenticate);
 
 module.exports = router;
