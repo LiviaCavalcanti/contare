@@ -26,12 +26,12 @@ $ sudo apt-get install \
 $ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 ```
 
-##### 1.2.1. Verifique que você agora possui a chave digital do Docker
+Verifique que você agora possui a chave digital do Docker
 
 ```sh
 $ sudo apt-key fingerprint 0EBFCD88
 ```
-###### Saída esperada:
+Saída esperada:
 ```sh
 pub   rsa4096 2017-02-22 [SCEA]
       9DC8 5822 9FC7 DD38 854A  E2D8 8D81 803C 0EBF CD88
@@ -60,7 +60,7 @@ $ sudo apt-get update
 $ sudo apt-get install docker-ce docker-ce-cli containerd.io
 ```
 
-###### Execute o seguinte comando para testar se o Docker foi instalado com sucesso:
+Execute o seguinte comando para testar se o Docker foi instalado com sucesso:
 
 ```sh
 $ sudo docker run hello-world
@@ -68,15 +68,15 @@ $ sudo docker run hello-world
 
 ### 2. Baixar a máquina virtual do MONGODB dentro do Docker
 
-###### Para executar os comandos docker, é necessário ter permissões de administrador do sistema.
-###### Aqui será feito o download da máquina virtual do mongo. Talvez este passo demore um pouco.
+Para executar os comandos docker, é necessário ter permissões de administrador do sistema.
+Aqui será feito o download da máquina virtual do mongo. Talvez este passo demore um pouco.
 
 ```sh
 $ sudo docker pull mongo
 ```
 ### 3. Subir um novo conteiner com uma máquina virtual rodando uma aplicação MONGODB 
 
-###### O MONGODB não estará executando na sua máquina física, mas em uma máquina virtual invisível para você. Portanto, é necessário conectar a sua máquina física com a máquina virtual. O MONGODB utiliza a porta 27017 para fazer essa comunicação. Então, precisamos redirecionar para a porta 27017 da máquina virtual os dados da porta desejada da máquina física, que neste caso é tambéma porta 27017. 
+ O MONGODB não estará executando na sua máquina física, mas em uma máquina virtual invisível para você. Portanto, é necessário conectar a sua máquina física com a máquina virtual. O MONGODB utiliza a porta 27017 para fazer essa comunicação. Então, precisamos redirecionar para a porta 27017 da máquina virtual os dados da porta desejada da máquina física, que neste caso é tambéma porta 27017. 
 `-p "porta_da_máquina_física":27017`
 ```sh
 $ sudo docker run --name "nome_da_vm" -p 27017:27017 -d mongo
@@ -87,6 +87,17 @@ $ sudo docker ps -a # exibe todas as imagens criadas. Tanto as que estão online
 
 Ao reiniciar seu computador, todas as imagens ficam offline, porém elas já existem. Não é necessrio criá-las novamente.
 Para acordar uma vm offline basta executar `$ sudo docker start "nome_da_vm"`
+
+## Instalando o Node.js
+
+As instruções de instalação oficiais para distribuições baseadas em Debian e Ubuntu estão relacionadas [nesse repositório](https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions "Installation instructions"). Para executar nosso código você pode instalar da seguinte forma:
+
+``` sh
+# Para Ubuntu
+curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+sudo apt-get install -y nodejs
+``` 
+
 
 
 ## Iniciando o back
