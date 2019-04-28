@@ -1,29 +1,46 @@
 const mongoose = require("mongoose")
+const jwt = require("jsonwebtoken");
+const authConfig = require("../config/auth");
 
 const User = mongoose.model("User")
 
 module.exports = {
     async show(req, res) {
-        const user = await User.findById(req.params.id)
-
-        return res.json(user)
-    },
-
-    async store(req, res) {
-        const user = await User.create(req.body)
-
-        return res.json(user)
+        
+        var token = req.headers['x-access-token'];
+        if (!token) return res.status(401).send({ user: {}, message: "Nenhum token foi fornecido." });
+        
+        jwt.verify(token, authConfig.secret, function(err, decoded) {
+        
+            if (err) return res.status(500).send({ user: {}, message: "Falha ao autenticar token." });
+        
+            User.findById(decoded.id, 
+                { password: 0 }, 
+                function (err, user) {
+                    if (err) return res.status(500).send("Houve um problema ao encontrar o usuario");
+                    if (!user) return res.status(404).send("Nenhum usuário encontrado.");
+                    res.status(200).send(user);
+                }
+            )
+        })
     },
 
     async update(req, res) {
-        const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true })
-
-        return res.json(user)
-    },
-
-    async delete(req, res){
-        const user = await User.findByIdAndDelete(req.params.id);
-
-        return res.json(user);
+        var token = req.headers['x-access-token'];
+        if (!token) return res.status(401).send({ user: {}, message: "Nenhum token foi fornecido." });
+        
+        jwt.verify(token, authConfig.secret, function(err, decoded) {
+        
+            if (err) return res.status(500).send({ user: {}, message: "Falha ao autenticar token." });
+            User.findByIdAndUpdate(decoded.id, 
+                req.body, 
+                {new: true},
+                function (err, newUser) {
+                    if (err) return res.status(500).send("Houve um problema ao encontrar o usuario");
+                    if (!newUser) return res.status(404).send("Nenhum usuário encontrado.");
+                    res.status(200).send(newUser);
+                }
+            )
+        })
     }
 }

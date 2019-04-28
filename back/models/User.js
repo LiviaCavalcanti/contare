@@ -18,16 +18,15 @@ const UserSchema = new mongoose.Schema({
         required: true,
         select: false,
     },
-    expensesGroupsId: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'ExpenseGroup',
-        required: false,
-    }],
     rent: {
         type: Number,
         required: false,
         default: 0,
     },
+    expenses: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Expense'
+    }],
 });
 // encriptando a senha do usuario
 UserSchema.pre("save",async function(next){
