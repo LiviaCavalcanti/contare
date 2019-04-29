@@ -9,12 +9,12 @@ router.get("/user", UserController.show);
 router.put("/user", UserController.update);
 //---------
 
-// Tarefas
-router.get("/user/:userID/expenses", ExpenseController.index);
-router.get("/user/:userID/expenses/:expID", ExpenseController.show);
-router.post("/user/:userID/expenses", ExpenseController.store);
-router.put("/user/:userID/expenses/:expID", ExpenseController.update);
-router.delete("/user/:userID/expenses/:expID", ExpenseController.delete);
+// DESPESAS
+router.get("/user/expenses", UserController.indexExpenses);
+router.get("/user/expenses/:expID", ExpenseController.show);
+router.post("/user/expenses", ExpenseController.store);
+router.put("/user/expenses/:expID", ExpenseController.update);
+router.delete("/user/expenses/:expID", ExpenseController.delete);
 
 router.post("/register", authController.register);
 router.post("/authenticate", authController.authenticate);
