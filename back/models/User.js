@@ -23,10 +23,7 @@ const UserSchema = new mongoose.Schema({
         required: false,
         default: 0,
     },
-    expenses: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Expense'
-    }],
+
 });
 // encriptando a senha do usuario
 UserSchema.pre("save",async function(next){
