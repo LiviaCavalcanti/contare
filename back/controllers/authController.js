@@ -25,7 +25,7 @@ module.exports = {
             return res.send({ user ,  token: generateToken({id: user.id}),  sucess: "Cadastrado com sucesso!"});
     
         }catch (err){
-            return res.status(400).send({ error: "Ocorreu um erro inesperado!"});
+            return res.status(400).send({ error: err});
         }
     },
     
