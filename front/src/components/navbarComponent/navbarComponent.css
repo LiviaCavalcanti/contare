@@ -17,6 +17,11 @@
     background-color:#101b3f !important;
 }
 
+.navbar{
+    background-color: #153475;
+    width: 100%;
+}    
+
 .nav-button {
     color:white;
 }
@@ -27,4 +32,14 @@
 
 .navbar-collapse {
     text-align: right;
+  
+.navbar button {
+    width: 34%;
+    border-radius: 5px;
+    height: 35px;
+    border: 0px;
+    background-color: #49535D;
+    color: white;
+    margin-left: 11%;
+    cursor: pointer;
 }
