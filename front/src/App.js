@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
-import NavbarComponent from './components/navbarComponent/navbarComponent';
 import './App.css';
 import ContentComponent from './components/contentComponent/contentComponent';
-
 class App extends Component {
+
+  constructor(props){
+    super(props);
+    this.state = {};
+  }
+
   render() {
     return (
-      
       <div className="App">
-        <NavbarComponent/>
-        <ContentComponent/>
-        <h1>Hello World</h1>
+        <ContentComponent component={this.props.component}/>
       </div>
     );
   }

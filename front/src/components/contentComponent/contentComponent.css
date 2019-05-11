@@ -17,4 +17,24 @@
     background-color: rgba(34, 44, 71, 0.9);
     height: 100%;
     right: 0;
+    padding: 13px;
 }
+
+@media only screen and (max-width: 1000px) {
+    .content .conteudo{
+        width: 40%;
+    }
+}
+
+@media only screen and (max-width: 750px) {
+    .content .conteudo{
+        width: 60%;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .content .conteudo{
+        width: 90%;
+    }
+}
+

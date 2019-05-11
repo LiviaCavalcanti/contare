@@ -9,22 +9,9 @@ const ExpenseSchema = new mongoose.Schema({
         type: String,
         required: false,
     },
-    value:{
-        type: Number,
-        required: true,
-    },
     dueDate:{
       type: Date,
-      required: true,
-    },
-    status:{
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-    editable:{
-      type: Boolean,
-      requred: true,
+      required: false,
     },
     owner:{
         type: mongoose.Schema.Types.ObjectId,
@@ -34,8 +21,16 @@ const ExpenseSchema = new mongoose.Schema({
     createdAt:{
       type: Date,
       default: Date.now,
-      required:true,
+      required:false,
     },
+    participants: [{
+        userId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User'
+        },
+        payValue: Number,
+        status: Boolean
+    }]
 });
 
 mongoose.model('Expense', ExpenseSchema);

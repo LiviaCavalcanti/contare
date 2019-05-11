@@ -7,10 +7,6 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    description: {
-        type: String,
-        required: true,
-    },
     email: {
         type: String,
         unique: true,
@@ -22,16 +18,12 @@ const UserSchema = new mongoose.Schema({
         required: true,
         select: false,
     },
-    expensesGroupsId: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'ExpenseGroup',
-        required: false,
-    }],
     rent: {
         type: Number,
         required: false,
         default: 0,
     },
+
 });
 // encriptando a senha do usuario
 UserSchema.pre("save",async function(next){
@@ -42,4 +34,3 @@ UserSchema.pre("save",async function(next){
 const User = mongoose.model("User", UserSchema);
 
 module.exports = User;
-

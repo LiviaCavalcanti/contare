@@ -1,20 +1,38 @@
+#nav-button {
+    margin-left: 30px;
+}
+
+#brand{
+    font-family: 'Montserrat', sans-serif;
+    font-size: 23px;
+    font-weight: 1000;
+    color:white;
+}
+
+#brand:hover {
+    text-decoration: none;
+}
+
+#navbar {
+    background-color:#101b3f !important;
+}
+
 .navbar{
     background-color: #153475;
     width: 100%;
 }    
 
-.navbar h1{
-    width: 68%;
-    display: inline-block;
-    color: #9A4934;
-    padding-left: 2%;
+.nav-button {
+    color:white;
 }
 
-.navbar .div-button{
-    display: inline-block;
-    width: 30%;
+.nav-button:hover{
+    color:white;
 }
 
+.navbar-collapse {
+    text-align: right;
+  
 .navbar button {
     width: 34%;
     border-radius: 5px;
