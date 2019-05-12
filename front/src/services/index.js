@@ -19,7 +19,7 @@ export const notifyFailure = (arg) => {
 
 export const registerUser = async (name, email, pass) => {
     const user = { name, email, password: pass }
-    await axios.post(`${API_URL}/auth/register`, user)
+    await axios.post(`${API_URL}/contare/register`, user)
         .then(function (response) {
             notifySucess(response.data.sucess)
         })
@@ -30,7 +30,7 @@ export const registerUser = async (name, email, pass) => {
 
 export const login = async (email, password) => {
     const user = { email, password }
-    await axios.post(`${API_URL}/auth/authenticate`, user)
+    await axios.post(`${API_URL}/contare/authenticate`, user)
         .then(function (response) {
             localStorage.setItem('token-contare', response.data.token);
             console.log("USER LOGADO ", response.data.user);
