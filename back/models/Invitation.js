@@ -15,9 +15,11 @@ const InviteSchema = new mongoose.Schema({
     expirationDate:{
       type: Date
     },
-    
+
     expense:{
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Expense'
     }
 });
+
+mongoose.model('Invitation', InviteSchema);
