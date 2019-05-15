@@ -1,0 +1,66 @@
+.dashboard{
+    width: 80%;
+    height: 600px;
+    position: absolute;
+    left: 16%;
+}
+
+
+.dashboard .add-task{
+    border: 1px solid #4a69a4;
+    width: 29%;
+    height: 32%;
+    display: inline-block;
+    margin: 3px;
+}
+
+.dashboard .list-task .add-task .task-content{
+    height: 75%;
+    background-color: #bfcbd8;
+    padding: 10% 20% 0% 20%;
+
+}
+
+.dashboard .list-task .add-task .task-content div{
+    height: 78%;
+    background-color: #dfe5ec;
+}
+
+.dashboard .task{
+    border: 1px solid #4a69a4;
+    width: 29%;
+    height: 32%;
+    display: inline-block;
+    margin: 3px;
+}
+
+.dashboard .list-task{
+    height: 100%;
+    overflow: auto;
+}
+
+.dashboard .list-task .task .task-content{
+    height: 75%;
+    background-color: #4a69a4;
+}
+
+.dashboard .list-task .task-name{
+    background-color: #bfcbd8;
+    height: 25%;
+}
+
+.dashboard .list-task .task-name p{
+    text-align: center;
+}
+
+.dashboard .conteudo{
+    color: #aaabac;
+    position: absolute;
+    width: 30%;
+    background-color: rgba(34, 44, 71, 0.9);
+    height: 100%;
+    right: 0;
+    padding: 13px;
+}
+
+

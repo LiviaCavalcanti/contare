@@ -7,6 +7,7 @@ import NavbarComponent from './components/navbarComponent/navbarComponent'
 import Page404Component from './components/page404Component/page404Component';
 import DescriptionProject from './components/descriptionProjectComponent/descriptionProjectComponent';
 import LoginScreen from './components/loginComponent/loginComponent';
+import DashboardComponent from './components/dasboardComponent/dashboardComponent';
 
 export class Routes extends Component {
     render() {
@@ -19,6 +20,7 @@ export class Routes extends Component {
                     <Route path="/" exact={true} component={() => <App component={DescriptionProject}/>} />
                     <Route path="/register" component={() => <App component={RegisterScreen}/>}/>
                     <Route path="/login" component={() => <App component={LoginScreen}/>}/>
+                    <Route path="/dashboard" component={() => <DashboardComponent/>}/>
                     <Route path="*" component={Page404Component} />
                 </Switch>
             </ BrowserRouter>
