@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import "./dashboardComponent.css"
 import CardComponent from './cardComponent/cardComponent';
+import DahsboardStyled from './dashboardStyled';
+
 
 class DashboardComponent extends Component {
     constructor(props) {
@@ -12,7 +13,7 @@ class DashboardComponent extends Component {
 
     componentDidMount() {
         let list = [];
-        for (let index = 0; index < 11; index++) {
+        for (let index = 0; index < 5; index++) {
             list.push({
                 isNew : false,
                 name: "Nome da task " + index
@@ -26,9 +27,10 @@ class DashboardComponent extends Component {
 
     render() {
         return (
-            <div className="dashboard">
+            <DahsboardStyled>
+
                 <CardComponent list={this.state.list} />
-            </div>
+            </DahsboardStyled>
         );
     }
 }
