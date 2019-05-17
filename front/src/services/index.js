@@ -33,9 +33,32 @@ export const login = async (email, password) => {
     await axios.post(`${API_URL}/contare/authenticate`, user)
         .then(function (response) {
             localStorage.setItem('token-contare', response.data.token);
-            console.log("USER LOGADO ", response.data.user);
+            //console.log("USER LOGADO ", response.data.user);
+            window.location.href = "/dashboard"
         })
         .catch(function (error) {
             notifyFailure(error.response.data.error)
         })
+}
+
+export const redirectLoggedUser = async (token) => {
+     axios.get( `${API_URL}/contare/user`, {headers: {"x-access-token" : token}})
+      .then((response) => {
+          window.location.href = "/dashboard"
+        },
+        (error) => {
+          console.log(error.data)
+        }
+      )
+}
+
+export const verifyUser = async (token, callback) => {
+    axios.get( `${API_URL}/contare/user`, {headers: {"x-access-token" : token}})
+     .then((response) => {
+         callback(response.data)
+       },
+       (error) => {
+            window.location.href = "/"
+       }
+     )
 }
