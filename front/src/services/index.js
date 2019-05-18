@@ -58,7 +58,7 @@ export const verifyUser = async (token, callback) => {
          callback(response.data)
        },
        (error) => {
-            window.location.href = "/"
+            //window.location.href = "/"
        }
      )
 }

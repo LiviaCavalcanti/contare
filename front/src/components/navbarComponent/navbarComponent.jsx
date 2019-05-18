@@ -21,7 +21,7 @@ class NavbarComponent extends Component {
         redirectLoggedUser(token)
     }
     
-    verifyLogin = async() => {
+    verifyLogin = () => {
       const token = localStorage.getItem("token-contare")
       if(token != undefined || token != null) {
         verifyUser(token, function(response){
@@ -62,7 +62,7 @@ class NavbarComponent extends Component {
         {!this.state.authenticated && <NavLink to="/login" className="nav-button"><Button onClick={() => this.userIsAuthenticated()} id="nav-button">Entrar</Button></NavLink>}
 
         {this.state.authenticated &&  <NavLink to="/dashboard" className="nav-button"><Button variant="success">Minhas Finanças</Button></NavLink> }
-        {this.state.authenticated && <NavLink className="nav-button"><Button variant="danger" onClick={() => this.logout()} id="nav-button">Sair</Button></NavLink>}
+        {this.state.authenticated && <Button variant="danger" onClick={() => this.logout()} id="nav-button">Sair</Button>}
 
             </Navbar.Collapse>
           </Navbar>

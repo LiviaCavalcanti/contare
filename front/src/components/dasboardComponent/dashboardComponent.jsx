@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import CardComponent from './cardComponent/cardComponent';
 import DahsboardStyled from './dashboardStyled';
-import {verifyUser} from '../../services/index'
+import {verifyUser, notifyFailure} from '../../services/index'
 import { Container, Row, Col } from 'react-bootstrap';
+import UserProfile from '../dasboardComponent/userProfileComponent/userProfileComponent'
+import { withRouter } from 'react-router'
+
 
 
 class DashboardComponent extends Component {
@@ -16,8 +19,11 @@ class DashboardComponent extends Component {
         this.getUserFromToken = this.getUserFromToken.bind(this)
     }
 
-    getUserFromToken = () => {
+    getUserFromToken =() => {
         const token = localStorage.getItem("token-contare")
+        if(token == null || token == undefined) {
+            this.props.history.push("/")
+        }
         verifyUser(token, function(response){
             this.setState({user:response})
         }.bind(this))
@@ -45,8 +51,9 @@ class DashboardComponent extends Component {
         return (
             <Container>
                 <Row>
-                    <Col xs={3} style={{backgroundColor:"blue"}}><h1>Nome do usuário: {this.state.user.name}</h1></Col>
-
+                    <Col xs={3} style={{backgroundColor:"blue"}}>
+                    <UserProfile user={this.state.user}/>
+                    </Col>
                 <Col  style={{backgroundColor:"red"}}>
             <DahsboardStyled>
                 <CardComponent list={this.state.list} />
@@ -62,4 +69,4 @@ class DashboardComponent extends Component {
     }
 }
 
-export default DashboardComponent;
+export default withRouter(DashboardComponent);
