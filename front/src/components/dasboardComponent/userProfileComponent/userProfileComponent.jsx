@@ -1,10 +1,15 @@
 import React, {Component} from 'react'
 import './userProfileComponent.css'
+import avatar from '../../../images/avatar.jpg'
 
 class UserProfile extends Component {
     render() {
         return (
-            <h1>{this.props.user.name}</h1>
+            <div className="userInfo">
+            <img src={avatar} className="avatarImage"></img>
+            <p>Bem Vindo, {this.props.user.name}</p>
+
+            </div>
         )
     }
 }
