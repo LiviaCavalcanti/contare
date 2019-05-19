@@ -22,13 +22,7 @@ const UserSchema = new mongoose.Schema({
         type: Number,
         required: false,
         default: 0,
-    },
-
-    invitations: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Invitation',
-        required:false
-    }]
+    }
 });
 // encriptando a senha do usuario
 UserSchema.pre("save",async function(next){

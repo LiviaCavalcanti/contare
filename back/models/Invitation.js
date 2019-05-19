@@ -14,11 +14,6 @@ const InviteSchema = new mongoose.Schema({
       required: true
     },
 
-    expirationDate:{
-      type: Date,
-      required: true
-      },
-
     expense:{
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Expense',
