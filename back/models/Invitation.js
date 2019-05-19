@@ -4,22 +4,26 @@ const InviteSchema = new mongoose.Schema({
 
     from:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required: true
       },
 
     to:{
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
+      ref: 'User',
+      required: true
     },
 
     expirationDate:{
-      type: Date
-    },
+      type: Date,
+      required: true
+      },
 
     expense:{
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Expense'
+      ref: 'Expense',
+      required: true
     }
 });
 
-mongoose.model('Invitation', InviteSchema);
+module.exports = mongoose.model('Invitation', InviteSchema);
