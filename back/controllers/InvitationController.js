@@ -29,7 +29,8 @@ module.exports = {
                         await Invitation.create({
                             from:userFrom,
                             to:userTo.id,
-                            expense:req.body.expense
+                            expense:req.body.expense,
+                            participationValue: req.body.participationValue
                         })
                         return res.status(200).send(await User.findByIdAndUpdate(userTo.id,userTo,{new:true}))
                     })
@@ -64,7 +65,7 @@ module.exports = {
 
                             expense.participants.push({
                                 _id: user.id,
-                                payValue:  req.body.payValue,
+                                payValue:  invitation.participationValue,
                                 status: false
                             })
                             expense.participants.save;
