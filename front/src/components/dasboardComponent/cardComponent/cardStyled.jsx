@@ -32,7 +32,7 @@ const CardStyled = styled.div`
     
     .task{
         border: 1px solid #4a69a4;
-        width: 29%;
+        width: 31%;
         height: 32%;
         display: inline-block;
         margin: 3px;

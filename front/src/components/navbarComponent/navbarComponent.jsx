@@ -23,7 +23,7 @@ class NavbarComponent extends Component {
     
     verifyLogin = () => {
       const token = localStorage.getItem("token-contare")
-      if(token != undefined || token != null) {
+      if(token !== undefined || token != null) {
         verifyUser(token, function(response){
           this.setState({authenticated:true})
         }.bind(this))

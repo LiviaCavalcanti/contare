@@ -1,33 +1,42 @@
 import React, { Component } from 'react';
-import ModalComponent from '../modalComponent/modalComponent';
 import plus from '../../../images/plus.svg';
 import CardStyled from './cardStyled';
+import Modal from 'react-bootstrap/Modal'
+import DetalharTaskComponent from '../detalharTaskComponent/detalharTaskComponent';
+import AdicionarTaskComponent from '../adicionarTaskComponent/adicionarTaskComponent';
+
 
 class CardComponent extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            modalShow: false,
+            modalDetalharShow: false,
+            modalAdicionarShow: false,
             task: {},
-            acao: ""
         };
 
-        this.executaAcaoTask = this.executaAcaoTask.bind(this);
+        this.abreDetalheTask = this.abreDetalheTask.bind(this);
+        this.abreAdicionarTask = this.abreAdicionarTask.bind(this);
 
     }
 
-    executaAcaoTask(task, acao) {
-        console.log("acao ", acao);
+    abreDetalheTask(task) {
         this.setState({
-            modalShow: !this.state.modalShow,
+            modalDetalharShow: !this.state.modalDetalharShow,
             task: task,
-            acao: acao
+        })
+    }
+
+    abreAdicionarTask() {
+        this.setState({
+            modalAdicionarShow: !this.state.modalAdicionarShow
         })
     }
 
     render() {
-        let modalClose = () => this.setState({ modalShow: false });
+        let modalDetalheClose = () => this.setState({ modalDetalharShow: false });
+        let modalAdicionaClose = () => this.setState({ modalAdicionarShow: false });
 
         return (
             <CardStyled>
@@ -35,7 +44,7 @@ class CardComponent extends Component {
                     return (
                         task.isNew ?
 
-                            <div key={i} className="add-task" onClick={() => this.executaAcaoTask(task, 'add')}>
+                            <div key={i} className="add-task" onClick={() => this.abreAdicionarTask()}>
                                 <div className="task-content">
                                     <div>
                                         <img alt="background" src={plus} />
@@ -49,7 +58,7 @@ class CardComponent extends Component {
                                 </div>
                             </div>
                             :
-                            <div key={i} className="task" onClick={() => this.executaAcaoTask(task, "detalhar")}>
+                            <div key={i} className="task" onClick={() => this.abreDetalheTask(task)}>
                                 <div className="task-content">
                                 </div>
 
@@ -62,12 +71,26 @@ class CardComponent extends Component {
 
                     )
                 })}
-                <ModalComponent
-                    show={this.state.modalShow}
-                    task={this.state.task}
-                    acao={this.state.acao}
-                    onHide={modalClose}
-                />
+
+                <Modal
+                    size="lg"
+                    aria-labelledby="contained-modal-title-detalhe"
+                    centered
+                    show={this.state.modalDetalharShow}
+                >
+                    <DetalharTaskComponent onHide={modalDetalheClose} task={this.state.task} />
+
+                </Modal>
+
+                <Modal
+                    size="lg"
+                    aria-labelledby="contained-modal-title-adicionar"
+                    centered
+                    show={this.state.modalAdicionarShow}
+                >
+                    <AdicionarTaskComponent onHide={modalAdicionaClose} />
+
+                </Modal>
             </CardStyled>
         );
     }
