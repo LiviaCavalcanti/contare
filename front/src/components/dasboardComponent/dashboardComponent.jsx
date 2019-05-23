@@ -5,7 +5,7 @@ import { verifyUser } from '../../services/index'
 import { Container, Row, Col } from 'react-bootstrap';
 import UserProfile from '../dasboardComponent/userProfileComponent/userProfileComponent'
 import { withRouter } from 'react-router';
-import { verifyExpenses } from '../../services/index';
+import { getExpenses } from '../../services/index';
 
 
 
@@ -19,6 +19,7 @@ class DashboardComponent extends Component {
         };
 
         this.getUserFromToken = this.getUserFromToken.bind(this)
+        this.getExpense = this.getExpense.bind(this)
     }
 
     getUserFromToken = () => {
@@ -35,9 +36,13 @@ class DashboardComponent extends Component {
         this.getUserFromToken()
     }
 
-    async componentDidMount() {
+    componentDidMount() {
+        this.getExpense();
+    }
 
-        let listaRetorno = await verifyExpenses(localStorage.getItem("token-contare"));
+    async getExpense() {
+
+        let listaRetorno = await getExpenses(localStorage.getItem("token-contare"));
         let list = [];
         listaRetorno.forEach(element => {
             let aux = {};
@@ -55,16 +60,16 @@ class DashboardComponent extends Component {
         return (
             <Container>
                 <Row>
-                    <Col xs={3} style={{ backgroundColor: "blue" }}>
+                    <Col xs={3}>
                         <UserProfile user={this.state.user} />
                     </Col>
-                    <Col style={{ backgroundColor: "red", padding: "0" }}>
+                    <Col style={{ padding: "0" }}>
                         <DahsboardStyled>
-                            <CardComponent list={this.state.list} />
+                            <CardComponent getExpense={this.getExpense} list={this.state.list} />
                         </DahsboardStyled>
                     </Col>
 
-                    <Col xs={3} style={{ backgroundColor: "blue" }}> <h1>Tarefas a vencer</h1></Col>
+                    <Col xs={3} > <h1>Tarefas a vencer</h1></Col>
                 </Row>
             </Container>
 

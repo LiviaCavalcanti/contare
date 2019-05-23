@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import plus from '../../../images/plus.svg';
 import CardStyled from './cardStyled';
 import Modal from 'react-bootstrap/Modal'
-import DetalharTaskComponent from '../detalharTaskComponent/detalharTaskComponent';
-import AdicionarTaskComponent from '../adicionarTaskComponent/adicionarTaskComponent';
-
+import AdicionarExpenseComponent from '../adicionarExpenseComponent/adicionarExpenseComponent';
+import DetalharExpenseComponent from '../detalharExpenseComponent/detalharExpenseComponent';
+import { ToastContainer } from 'react-toastify';
 
 class CardComponent extends Component {
     constructor(props) {
@@ -13,23 +13,24 @@ class CardComponent extends Component {
         this.state = {
             modalDetalharShow: false,
             modalAdicionarShow: false,
-            task: {},
+            expense: {},
         };
 
-        this.abreDetalheTask = this.abreDetalheTask.bind(this);
-        this.abreAdicionarTask = this.abreAdicionarTask.bind(this);
+        this.abreDetalheExpense = this.abreDetalheExpense.bind(this);
+        this.abreAdicionarExpense = this.abreAdicionarExpense.bind(this);
         this.formataData = this.formataData.bind(this);
+        this.updateCard = this.updateCard.bind(this);
 
     }
 
-    abreDetalheTask(task) {
+    abreDetalheExpense(expense) {
         this.setState({
             modalDetalharShow: !this.state.modalDetalharShow,
-            task: task,
+            expense: expense,
         })
     }
 
-    abreAdicionarTask() {
+    abreAdicionarExpense() {
         this.setState({
             modalAdicionarShow: !this.state.modalAdicionarShow
         })
@@ -43,13 +44,18 @@ class CardComponent extends Component {
         return `${data}/${mes}/${ano}`;
     }
 
+    updateCard(){
+        this.props.getExpense();
+        this.setState({ modalAdicionarShow: false, modalDetalharShow: false })
+    }
+
     render() {
         let modalDetalheClose = () => this.setState({ modalDetalharShow: false });
         let modalAdicionaClose = () => this.setState({ modalAdicionarShow: false });
 
         return (
             <CardStyled>
-                {this.props.list.map((task, i) => {
+                {this.props.list.map((expense, i) => {
                     var fd = this.formataData;
 
                     function formataData(data){
@@ -58,39 +64,39 @@ class CardComponent extends Component {
                     }
 
                     return (
-                        task.isNew ?
+                        expense.isNew ?
 
-                            <div key={i} className="add-task" onClick={() => this.abreAdicionarTask()}>
-                                <div className="task-content">
+                            <div key={i} className="add-expense" onClick={() => this.abreAdicionarExpense()}>
+                                <div className="expense-content">
                                     <div>
                                         <img alt="background" src={plus} />
                                     </div>
                                 </div>
 
-                                <div className="task-name">
+                                <div className="expense-name">
                                     <p>
-                                        Adicionar Tarefa
+                                        Adicionar Despesa
                                     </p>
                                 </div>
                             </div>
                             :
-                            <div key={i} className="task" onClick={() => this.abreDetalheTask(task)}>
-                                <div className="task-content">
+                            <div key={i} className="expense" onClick={() => this.abreDetalheExpense(expense)}>
+                                <div className="expense-content">
                                     
                                     <label>Data de Criação:</label>
-                                    <p>{formataData(task.createdAt)}</p>
+                                    <p>{formataData(expense.createdAt)}</p>
                                     
                                     <label>Data de Vencimento:</label>
-                                    <p>{formataData(task.dueDate)}</p>
+                                    <p>{formataData(expense.dueDate)}</p>
 
                                     <label>Valor:</label>
-                                    <p>R$ {task.participants[0].payValue}</p>
+                                    <p>R$ {expense.participants[0].payValue}</p>
 
                                 </div>
 
-                                <div className="task-name">
+                                <div className={"expense-name " + (expense.participants[0].status ? "expense-pay" : "expense-not-pay")}>
                                     <p>
-                                        {task.title}
+                                        {expense.title}
                                     </p>
                                 </div>
                             </div>
@@ -104,7 +110,7 @@ class CardComponent extends Component {
                     centered
                     show={this.state.modalDetalharShow}
                 >
-                    <DetalharTaskComponent onHide={modalDetalheClose} task={this.state.task} />
+                    <DetalharExpenseComponent updateCard={this.updateCard} onHide={modalDetalheClose} expense={this.state.expense} />
 
                 </Modal>
 
@@ -114,9 +120,11 @@ class CardComponent extends Component {
                     centered
                     show={this.state.modalAdicionarShow}
                 >
-                    <AdicionarTaskComponent onHide={modalAdicionaClose} />
+                    <AdicionarExpenseComponent updateCard={this.updateCard} onHide={modalAdicionaClose} />
 
                 </Modal>
+                <ToastContainer />
+
             </CardStyled>
         );
     }

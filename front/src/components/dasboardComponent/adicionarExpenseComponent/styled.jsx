@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 
-const DetalharTaskStyled = styled.div`
+const AddExpenseStyled = styled.div`
 
     .campo-pago{
        color: #0bd50b;
@@ -13,5 +13,5 @@ const DetalharTaskStyled = styled.div`
 
 `;
 
-export default DetalharTaskStyled;
+export default AddExpenseStyled;
 

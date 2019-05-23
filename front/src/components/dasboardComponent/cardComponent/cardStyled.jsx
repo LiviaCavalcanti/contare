@@ -6,14 +6,14 @@ const CardStyled = styled.div`
     height: 100%;
     overflow: auto;
 
-    .add-task{
+    .add-expense{
         border: 1px solid #4a69a4;
         width: 29%;
         height: 32%;
         display: inline-block;
         margin: 3px;
 
-        .task-content{
+        .expense-content{
             height: 75%;
             background-color: #bfcbd8;
             padding: 10% 20% 0% 20%;
@@ -30,7 +30,7 @@ const CardStyled = styled.div`
 
     }
     
-    .task{
+    .expense{
         border: 1px solid #4a69a4;
         width: 31%;
         height: 32%;
@@ -38,11 +38,12 @@ const CardStyled = styled.div`
         margin: 3px;
         cursor: pointer;
 
-        .task-content{
+        .expense-content{
             height: 75%;
             background-color: #4a69a4;
             color: white;
             font-size: 14px;
+            padding: 2% 0% 0% 5%;
 
             label{
                 margin-bottom: 0px;
@@ -56,30 +57,40 @@ const CardStyled = styled.div`
         }
     }
 
+    .expense-not-pay{
+        background-color: #dc3545 !important;
+    }
 
-    .task-name{
-        background-color: #bfcbd8;
+    .expense-pay{
+        background-color: #28a745 !important;
+    }
+
+    .expense-name{
         height: 25%;
-        
+        background-color: #bfcbd8;
+        color: white;
+        font-weight: 600;
+
+
         p{
             text-align: center;
         }
     }
 
-    .task:hover, .add-task:hover{
+    .expense:hover, .add-expense:hover{
         border: 1px solid #bfcbd8;
         
     }
 
     
     @media only screen and (min-width: 1000px) {
-        .add-task .task-content div img{
+        .add-expense .expense-content div img{
                width: 30%;
            }
        }
    
        @media only screen and (max-width: 1000px) {
-        .add-task .task-content div img{
+        .add-expense .expense-content div img{
                width: 60%;
         }
     }
