@@ -18,6 +18,7 @@ class CardComponent extends Component {
 
         this.abreDetalheTask = this.abreDetalheTask.bind(this);
         this.abreAdicionarTask = this.abreAdicionarTask.bind(this);
+        this.formataData = this.formataData.bind(this);
 
     }
 
@@ -34,6 +35,14 @@ class CardComponent extends Component {
         })
     }
 
+    formataData(d){
+        var date = new Date(d);
+        let data = date.getDate().toLocaleString().length > 1 ? date.getDate() + 1 : '0'+date.getDate();
+        let mes = (date.getMonth() + 1).toLocaleString().length > 1 ? date.getMonth() + 1 : '0'+ (date.getMonth() + 1);
+        let ano = date.getFullYear();
+        return `${data}/${mes}/${ano}`;
+    }
+
     render() {
         let modalDetalheClose = () => this.setState({ modalDetalharShow: false });
         let modalAdicionaClose = () => this.setState({ modalAdicionarShow: false });
@@ -41,6 +50,13 @@ class CardComponent extends Component {
         return (
             <CardStyled>
                 {this.props.list.map((task, i) => {
+                    var fd = this.formataData;
+
+                    function formataData(data){
+                       return fd(data);
+
+                    }
+
                     return (
                         task.isNew ?
 
@@ -60,11 +76,21 @@ class CardComponent extends Component {
                             :
                             <div key={i} className="task" onClick={() => this.abreDetalheTask(task)}>
                                 <div className="task-content">
+                                    
+                                    <label>Data de Criação:</label>
+                                    <p>{formataData(task.createdAt)}</p>
+                                    
+                                    <label>Data de Vencimento:</label>
+                                    <p>{formataData(task.dueDate)}</p>
+
+                                    <label>Valor:</label>
+                                    <p>R$ {task.participants[0].payValue}</p>
+
                                 </div>
 
                                 <div className="task-name">
                                     <p>
-                                        {task.name}
+                                        {task.title}
                                     </p>
                                 </div>
                             </div>

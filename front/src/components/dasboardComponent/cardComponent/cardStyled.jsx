@@ -41,6 +41,18 @@ const CardStyled = styled.div`
         .task-content{
             height: 75%;
             background-color: #4a69a4;
+            color: white;
+            font-size: 14px;
+
+            label{
+                margin-bottom: 0px;
+                font-weight: 700;
+            }
+
+            p{
+                margin-top: -7px;
+                margin-bottom: 8px;
+            }
         }
     }
 

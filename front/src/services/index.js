@@ -33,7 +33,6 @@ export const login = async (email, password) => {
     await axios.post(`${API_URL}/contare/authenticate`, user)
         .then(function (response) {
             localStorage.setItem('token-contare', response.data.token);
-            //console.log("USER LOGADO ", response.data.user);
             window.location.href = "/dashboard"
         })
         .catch(function (error) {
@@ -47,7 +46,6 @@ export const redirectLoggedUser = async (token) => {
           window.location.href = "/dashboard"
         },
         (error) => {
-          console.log(error.data)
         }
       )
 }
@@ -56,6 +54,28 @@ export const verifyUser = async (token, callback) => {
     axios.get( `${API_URL}/contare/user`, {headers: {"x-access-token" : token}})
      .then((response) => {
          callback(response.data)
+       },
+       (error) => {
+            //window.location.href = "/"
+       }
+     )
+}
+
+export const verifyExpenses = async (token, callback) => {
+    return await axios.get( `${API_URL}/contare/user/expenses`, {headers: {"x-access-token" : token}})
+     .then((response) => {
+            return response.data;
+       },
+       (error) => {
+            return error;
+       }
+     )
+}
+
+export const addExpenses = async (token, body) => {
+    return await axios.post( `${API_URL}/contare/user/expenses`, body ,{headers: {"x-access-token" : token}})
+     .then((response) => {
+            return response;
        },
        (error) => {
             //window.location.href = "/"

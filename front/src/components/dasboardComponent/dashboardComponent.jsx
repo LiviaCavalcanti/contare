@@ -4,7 +4,9 @@ import DahsboardStyled from './dashboardStyled';
 import { verifyUser } from '../../services/index'
 import { Container, Row, Col } from 'react-bootstrap';
 import UserProfile from '../dasboardComponent/userProfileComponent/userProfileComponent'
-import { withRouter } from 'react-router'
+import { withRouter } from 'react-router';
+import { verifyExpenses } from '../../services/index';
+
 
 
 
@@ -33,14 +35,16 @@ class DashboardComponent extends Component {
         this.getUserFromToken()
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+
+        let listaRetorno = await verifyExpenses(localStorage.getItem("token-contare"));
         let list = [];
-        for (let index = 0; index < 12; index++) {
-            list.push({
-                isNew: false,
-                name: "Nome da task " + index
-            })
-        }
+        listaRetorno.forEach(element => {
+            let aux = {};
+            aux = element;
+            aux.isNew = false;
+            list.push(aux);
+        });
         list.push({
             isNew: true
         })

@@ -7,8 +7,9 @@ class AdicionarTaskComponent extends Component {
 
   constructor(props) {
     super(props);
-
-    console.log("wag props ", props);
+    this.state = (
+      {}
+    )
   }
 
   render() {
