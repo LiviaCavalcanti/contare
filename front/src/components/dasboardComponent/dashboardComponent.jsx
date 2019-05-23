@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import CardComponent from './cardComponent/cardComponent';
 import DahsboardStyled from './dashboardStyled';
-import { verifyUser, notifyFailure } from '../../services/index'
+import { verifyUser } from '../../services/index'
 import { Container, Row, Col } from 'react-bootstrap';
 import UserProfile from '../dasboardComponent/userProfileComponent/userProfileComponent'
 import { withRouter } from 'react-router'
@@ -21,7 +21,7 @@ class DashboardComponent extends Component {
 
     getUserFromToken = () => {
         const token = localStorage.getItem("token-contare")
-        if (token == null || token == undefined) {
+        if (token === null || token === undefined) {
             this.props.history.push("/")
         }
         verifyUser(token, function (response) {

@@ -6,7 +6,7 @@ class UserProfile extends Component {
     render() {
         return (
             <div className="userInfo">
-            <img src={avatar} className="avatarImage"></img>
+            <img alt="" src={avatar} className="avatarImage" />
             <p>Bem Vindo, {this.props.user.name}</p>
 
             </div>
