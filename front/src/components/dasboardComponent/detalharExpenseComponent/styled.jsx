@@ -29,6 +29,26 @@ const DetalharExpenseStyled = styled.div`
         width: 100% !important;
     }
 
+    .div-dado{
+        width: 50%;
+        display: inline-block;
+        margin-bottom: 0px;
+        
+        label{
+            width: 44%;
+        }
+        p{
+            display: inline;
+            margin-bottom: 5px;
+        }
+    }
+
+    .p-title{
+        margin-top: 29px;
+        font-size: 20px;
+        font-weight: 600;
+    }
+
 `;
 
 export default DetalharExpenseStyled;

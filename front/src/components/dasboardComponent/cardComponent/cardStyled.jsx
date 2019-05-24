@@ -8,10 +8,14 @@ const CardStyled = styled.div`
 
     .add-expense{
         border: 1px solid #4a69a4;
-        width: 29%;
+        width: 31%;
         height: 32%;
         display: inline-block;
         margin: 3px;
+
+        label{
+            cursor: pointer;
+        }
 
         .expense-content{
             height: 75%;
@@ -48,6 +52,7 @@ const CardStyled = styled.div`
             label{
                 margin-bottom: 0px;
                 font-weight: 700;
+                cursor: pointer;
             }
 
             p{

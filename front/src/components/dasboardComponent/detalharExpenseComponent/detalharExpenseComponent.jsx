@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { deletedExpenses, updateExpenses } from '../../../services';
 
-import { Col } from 'react-bootstrap';
+import { Col, Table } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import ConfirmedActionComponent from '../../confirmedActionComponent/ConfirmedActionComponent';
@@ -21,9 +21,14 @@ class DetalharExpenseComponent extends Component {
     this.state = {
       modalAction: false,
       nomeAcao: "",
-      isEdited: false, 
-      modalConfirmedFunction : ""
+      isEdited: false,
+      modalConfirmedFunction: "", 
+      listParticipants : [], 
+      valueTotal : 0
     }
+
+
+    console.log("this.props.expense ", this.props.expense);
 
     this.formataData = this.formataData.bind(this);
     this.deletedExpense = this.deletedExpense.bind(this);
@@ -32,6 +37,28 @@ class DetalharExpenseComponent extends Component {
     this.updateExpense = this.updateExpense.bind(this);
   }
 
+  async componentDidMount() {
+    let listAux = [];
+    let valueTotal = 0;
+    
+    this.props.expense.participants.forEach(element => {
+      element.email = "Buscar email pelo ID ainda não existe " + element._id;
+      listAux.push(element);
+      valueTotal += element.payValue;
+    });
+
+    this.setState({
+      listParticipants : listAux,
+      valueTotal : valueTotal
+    })
+
+    // let user = await getUser(localStorage.getItem("token-contare"));
+    // this.setState({
+    //   user: user,
+    //   listParticipants: [{ email: user.email, payValue: 0.0 }]
+    // })
+
+  }
 
   formataData(d) {
     var date = new Date(d);
@@ -44,10 +71,10 @@ class DetalharExpenseComponent extends Component {
   confirmed(acao, calback) {
     this.setState({
       modalAction: true,
-      nomeAcao: acao, 
-      modalConfirmedFunction : calback
-
+      nomeAcao: acao,
+      modalConfirmedFunction: calback
     })
+
   }
 
   hideModalAction() {
@@ -61,8 +88,8 @@ class DetalharExpenseComponent extends Component {
     this.hideModalAction();
     this.props.updateCard();
   }
-  
-  async updateExpense(){
+
+  async updateExpense() {
 
     let body = this.props.expense;
 
@@ -85,7 +112,7 @@ class DetalharExpenseComponent extends Component {
               </div>
               <div className="div-acao">
                 {this.props.expense.participants[0].status ? "" :
-                  <img title="Pagar Despesa" alt="Pagar Despesa" style={{ width: "22px"}} src={payIcon} onClick={() => this.confirmed('Você confirma o pagamaneto da despesa?', this.updateExpense)} /> 
+                  <img title="Pagar Despesa" alt="Pagar Despesa" style={{ width: "22px" }} src={payIcon} onClick={() => this.confirmed('Você confirma o pagamaneto da despesa?', this.updateExpense)} />
                 }
                 <img title="Excluir Despesa" alt="Excluir Despesa" src={deleteIcon} onClick={() => this.confirmed('Tem certeza que você quer deletar a despesa?', this.deletedExpense)} />
               </div>
@@ -95,10 +122,64 @@ class DetalharExpenseComponent extends Component {
         </Modal.Header>
         <Modal.Body>
 
-          <p>Descrição: {this.props.expense.description}</p>
-          <p>Data de Criação: {this.formataData(this.props.expense.createdAt)} </p>
-          <p>Data de Vencimento: {this.formataData(this.props.expense.dueDate)} </p>
-          <p>Status: {this.props.expense.participants[0].status ? <b className="campo-pago">Pago</b> : <b className="campo-pagar">À pagar</b>}</p>
+          <div className="div-dado">
+            <label>Descrição:</label>
+            <p> <b>{this.props.expense.description}</b></p>
+          </div>
+          <div className="div-dado">
+            <label>Data de Criação:</label>
+            <p> <b>{this.formataData(this.props.expense.createdAt)} </b></p>
+          </div>
+          <div className="div-dado">
+            <label>Data de Vencimento: </label>
+            <p><b>{this.formataData(this.props.expense.dueDate)} </b></p>
+          </div>
+
+
+          <div className="div-dado">
+            <label>Valor Total da despesa:</label>
+            <p><b>{this.state.valueTotal} </b></p>
+          </div>
+          {/* <div className="div-dado">
+            <label>Status:</label>
+            <p> <b>{this.props.expense.participants[0].status ? <b className="campo-pago">Pago</b> : <b className="campo-pagar">À pagar</b>}</b></p>
+          </div> */}
+
+          <p className="p-title">
+
+            Detalhamento dos participantes
+          </p>
+
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th style={{ width: "60%" }}>Email</th>
+                <th >Valor</th>
+                <th className="acao" style={{ width: "20%" }}>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                this.state.listParticipants.map((p) => {
+                  return (
+                    <tr>
+                      <td >
+                        {p.email}
+                      </td>
+                      <td>
+                        {p.payValue}
+                      </td>
+                      <td >
+                        {p.status ? <b className="campo-pago">Pago</b> : <b className="campo-pagar">À pagar </b>}
+                      </td>
+                    </tr>
+
+                  )
+                })
+              }
+
+            </tbody>
+          </Table>
 
         </Modal.Body>
         <Modal.Footer>

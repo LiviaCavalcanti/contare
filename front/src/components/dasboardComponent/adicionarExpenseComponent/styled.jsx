@@ -11,6 +11,22 @@ const AddExpenseStyled = styled.div`
         color: red;
     }
 
+    .acao{
+        text-align: center;
+    }
+
+    .icon-acao{
+        width: 15px;
+        margin-right: 9px;
+        cursor: pointer;
+        margin-top: 17px;
+    }
+
+    .modal-body{
+        overflow: auto;
+        height: 450px;
+    }
+
 `;
 
 export default AddExpenseStyled;

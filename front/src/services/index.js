@@ -61,6 +61,17 @@ export const verifyUser = async (token, callback) => {
      )
 }
 
+export const getUser = async (token) => {
+    return axios.get( `${API_URL}/contare/user`, {headers: {"x-access-token" : token}})
+     .then((response) => {
+         return (response.data)
+       },
+       (error) => {
+            //window.location.href = "/"
+       }
+     )
+}
+
 export const getExpenses = async (token, callback) => {
     return await axios.get( `${API_URL}/contare/user/expenses`, {headers: {"x-access-token" : token}})
      .then((response) => {
@@ -106,6 +117,21 @@ export const updateExpenses = async (token, id, body) => {
        },
        (error) => {
            notifyFailure(error.response.data.error)
+           return false;
+        }
+     )
+}
+
+export const getAllEmail = async (token) => {
+    console.log('wag token ', token);
+    return await axios.get( `${API_URL}/contare/user/getAll` ,{headers: {"x-access-token" : token}})
+    .then((response) => {
+        console.log('wag re ', response);
+        return response.data;
+    },
+    (error) => {
+        console.log('wag re ', error);
+
            return false;
         }
      )
