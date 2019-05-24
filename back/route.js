@@ -11,7 +11,7 @@ router.put("/user", UserController.update);
 //---------
 
 // DESPESAS
-router.patch("/user/expenses",UserController.listEmails) // retorna todos os emails do sistema exceto o email do usuário corrente
+router.get("/user/getAll",UserController.listEmails) // retorna todos os emails do sistema exceto o email do usuário corrente
 router.get("/user/expenses", UserController.indexExpenses);
 router.get("/user/expenses/:expID", ExpenseController.show);
 router.post("/user/expenses", ExpenseController.store);
