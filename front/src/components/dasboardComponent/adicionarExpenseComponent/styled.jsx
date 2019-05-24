@@ -24,7 +24,12 @@ const AddExpenseStyled = styled.div`
 
     .modal-body{
         overflow: auto;
-        height: 450px;
+        max-height: 450px;
+    }
+
+    .remove-validacao{
+        border: 1px solid #ced4da !important;
+        background-image: none !important;
     }
 
 `;

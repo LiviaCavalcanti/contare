@@ -30,7 +30,8 @@ class AdicionarExpenseComponent extends Component {
       user: {},
       emailNewParticipant: null,
       payValueNewParticipant: "",
-      listEmail: []
+      listEmail: [],
+      validated: false
 
     };
     this.handleChange = this.handleChange.bind(this);
@@ -90,7 +91,11 @@ class AdicionarExpenseComponent extends Component {
 
 
   async saveExpense(event) {
-    event.preventDefault()
+    event.preventDefault();
+    if (! event.currentTarget.checkValidity()) {
+      this.setState({ validated: true });
+      return;
+    }
     const form = event.currentTarget;
     let body = {};
 
@@ -103,7 +108,7 @@ class AdicionarExpenseComponent extends Component {
     let listEmail = [];
 
     this.state.listParticipants.forEach(obj => {
-      listEmail.push({email : obj.email, payValue : Number(obj.payValue)})
+      listEmail.push({ email: obj.email, payValue: Number(obj.payValue) })
     });
     body.listEmail = listEmail;
 
@@ -118,7 +123,7 @@ class AdicionarExpenseComponent extends Component {
   }
 
   adicionarParticipant() {
-    if(this.state.payValueNewParticipant === "" ||  this.state.emailNewParticipant == null){
+    if (this.state.payValueNewParticipant === "" || this.state.emailNewParticipant == null) {
       return;
     }
     let listAux = this.state.listParticipants;
@@ -158,16 +163,23 @@ class AdicionarExpenseComponent extends Component {
           </Modal.Title>
         </Modal.Header>
 
-        <Form validated={this.state.validated} onSubmit={e => this.saveExpense(e)}>
+        <Form
+          noValidate
+          validated={this.state.validated}
+          onSubmit={e => this.saveExpense(e)}
+        >
           <Modal.Body>
 
             <Form.Group as={Row} controlId="title">
               <Form.Label column sm="3">
                 Título
-            </Form.Label>
+              </Form.Label>
               <Col sm="9">
-                <Form.Control type="text" placeholder="Título" />
+                <Form.Control required={true} type="text" placeholder="Título" />
               </Col>
+              <Form.Control.Feedback type="invalid">
+                Por favor digite o título da despesa.
+              </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group as={Row} controlId="description">
@@ -175,8 +187,11 @@ class AdicionarExpenseComponent extends Component {
                 Descrição
               </Form.Label>
               <Col sm="9">
-                <Form.Control type="text" placeholder="Descrição" />
+                <Form.Control required={true} type="text" placeholder="Descrição" />
               </Col>
+              <Form.Control.Feedback type="invalid">
+                Por favor digite a descrição da despesa.
+              </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group as={Row} controlId="payValue">
@@ -184,8 +199,11 @@ class AdicionarExpenseComponent extends Component {
                 Valor da despesa
               </Form.Label>
               <Col sm="9">
-                <Form.Control value={this.state.money} type="text" placeholder="Valor da despesa" />
+                <Form.Control required={true} value={this.state.money} type="text" placeholder="Valor da despesa" />
               </Col>
+              <Form.Control.Feedback type="invalid">
+                Por favor digite o valor da despesa.
+              </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group as={Row} controlId="dueDate">
@@ -193,12 +211,15 @@ class AdicionarExpenseComponent extends Component {
                 Data de Validade
               </Form.Label>
               <Col sm="9">
-                <DatePicker className="form-control"
+                <DatePicker required={true} className="form-control"
                   selected={this.state.date}
                   onChange={this.handleChange}
                   dateFormat="dd/MM/yyyy"
                 />
               </Col>
+              <Form.Control.Feedback type="invalid">
+                Por favor digite a data de validade.
+              </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group as={Row} controlId="dueDate">
@@ -239,7 +260,7 @@ class AdicionarExpenseComponent extends Component {
                       </td>
                       <td>
                         <Form.Group controlId="payValueNewParticipant">
-                          <Form.Control type="text" name="payValueNewParticipant" placeholder="Valor" value={this.state.payValueNewParticipant} onChange={this.handle} />
+                          <Form.Control className="remove-validacao" type="text" name="payValueNewParticipant" placeholder="Valor" value={this.state.payValueNewParticipant} onChange={this.handle} />
                         </Form.Group>
                       </td>
                       <td className="acao">
@@ -278,7 +299,7 @@ class AdicionarExpenseComponent extends Component {
                             <td>{p.email}</td>
                             <td>
                               <Form.Group controlId="payValueNewParticipant">
-                                <Form.Control type="text" name="payValueNewParticipant" placeholder="Valor" value={p.payValue} onChange={updateValue} />
+                                <Form.Control className="remove-validacao"  type="text" name="payValueNewParticipant" placeholder="Valor" value={p.payValue} onChange={updateValue} />
                               </Form.Group>
                             </td>
                             <td className="acao">
