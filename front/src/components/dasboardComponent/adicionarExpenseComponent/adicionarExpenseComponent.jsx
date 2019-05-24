@@ -107,8 +107,8 @@ class AdicionarExpenseComponent extends Component {
 
     let value = form.elements[2].value.replace("R$ ", "");
     value = this.replaceAll(value, ".", "");
-    body.payValue =  value.replace(",", ".");
-    
+    body.payValue = value.replace(",", ".");
+
     let date = form.elements[3].value;
     body.dueDate = date.substring(3, 5) + "/" + date.substring(0, 2) + "/" + date.substring(6, 10);
 
@@ -192,10 +192,10 @@ class AdicionarExpenseComponent extends Component {
               </Form.Label>
               <Col sm="9">
                 <Form.Control required={true} type="text" placeholder="Título" />
-              </Col>
-              <Form.Control.Feedback type="invalid">
-                Por favor digite o título da despesa.
+                <Form.Control.Feedback type="invalid">
+                  Por favor digite o título da despesa.
               </Form.Control.Feedback>
+              </Col>
             </Form.Group>
 
             <Form.Group as={Row} controlId="description">
@@ -204,10 +204,10 @@ class AdicionarExpenseComponent extends Component {
               </Form.Label>
               <Col sm="9">
                 <Form.Control required={true} type="text" placeholder="Descrição" />
+                <Form.Control.Feedback type="invalid">
+                  Por favor digite a descrição da despesa.
+                </Form.Control.Feedback>
               </Col>
-              <Form.Control.Feedback type="invalid">
-                Por favor digite a descrição da despesa.
-              </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group as={Row} controlId="payValue">
@@ -217,10 +217,10 @@ class AdicionarExpenseComponent extends Component {
               <Col sm="9">
                 <CurrencyInput className="form-control" prefix="R$ " decimalSeparator="," thousandSeparator="." required={true} value={this.state.money} name="money" type="text" placeholder="Valor da despesa" onChangeEvent={this.handle} />
 
+                <Form.Control.Feedback type="invalid">
+                  Por favor digite o valor da despesa.
+                </Form.Control.Feedback>
               </Col>
-              <Form.Control.Feedback type="invalid">
-                Por favor digite o valor da despesa.
-              </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group as={Row} controlId="dueDate">
@@ -233,10 +233,10 @@ class AdicionarExpenseComponent extends Component {
                   onChange={this.handleChange}
                   dateFormat="dd/MM/yyyy"
                 />
+                <Form.Control.Feedback type="invalid">
+                  Por favor digite a data de validade.
+                </Form.Control.Feedback>
               </Col>
-              <Form.Control.Feedback type="invalid">
-                Por favor digite a data de validade.
-              </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group as={Row} controlId="dueDate">
