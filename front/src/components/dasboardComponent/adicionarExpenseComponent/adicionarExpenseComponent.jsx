@@ -11,6 +11,8 @@ import { addExpenses, getUser, getAllEmail } from '../../../services';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Table } from 'react-bootstrap';
+import CurrencyInput from 'react-currency-input';
+
 
 import checkIcon from '../../../images/check.svg'
 import deleteIcon from '../../../images/detele.svg'
@@ -41,6 +43,7 @@ class AdicionarExpenseComponent extends Component {
     this.handle = this.handle.bind(this);
     this.updateListParticipant = this.updateListParticipant.bind(this);
     this.handleChangeSelect = this.handleChangeSelect.bind(this);
+    this.replaceAll = this.replaceAll.bind(this);
   }
 
   async componentDidMount() {
@@ -92,7 +95,7 @@ class AdicionarExpenseComponent extends Component {
 
   async saveExpense(event) {
     event.preventDefault();
-    if (! event.currentTarget.checkValidity()) {
+    if (!event.currentTarget.checkValidity()) {
       this.setState({ validated: true });
       return;
     }
@@ -101,14 +104,20 @@ class AdicionarExpenseComponent extends Component {
 
     body.title = form.elements[0].value;
     body.description = form.elements[1].value;
-    body.payValue = form.elements[2].value.replace(",", ".");
+
+    let value = form.elements[2].value.replace("R$ ", "");
+    value = this.replaceAll(value, ".", "");
+    body.payValue =  value.replace(",", ".");
+    
     let date = form.elements[3].value;
     body.dueDate = date.substring(3, 5) + "/" + date.substring(0, 2) + "/" + date.substring(6, 10);
 
     let listEmail = [];
 
     this.state.listParticipants.forEach(obj => {
-      listEmail.push({ email: obj.email, payValue: Number(obj.payValue) })
+      value = obj.payValue.replace("R$ ", "");
+      value = this.replaceAll(value, ".", "");
+      listEmail.push({ email: obj.email, payValue: value.replace(",", ".") })
     });
     body.listEmail = listEmail;
 
@@ -151,6 +160,13 @@ class AdicionarExpenseComponent extends Component {
     if (email) {
       this.getAllemail();
     }
+  }
+
+  replaceAll(string, token, newtoken) {
+    while (string.indexOf(token) !== -1) {
+      string = string.replace(token, newtoken);
+    }
+    return string;
   }
 
   render() {
@@ -199,7 +215,8 @@ class AdicionarExpenseComponent extends Component {
                 Valor da despesa
               </Form.Label>
               <Col sm="9">
-                <Form.Control required={true} value={this.state.money} type="text" placeholder="Valor da despesa" />
+                <CurrencyInput className="form-control" prefix="R$ " decimalSeparator="," thousandSeparator="." required={true} value={this.state.money} name="money" type="text" placeholder="Valor da despesa" onChangeEvent={this.handle} />
+
               </Col>
               <Form.Control.Feedback type="invalid">
                 Por favor digite o valor da despesa.
@@ -260,7 +277,7 @@ class AdicionarExpenseComponent extends Component {
                       </td>
                       <td>
                         <Form.Group controlId="payValueNewParticipant">
-                          <Form.Control className="remove-validacao" type="text" name="payValueNewParticipant" placeholder="Valor" value={this.state.payValueNewParticipant} onChange={this.handle} />
+                          <CurrencyInput className="remove-validacao form-control" type="text" prefix="R$ " decimalSeparator="," thousandSeparator="." name="payValueNewParticipant" placeholder="Valor" value={this.state.payValueNewParticipant} onChangeEvent={this.handle} />
                         </Form.Group>
                       </td>
                       <td className="acao">
@@ -271,13 +288,16 @@ class AdicionarExpenseComponent extends Component {
                       this.state.listParticipants.map((p, i) => {
                         var updateListParticipant = this.updateListParticipant;
                         var list = this.state.listParticipants;
+                        var replaceAll = this.replaceAll;
 
                         function updateValue(e) {
                           let auxList = [];
                           list.forEach(element => {
                             let auxP = element;
                             if (auxP.email === p.email) {
-                              auxP.payValue = e.target.value;
+                              let value = e.target.value.replace("R$ ", "");
+                              value = replaceAll(value, ".", "");
+                              auxP.payValue = value.replace(".", ",")
                             }
                             auxList.push(auxP);
                           });
@@ -299,7 +319,9 @@ class AdicionarExpenseComponent extends Component {
                             <td>{p.email}</td>
                             <td>
                               <Form.Group controlId="payValueNewParticipant">
-                                <Form.Control className="remove-validacao"  type="text" name="payValueNewParticipant" placeholder="Valor" value={p.payValue} onChange={updateValue} />
+                                <CurrencyInput className="remove-validacao form-control" type="text" prefix="R$ " decimalSeparator="," thousandSeparator="." name="payValueNewParticipant" placeholder="Valor" value={p.payValue} onChangeEvent={updateValue} />
+
+                                {/* <Form.Control className="remove-validacao" type="text" name="payValueNewParticipant" placeholder="Valor" value={p.payValue} onChange={updateValue} /> */}
                               </Form.Group>
                             </td>
                             <td className="acao">

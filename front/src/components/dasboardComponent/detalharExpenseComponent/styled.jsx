@@ -49,6 +49,11 @@ const DetalharExpenseStyled = styled.div`
         font-weight: 600;
     }
 
+    .modal-body{
+        overflow: auto;
+        max-height: 450px;
+    }
+
 `;
 
 export default DetalharExpenseStyled;

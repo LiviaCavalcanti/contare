@@ -27,9 +27,6 @@ class DetalharExpenseComponent extends Component {
       valueTotal : 0
     }
 
-
-    console.log("this.props.expense ", this.props.expense);
-
     this.formataData = this.formataData.bind(this);
     this.deletedExpense = this.deletedExpense.bind(this);
     this.confirmed = this.confirmed.bind(this);
@@ -38,17 +35,17 @@ class DetalharExpenseComponent extends Component {
   }
 
   async componentDidMount() {
-    let listAux = [];
+    // let listAux = [];
     let valueTotal = 0;
     
     this.props.expense.participants.forEach(element => {
-      element.email = "Buscar email pelo ID ainda não existe " + element._id;
-      listAux.push(element);
+      // element.email = "Buscar email pelo ID ainda não existe " + element._id;
+      // listAux.push(element);
       valueTotal += element.payValue;
     });
 
     this.setState({
-      listParticipants : listAux,
+      // listParticipants : listAux,
       valueTotal : valueTotal
     })
 
@@ -153,16 +150,20 @@ class DetalharExpenseComponent extends Component {
           <Table striped bordered hover>
             <thead>
               <tr>
-                <th style={{ width: "60%" }}>Email</th>
+                <th style={{ width: "30%" }}>Nome</th>
+                <th style={{ width: "30%" }}>Email</th>
                 <th >Valor</th>
                 <th className="acao" style={{ width: "20%" }}>Status</th>
               </tr>
             </thead>
             <tbody>
               {
-                this.state.listParticipants.map((p) => {
+                this.props.expense.participants.map((p, i) => {
                   return (
-                    <tr>
+                    <tr key={`participants-${i}`}>
+                      <td >
+                        {p.name}
+                      </td>
                       <td >
                         {p.email}
                       </td>
