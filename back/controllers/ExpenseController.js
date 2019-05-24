@@ -43,6 +43,8 @@ module.exports = {
                             thisExpense.participants.push({
                                 _id: user._id,
                                 payValue:  req.body.listEmail[0].payValue,
+                                name:user.name,
+                                email:user.email,
                                 status: false
                             })
                             thisExpense.participants.save;

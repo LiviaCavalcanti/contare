@@ -52,6 +52,8 @@ module.exports = {
                             expense.participants.push({
                                 _id: user.id,
                                 payValue:  invitation.participationValue,
+                                name:user.name,
+                                email:user.email,
                                 status: false
                             })
                             expense.participants.save;
