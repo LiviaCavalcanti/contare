@@ -8,37 +8,23 @@ const Expense = mongoose.model("Expense")
 
 module.exports = {
     
-    async invite(req,res){
-        var token = req.headers['x-access-token'];
-        if (!token) return res.status(401).send({ user: {}, message: "Nenhum token foi fornecido." });
-        
-        jwt.verify(token, authConfig.secret, function(err, decoded) {
-        
-            if (err) return res.status(500).send({ user: {}, message: "Falha ao autenticar token." });
-
-            User.findById(decoded.id, 
-                { password: 0 }, 
-                async function (err, userFrom) {
-                    if (err) return res.status(500).send("Houve um problema ao encontrar o usuario");
-                    if (!userFrom) return res.status(404).send("Nenhum usuário encontrado.");
-                    
-                    User.findOne({email:req.body.participant},async function(err,userTo){
-                        if (err) return res.status(500).send("Houve um problema ao encontrar o usuario");
-                        if (!userTo) return res.status(404).send("Nenhum usuário ".concat(req.body.participant).concat(" encontrado."));
-
-                        await Invitation.create({
-                            from:userFrom,
-                            to:userTo.id,
-                            expense:req.body.expense,
-                            participationValue: req.body.participationValue
-                        })
-                        return res.status(200).send(await User.findByIdAndUpdate(userTo.id,userTo,{new:true}))
-                    })
-                }
-            )
-        })
-    },
     
+    async invite(req,res,userFrom,newExpense){
+        let emailsParticipantes = req.body.listEmail;
+            
+        for(let i = 1; i < emailsParticipantes.length;i++){
+            User.findOne({email:emailsParticipantes[i].email},async function(err,userTo){
+                await Invitation.create({
+                    from:userFrom,
+                    to:userTo.id,
+                    expense:newExpense.id,
+                    participationValue: req.body.listEmail[i].payValue
+                })
+            })
+        }
+        return res.status(200).send("Convites Enviados")
+    },
+        
     async accept(req,res){
         var token = req.headers['x-access-token'];
         if (!token) return res.status(401).send({ user: {}, message: "Nenhum token foi fornecido." });

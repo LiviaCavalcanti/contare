@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const authConfig = require("../config/auth");
 const Expense = mongoose.model("Expense");
 const User = mongoose.model("User")
+const InvitationController = require("./InvitationController")
 
 module.exports = {
     
@@ -37,16 +38,22 @@ module.exports = {
                                 description: req.body.description,
                                 dueDate: req.body.dueDate,
                                 owner: user._id
-                            }) 
-            
+                            })
+                             
                             thisExpense.participants.push({
-                                _id: thisExpense.owner,
-                                payValue:  req.body.payValue,
+                                _id: user._id,
+                                payValue:  req.body.listEmail[0].payValue,
                                 status: false
                             })
                             thisExpense.participants.save;
-
-                            return res.json(await Expense.create(thisExpense))
+                            
+                            let newExpense = await Expense.create(thisExpense)
+                            
+                            if(req.body.listEmail.length > 1){
+                                return await InvitationController.invite(req,res,user,newExpense)
+                            }
+                            
+                            return res.json(newExpense)
                         }
                     })
                 })

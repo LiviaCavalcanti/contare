@@ -11,6 +11,7 @@ router.put("/user", UserController.update);
 //---------
 
 // DESPESAS
+router.patch("/user/expenses",UserController.listEmails) // retorna todos os emails do sistema exceto o email do usuário corrente
 router.get("/user/expenses", UserController.indexExpenses);
 router.get("/user/expenses/:expID", ExpenseController.show);
 router.post("/user/expenses", ExpenseController.store);
@@ -18,7 +19,6 @@ router.put("/user/expenses/:expID", ExpenseController.update);
 router.delete("/user/expenses/:expID", ExpenseController.delete);
 
 // CONVITES
-router.patch("/user/expenses", InvitationController.invite) // Convidar um cara
 router.get("/user/invitations",UserController.indexInvitations) // Listar convites do cara atual
 router.put("/user/invitations",InvitationController.accept) // Aceitar um convite
 router.delete("/user/invitations",InvitationController.refuse) // Recusar um convite
