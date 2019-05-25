@@ -15,3 +15,5 @@ requireDir("./models")
 
 app.use("/contare", require("./route"));
 app.listen(8080);
+
+module.exports = app
