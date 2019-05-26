@@ -10,7 +10,7 @@ const should = chai.should();
 chai.use(chaiHttp)
 
 
-describe('Testing the routes', function(){
+describe('Testing registration routes', function(){
 
     beforeEach((done) => { //Before each test we empty the database
         User.remove({}, (err) => { 
@@ -19,7 +19,7 @@ describe('Testing the routes', function(){
     });
 
 
-    it('should save without error', function(done) {
+    it('save user without error', function(done) {
         var url = '/register'
         chai.request('http://localhost:8080/contare')
             .post(url)
