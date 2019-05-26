@@ -12,12 +12,29 @@ class UserProfile extends Component {
         this.handleShow = this.handleShow.bind(this)
         this.handleClose = this.handleClose.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
+        this.calculateExpenses = this.calculateExpenses.bind(this)
 
     
         this.state = {
           show: false,
         }
 
+      }
+
+      calculateExpenses = (myUser) => {
+        let totalInc = 0
+        const expenses = this.props.list
+        expenses.map(expense =>{
+            if(expense.participants) {
+                expense.participants.map(participant =>{
+                    if(participant.name === myUser.name){
+                        totalInc += participant.payValue
+                    }
+                })
+            }
+        })
+
+        return totalInc
       }
 
       handleClose() {
@@ -56,6 +73,7 @@ class UserProfile extends Component {
             <h1>Bem-Vindo</h1>
             <Alert variant="primary">{this.props.user.name}</Alert>
             <Alert variant="success"> Sua renda atual é de: R$ {this.props.user.rent} </Alert>
+            <Alert variant="danger">Seu gasto atualmente é de: <br/>R$ {this.calculateExpenses(this.props.user)} <br/> Atualmente te sobra por mês: <br/>R$ {this.props.user.rent - this.calculateExpenses(this.props.user) } </Alert>
             <Button variant="info" onClick={this.handleShow}>Altere sua renda</Button>
 
 
