@@ -104,21 +104,25 @@ class AdicionarExpenseComponent extends Component {
 
     body.title = form.elements[0].value;
     body.description = form.elements[1].value;
-
+    
     let value = form.elements[2].value.replace("R$ ", "");
     value = this.replaceAll(value, ".", "");
     body.payValue = value.replace(",", ".");
-
     let date = form.elements[3].value;
     body.dueDate = date.substring(3, 5) + "/" + date.substring(0, 2) + "/" + date.substring(6, 10);
-
+    
     let listEmail = [];
+    
+    if(this.state.listParticipants.length > 1){
+      this.state.listParticipants.forEach(obj => {
+        value = obj.payValue.replace("R$ ", "");
+        value = this.replaceAll(value, ".", "");
+        listEmail.push({ email: obj.email, payValue: value.replace(",", ".") })
+      });
+    }else{
+      listEmail.push({ email: this.state.listParticipants[0].email, payValue: value.replace(",", ".") })
+    }
 
-    this.state.listParticipants.forEach(obj => {
-      value = obj.payValue.replace("R$ ", "");
-      value = this.replaceAll(value, ".", "");
-      listEmail.push({ email: obj.email, payValue: value.replace(",", ".") })
-    });
     body.listEmail = listEmail;
 
     await addExpenses(localStorage.getItem("token-contare"), body);
