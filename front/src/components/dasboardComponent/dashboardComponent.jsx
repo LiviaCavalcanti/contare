@@ -61,7 +61,7 @@ class DashboardComponent extends Component {
             <Container>
                 <Row>
                     <Col xs={3}>
-                        <UserProfile user={this.state.user} />
+                        <UserProfile user={this.state.user} list={this.state.list} />
                     </Col>
                     <Col style={{ padding: "0" }}>
                         <DahsboardStyled>

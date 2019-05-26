@@ -136,3 +136,15 @@ export const getAllEmail = async (token) => {
         }
      )
 }
+
+export const updateUser = async (token, newUser, callback) => {
+    console.log(token)
+    axios.put( `${API_URL}/contare/user`, newUser, {headers: {"x-access-token" : token}})
+    .then((response) => {
+        callback(response.data)
+      },
+      (error) => {
+         
+      }
+    )
+}
