@@ -115,9 +115,15 @@ class AdicionarExpenseComponent extends Component {
     
     if(this.state.listParticipants.length > 1){
       this.state.listParticipants.forEach(obj => {
-        value = obj.payValue.replace("R$ ", "");
-        value = this.replaceAll(value, ".", "");
-        listEmail.push({ email: obj.email, payValue: value.replace(",", ".") })
+        
+        if(typeof obj.payValue === "number"){
+          value = obj.payValue;
+        }else{
+          value = obj.payValue.replace("R$ ", "");
+          value = this.replaceAll(value, ".", "");
+          value = value.replace(",", ".")
+        }
+        listEmail.push({ email: obj.email, payValue: value })
       });
     }else{
       listEmail.push({ email: this.state.listParticipants[0].email, payValue: value.replace(",", ".") })
