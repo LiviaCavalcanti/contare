@@ -23,7 +23,7 @@ describe('Testing registration routes', function(){
         var url = '/register'
         chai.request('http://localhost:8080/contare')
             .post(url)
-            .send({name:"Teste", email:"teste@mail.com", password:"teste"})
+            .send({'name':"Teste", 'email':"teste@mail.com", 'password':"teste"})
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
             .end((err, res) => {
