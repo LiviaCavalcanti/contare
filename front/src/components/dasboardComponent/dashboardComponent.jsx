@@ -60,7 +60,7 @@ class DashboardComponent extends Component {
         return (
             <Container>
                 <Row>
-                    <Col xs={3}>
+                    <Col xs={12} md={3}>
                         <UserProfile user={this.state.user} list={this.state.list} />
                     </Col>
                     <Col style={{ padding: "0" }}>
@@ -69,7 +69,7 @@ class DashboardComponent extends Component {
                         </DahsboardStyled>
                     </Col>
 
-                    <Col xs={3} > <h1>Tarefas a vencer</h1></Col>
+                    <Col xs={12} md={3}> <h1>Tarefas a vencer</h1></Col>
                 </Row>
             </Container>
 

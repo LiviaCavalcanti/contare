@@ -24,7 +24,7 @@ export const registerUser = async (name, email, pass) => {
             notifySucess(response.data.sucess)
         })
         .catch(function (error) {
-            notifyFailure(error.response.data.error)
+            notifyFailure('Ocorreu um erro inesperado, tente novamente!')
         })
 }
 
@@ -36,7 +36,7 @@ export const login = async (email, password) => {
             window.location.href = "/dashboard"
         })
         .catch(function (error) {
-            notifyFailure(error.response.data.error)
+            notifyFailure('Ocorreu um erro inesperado, tente novamente!')
         })
 }
 
