@@ -8,7 +8,6 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { addExpenses, getUser, getAllEmail } from '../../../services';
 
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Table } from 'react-bootstrap';
 import CurrencyInput from 'react-currency-input';
@@ -20,6 +19,11 @@ import deleteIcon from '../../../images/detele.svg'
 import Select from 'react-select';
 
 import $ from "jquery";
+
+import DatePicker, { registerLocale } from 'react-datepicker';
+import pt from 'date-fns/locale/pt';
+registerLocale('pt', pt);
+
 
 
 class AdicionarExpenseComponent extends Component {
@@ -310,6 +314,8 @@ class AdicionarExpenseComponent extends Component {
                   selected={this.state.date}
                   onChange={this.handleChange}
                   dateFormat="dd/MM/yyyy"
+                  minDate={new Date()}
+                  locale="pt"
                 />
                 <Form.Control.Feedback type="invalid">
                   Por favor digite a data de validade.
