@@ -44,15 +44,15 @@ class DashboardComponent extends Component {
 
         let listaRetorno = await getExpenses(localStorage.getItem("token-contare"));
         let list = [];
+        list.push({
+            isNew: true
+        })
         listaRetorno.forEach(element => {
             let aux = {};
             aux = element;
             aux.isNew = false;
             list.push(aux);
         });
-        list.push({
-            isNew: true
-        })
         this.setState({ list: list });
     }
 

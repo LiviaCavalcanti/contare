@@ -71,7 +71,12 @@ class UserProfile extends Component {
             <div className="userInfo">
             <img alt="" src={avatar} className="avatarImage" />
             <h1>Bem-Vindo</h1>
-            <Alert variant="primary">{this.props.user.name}</Alert>
+            <Alert variant="primary">
+            
+            {this.props.user.name} <br/>
+            Convites (0)
+            
+            </Alert>
             <Alert variant="success"> Sua renda atual é de: R$ {this.props.user.rent} </Alert>
             <Alert variant="danger">Seu gasto atualmente é de: <br/>R$ {this.calculateExpenses(this.props.user)} <br/> Atualmente te sobra por mês: <br/>R$ {this.props.user.rent - this.calculateExpenses(this.props.user) } </Alert>
             <Button variant="info" onClick={this.handleShow}>Altere sua renda</Button>
