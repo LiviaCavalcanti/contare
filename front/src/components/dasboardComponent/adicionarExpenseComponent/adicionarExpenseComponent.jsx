@@ -310,6 +310,7 @@ class AdicionarExpenseComponent extends Component {
                 Data de Validade
               </Form.Label>
               <Col sm="9">
+                
                 <DatePicker required={true} className="form-control"
                   selected={this.state.date}
                   onChange={this.handleChange}

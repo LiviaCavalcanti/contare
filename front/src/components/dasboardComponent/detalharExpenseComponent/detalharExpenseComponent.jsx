@@ -59,7 +59,7 @@ class DetalharExpenseComponent extends Component {
 
   formataData(d) {
     var date = new Date(d);
-    let data = date.getDate().toLocaleString().length > 1 ? date.getDate() + 1 : '0' + date.getDate();
+    let data = date.getDate().toLocaleString().length > 1 ? date.getDate()  : '0' + date.getDate();
     let mes = (date.getMonth() + 1).toLocaleString().length > 1 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1);
     let ano = date.getFullYear();
     return `${data}/${mes}/${ano}`;
