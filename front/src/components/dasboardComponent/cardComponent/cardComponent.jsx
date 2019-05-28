@@ -90,7 +90,7 @@ class CardComponent extends Component {
                                     <p>{formataData(expense.dueDate)}</p>
 
                                     <label>Valor:</label>
-                                    <p>R$ {expense.participants[0].payValue}</p>
+                                    <p>R$ {String(expense.participants[0].payValue).replace(".", ",")}</p>
 
                                 </div>
 

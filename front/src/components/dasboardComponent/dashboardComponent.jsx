@@ -43,6 +43,9 @@ class DashboardComponent extends Component {
     async getExpense() {
 
         let listaRetorno = await getExpenses(localStorage.getItem("token-contare"));
+        if(!Array.isArray(listaRetorno)){
+            return;
+        }
         let list = [];
         listaRetorno.forEach(element => {
             let aux = {};
@@ -50,6 +53,7 @@ class DashboardComponent extends Component {
             aux.isNew = false;
             list.push(aux);
         });
+        //criando card add
         list.push({
             isNew: true
         })

@@ -3,6 +3,11 @@ import styled from 'styled-components'
 
 const AddExpenseStyled = styled.div`
 
+
+    .teste{
+        border: 2px solid blue;
+    }
+
     .campo-pago{
        color: #0bd50b;
     }
@@ -30,6 +35,14 @@ const AddExpenseStyled = styled.div`
     .remove-validacao{
         border: 1px solid #ced4da !important;
         background-image: none !important;
+    }
+
+    .display-block{
+        display : block;
+    }
+
+    .display-none{
+        display : none;
     }
 
 `;

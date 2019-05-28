@@ -123,15 +123,11 @@ export const updateExpenses = async (token, id, body) => {
 }
 
 export const getAllEmail = async (token) => {
-    console.log('wag token ', token);
     return await axios.get( `${API_URL}/contare/user/getAll` ,{headers: {"x-access-token" : token}})
     .then((response) => {
-        console.log('wag re ', response);
         return response.data;
     },
     (error) => {
-        console.log('wag re ', error);
-
            return false;
         }
      )

@@ -19,7 +19,7 @@ import deleteIcon from '../../../images/detele.svg'
 
 import Select from 'react-select';
 
-
+import $ from "jquery";
 
 
 class AdicionarExpenseComponent extends Component {
@@ -33,7 +33,10 @@ class AdicionarExpenseComponent extends Component {
       emailNewParticipant: null,
       payValueNewParticipant: "",
       listEmail: [],
-      validated: false
+      valid: true,
+      isControleRefresh: true, //variavel de controle para refresh
+      isFormValid: false, 
+      isDividirDispesa : false
 
     };
     this.handleChange = this.handleChange.bind(this);
@@ -44,6 +47,9 @@ class AdicionarExpenseComponent extends Component {
     this.updateListParticipant = this.updateListParticipant.bind(this);
     this.handleChangeSelect = this.handleChangeSelect.bind(this);
     this.replaceAll = this.replaceAll.bind(this);
+    this.refresh = this.refresh.bind(this);
+    this.validaCampos = this.validaCampos.bind(this);
+    this.verificaCamposValores = this.verificaCamposValores.bind(this);
   }
 
   async componentDidMount() {
@@ -87,45 +93,76 @@ class AdicionarExpenseComponent extends Component {
 
   handleChange(date) {
     this.setState({
-      date: date,
-      isDividirDispesa: false
+      date: date
     });
   }
 
 
+  validaCampos(id) {
+    let valor = $(`#${id}`).val();
+    if (this.state.valid) {
+      return true;
+    } else if (id.indexOf("valor") > -1 && valor !== "R$ 0,00") {
+      return true;
+    } else if (id.indexOf("valor") === -1 && valor) {
+      return true;
+    }
+
+    return false;
+  }
+
+  verificaCamposValores() {
+    if (this.state.isDividirDispesa) {
+      for (let i = 0; i < this.state.listParticipants.length; i++) {
+        if ($(`#valor-${i}`).val() === "R$ 0,00") {
+          return true;
+        }
+      }
+    }
+    else {
+      if ($(`#valor-principal`).val() === "R$ 0,00") {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   async saveExpense(event) {
     event.preventDefault();
-    if (!event.currentTarget.checkValidity()) {
-      this.setState({ validated: true });
+    const form = event.currentTarget;
+    if (!form.checkValidity() || this.verificaCamposValores()) {
+      this.setState({ valid: false });
       return;
     }
-    const form = event.currentTarget;
     let body = {};
 
     body.title = form.elements[0].value;
     body.description = form.elements[1].value;
-    
-    let value = form.elements[2].value.replace("R$ ", "");
+
+    let value = String(this.state.money).replace("R$ ", "");
     value = this.replaceAll(value, ".", "");
     body.payValue = value.replace(",", ".");
-    let date = form.elements[3].value;
+
+    
+    let date = this.state.isDividirDispesa ? form.elements[2].value : form.elements[3].value;
     body.dueDate = date.substring(3, 5) + "/" + date.substring(0, 2) + "/" + date.substring(6, 10);
-    
+
     let listEmail = [];
-    
-    if(this.state.listParticipants.length > 1){
+
+    if (this.state.listParticipants.length > 1) {
       this.state.listParticipants.forEach(obj => {
-        
-        if(typeof obj.payValue === "number"){
+
+        if (typeof obj.payValue === "number") {
           value = obj.payValue;
-        }else{
+        } else {
           value = obj.payValue.replace("R$ ", "");
           value = this.replaceAll(value, ".", "");
           value = value.replace(",", ".")
         }
         listEmail.push({ email: obj.email, payValue: value })
       });
-    }else{
+    } else {
       listEmail.push({ email: this.state.listParticipants[0].email, payValue: value.replace(",", ".") })
     }
 
@@ -137,14 +174,33 @@ class AdicionarExpenseComponent extends Component {
 
   changeDivisaoDespesa(event) {
     this.setState({
-      isDividirDispesa: (event.target.value === "true")
+      isDividirDispesa: (event.target.value === "true"),
+      valid: true
     })
+  }
+
+  atualizaValorTotal(list) {
+    let valueTotal = 0;
+    list.forEach(element => {
+      let payValue = element.payValue;
+      if (isNaN(Number(payValue))) {
+        payValue = this.replaceAll(payValue, "R$ ", "");
+        payValue = this.replaceAll(payValue, ".", "");
+        payValue = this.replaceAll(payValue, ",", ".");
+        valueTotal += Number(payValue);
+      } else {
+        valueTotal += payValue;
+      }
+    });
+
+    return `R$ ${(valueTotal + "").replace(".", ",")}`
   }
 
   adicionarParticipant() {
     if (this.state.payValueNewParticipant === "" || this.state.emailNewParticipant == null) {
       return;
     }
+
     let listAux = this.state.listParticipants;
     listAux.push({ payValue: this.state.payValueNewParticipant, email: this.state.emailNewParticipant.value });
 
@@ -154,18 +210,24 @@ class AdicionarExpenseComponent extends Component {
         listEmailNew.push(element);
       }
     });
+    let valorTotalAtualizado = this.atualizaValorTotal(this.state.listParticipants);
 
     this.setState({
       listEmail: listEmailNew,
       listParticipants: listAux,
       emailNewParticipant: null,
-      payValueNewParticipant: ""
+      payValueNewParticipant: "",
+      money: valorTotalAtualizado
     })
+
+
   }
 
   updateListParticipant(list, email) {
+
     this.setState({
       listParticipants: list,
+      money: this.atualizaValorTotal(list)
     })
     if (email) {
       this.getAllemail();
@@ -177,6 +239,12 @@ class AdicionarExpenseComponent extends Component {
       string = string.replace(token, newtoken);
     }
     return string;
+  }
+
+  refresh() {
+    this.setState({
+      isControleRefresh: !this.state.isControleRefresh
+    })
   }
 
   render() {
@@ -191,48 +259,48 @@ class AdicionarExpenseComponent extends Component {
 
         <Form
           noValidate
-          validated={this.state.validated}
           onSubmit={e => this.saveExpense(e)}
         >
           <Modal.Body>
 
-            <Form.Group as={Row} controlId="title">
+            <Form.Group as={Row} controlId="titulo">
               <Form.Label column sm="3">
                 Título
               </Form.Label>
               <Col sm="9">
-                <Form.Control required={true} type="text" placeholder="Título" />
+                <Form.Control required={true} isInvalid={!this.validaCampos("titulo")} onChange={this.refresh} controlId type="text" placeholder="Título" />
                 <Form.Control.Feedback type="invalid">
                   Por favor digite o título da despesa.
               </Form.Control.Feedback>
               </Col>
             </Form.Group>
 
-            <Form.Group as={Row} controlId="description">
+            <Form.Group as={Row} controlId="descricao">
               <Form.Label column sm="3">
                 Descrição
               </Form.Label>
               <Col sm="9">
-                <Form.Control required={true} type="text" placeholder="Descrição" />
+                <Form.Control required={true} isInvalid={!this.validaCampos("descricao")} type="text" onChange={this.refresh} controlId placeholder="Descrição" />
                 <Form.Control.Feedback type="invalid">
                   Por favor digite a descrição da despesa.
                 </Form.Control.Feedback>
               </Col>
             </Form.Group>
 
-            <Form.Group as={Row} controlId="payValue">
-              <Form.Label column sm="3">
-                Valor da despesa
-              </Form.Label>
-              <Col sm="9">
-                <CurrencyInput className="form-control" prefix="R$ " decimalSeparator="," thousandSeparator="." required={true} value={this.state.money} name="money" type="text" placeholder="Valor da despesa" onChangeEvent={this.handle} />
-
-                <Form.Control.Feedback type="invalid">
-                  Por favor digite o valor da despesa.
+            {
+              this.state.isDividirDispesa ? "" :
+                <Form.Group as={Row} controlId="valor-principal">
+                  <Form.Label column sm="3">
+                    Valor da despesa
+                  </Form.Label>
+                  <Col sm="9">
+                    <CurrencyInput className={"form-control " + (this.validaCampos("valor-principal") ? "" : "is-invalid")} id="valor-principal" required={true} isInvalid={this.validaCampos} prefix="R$ " decimalSeparator="," thousandSeparator="." value={this.state.money} name="money" type="text" placeholder="Valor da despesa" onChangeEvent={this.handle} />
+                    <Form.Control.Feedback type="invalid" className={(this.validaCampos("valor-principal") ? "display-none" : "display-block")}>
+                      Valor da despesa tem que ser maior que zero.
                 </Form.Control.Feedback>
-              </Col>
-            </Form.Group>
-
+                  </Col>
+                </Form.Group>
+            }
             <Form.Group as={Row} controlId="dueDate">
               <Form.Label column sm="3">
                 Data de Validade
@@ -249,7 +317,7 @@ class AdicionarExpenseComponent extends Component {
               </Col>
             </Form.Group>
 
-            <Form.Group as={Row} controlId="dueDate">
+            <Form.Group as={Row} controlId="dividir">
               <Form.Label column sm="3">
                 Dividir a despesa?
               </Form.Label>
@@ -260,8 +328,6 @@ class AdicionarExpenseComponent extends Component {
                 </div>
               </Col>
             </Form.Group>
-
-
 
             {
               this.state.isDividirDispesa ?
@@ -329,9 +395,10 @@ class AdicionarExpenseComponent extends Component {
                             <td>{p.email}</td>
                             <td>
                               <Form.Group controlId="payValueNewParticipant">
-                                <CurrencyInput className="remove-validacao form-control" type="text" prefix="R$ " decimalSeparator="," thousandSeparator="." name="payValueNewParticipant" placeholder="Valor" value={p.payValue} onChangeEvent={updateValue} />
-
-                                {/* <Form.Control className="remove-validacao" type="text" name="payValueNewParticipant" placeholder="Valor" value={p.payValue} onChange={updateValue} /> */}
+                                <CurrencyInput className={"form-control " + (this.validaCampos(`valor-${i}`) ? "" : "is-invalid")} id={`valor-${i}`} required={true} type="text" prefix="R$ " decimalSeparator="," thousandSeparator="." name="payValueNewParticipant" placeholder="Valor" value={p.payValue} onChangeEvent={updateValue} />
+                                <Form.Control.Feedback type="invalid" className={(this.validaCampos(`valor-${i}`) ? "display-none" : "display-block")}>
+                                  Valor da despesa tem que ser maior que zero.
+                                </Form.Control.Feedback>
                               </Form.Group>
                             </td>
                             <td className="acao">
@@ -348,6 +415,20 @@ class AdicionarExpenseComponent extends Component {
                   </tbody>
                 </Table>
 
+                : ""
+            }
+
+
+            {
+              this.state.isDividirDispesa ?
+                <Form.Group as={Row} controlId="payValue">
+                  <Form.Label column sm="9" style={{ textAlign: "right" }}>
+                    Valor Total da despesa
+                  </Form.Label>
+                  <Col sm="3">
+                    <CurrencyInput className="form-control" disabled isInvalid={this.validaCampos} prefix="R$ " decimalSeparator="," thousandSeparator="." value={this.state.money} name="money" type="text" />
+                  </Col>
+                </Form.Group>
                 : ""
             }
 
