@@ -24,7 +24,7 @@ export const registerUser = async (name, email, pass) => {
             notifySucess(response.data.sucess)
         })
         .catch(function (error) {
-            notifyFailure(error.response.data.error)
+            notifyFailure('Ocorreu um erro inesperado, tente novamente!')
         })
 }
 
@@ -36,7 +36,7 @@ export const login = async (email, password) => {
             window.location.href = "/dashboard"
         })
         .catch(function (error) {
-            notifyFailure(error.response.data.error)
+            notifyFailure('Ocorreu um erro inesperado, tente novamente!')
         })
 }
 
@@ -131,4 +131,16 @@ export const getAllEmail = async (token) => {
            return false;
         }
      )
+}
+
+export const updateUser = async (token, newUser, callback) => {
+    console.log(token)
+    axios.put( `${API_URL}/contare/user`, newUser, {headers: {"x-access-token" : token}})
+    .then((response) => {
+        callback(response.data)
+      },
+      (error) => {
+         
+      }
+    )
 }
