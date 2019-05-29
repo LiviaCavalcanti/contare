@@ -108,7 +108,7 @@ class DetalharExpenseComponent extends Component {
                 {this.props.expense.title} - Detalhe
               </div>
               <div className="div-acao">
-                {this.props.expense.participants[0].status ? "" :
+                {this.props.expense.participants.length > 0 && this.props.expense.participants[0].status ? "" :
                   <img title="Pagar Despesa" alt="Pagar Despesa" style={{ width: "22px" }} src={payIcon} onClick={() => this.confirmed('Você confirma o pagamaneto da despesa?', this.updateExpense)} />
                 }
                 <img title="Excluir Despesa" alt="Excluir Despesa" src={deleteIcon} onClick={() => this.confirmed('Tem certeza que você quer deletar a despesa?', this.deletedExpense)} />

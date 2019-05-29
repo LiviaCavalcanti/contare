@@ -1,8 +1,10 @@
 import React, {Component} from 'react'
 import './userProfileComponent.css'
 import avatar from '../../../images/avatar.jpg'
+import invitationIcon from '../../../images/invitation.svg'
 import {Button, Alert, Modal} from 'react-bootstrap' 
-import {notifyFailure, updateUser, getExpenses} from '../../../services'
+import {notifyFailure, updateUser, getAllInvitations} from '../../../services'
+import { withRouter } from 'react-router';
 
 class UserProfile extends Component {
 
@@ -13,10 +15,12 @@ class UserProfile extends Component {
         this.handleClose = this.handleClose.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
         this.calculateExpenses = this.calculateExpenses.bind(this)
+        this.listInviteNumber = this.listInviteNumber.bind(this)
 
     
         this.state = {
           show: false,
+          inviteNumber: 0
         }
 
       }
@@ -27,7 +31,7 @@ class UserProfile extends Component {
         expenses.map(expense =>{
             if(expense.participants) {
                 expense.participants.map(participant =>{
-                    if(participant.name === myUser.name){
+                    if(participant.name === myUser.name && participant.status === false){
                         totalInc += participant.payValue
                     }
                 })
@@ -63,8 +67,18 @@ class UserProfile extends Component {
           }
 
       }
+
+      listInviteNumber = () => {
+        const token = localStorage.getItem('token-contare')
+        
+        getAllInvitations(token, function(response){
+            this.setState({inviteNumber: response.length})
+        }.bind(this))
+      }
       
-    
+    componentWillMount(){
+      this.listInviteNumber()
+    }
 
     render() {
         return (
@@ -74,8 +88,20 @@ class UserProfile extends Component {
             <Alert variant="primary">
             
             {this.props.user.name} <br/>
-            Convites (0)
+            <div className="inviteDiv">
+            {this.state.inviteNumber == 0 ? 
+                        <p id="invitesText">Convites ({this.state.inviteNumber})</p>
+
+                        :
+
+                        <p id="invitesText">Convites <a style={{color:'red'}}>({this.state.inviteNumber})</a></p>
+          
+          }
             
+            
+            <img id="invitesIcon" onClick={() => this.props.history.push("/invite")}  src={invitationIcon} style={{width:"30px", height:"30px"}}/>
+
+            </div>
             </Alert>
             <Alert variant="success"> Sua renda atual é de: R$ {this.props.user.rent} </Alert>
             <Alert variant="danger">Seu gasto atualmente é de: <br/>R$ {this.calculateExpenses(this.props.user)} <br/> Atualmente te sobra por mês: <br/>R$ {this.props.user.rent - this.calculateExpenses(this.props.user) } </Alert>
@@ -109,4 +135,4 @@ class UserProfile extends Component {
     }
 }
 
-export default UserProfile
+export default withRouter(UserProfile)

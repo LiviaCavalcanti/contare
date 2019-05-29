@@ -80,6 +80,8 @@ class CardComponent extends Component {
                                 </div>
                             </div>
                             :
+
+                           
                             <div key={i} className="expense" onClick={() => this.abreDetalheExpense(expense)}>
                                 <div className="expense-content">
                                     
@@ -90,16 +92,17 @@ class CardComponent extends Component {
                                     <p>{formataData(expense.dueDate)}</p>
 
                                     <label>Valor:</label>
-                                    <p>R$ {String(expense.participants[0].payValue).replace(".", ",")}</p>
+                                    <p>R$ {expense.participants.length > 0 && String(expense.participants[0].payValue).replace(".", ",")}</p>
 
                                 </div>
 
-                                <div className={"expense-name " + (expense.participants[0].status ? "expense-pay" : "expense-not-pay")}>
+                                <div className={ expense.participants.length > 0 && "expense-name " + (expense.participants[0].status ? "expense-pay" : "expense-not-pay")}>
                                     <p>
                                         {expense.title}
                                     </p>
                                 </div>
                             </div>
+                           
 
                     )
                 })}

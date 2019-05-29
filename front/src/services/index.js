@@ -144,3 +144,25 @@ export const updateUser = async (token, newUser, callback) => {
       }
     )
 }
+
+export const getAllInvitations = async (token, callback) => {
+    return await axios.get( `${API_URL}/contare/user/invitations` ,{headers: {"x-access-token" : token}})
+    .then((response) => {
+        callback(response.data)
+    },
+    (error) => {
+        callback(error)
+        }
+     )
+}
+
+export const getExpense = async (id, callback) => {
+    return await axios.get( `${API_URL}/contare/user/expenses/${id}`)
+    .then((response) => {
+        callback(response.data)
+    },
+    (error) => {
+        //DO SOMETHING
+        }
+     )
+}
