@@ -54,6 +54,8 @@ module.exports = {
                             if(req.body.listEmail.length > 1){
                                 return await InvitationController.invite(req,res,user,newExpense)
                             }
+
+                            console.log(newExpense)
                             
                             return res.json(newExpense)
                         }
