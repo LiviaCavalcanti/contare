@@ -2,6 +2,7 @@
 margin-left: auto;
 margin-right: auto;
 margin-top: 10px;
+width: 18rem;
 }
 
 #invitePageTitle{
@@ -27,5 +28,7 @@ margin-top: 10px;
 
 .containerInvites {
     font-family: 'Bree Serif', serif;
+    background-color: rgb(92, 174, 230) !important;
+    float: left;
 
 }

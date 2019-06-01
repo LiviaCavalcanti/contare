@@ -166,3 +166,46 @@ export const getExpense = async (id, callback) => {
         }
      )
 }
+
+export const getUserFromID = async (id, callback) => {
+    return axios.get( `${API_URL}/contare/user/${id}`)
+     .then((response) => {
+        callback(response.data)
+       },
+       (error) => {
+
+       }
+     )
+}
+
+export const acceptInviteReq = async (inviteID, token) => {
+
+    const inviteObj = {
+        invitationId: inviteID
+    }
+
+    return axios.put( `${API_URL}/contare/user/invitations`, inviteObj , {headers: {"x-access-token" : token}})
+     .then((response) => {
+        notifySucess(response.data)
+       },
+       (error) => {
+        notifyFailure('Erro ao aceitar convite, tente novamente mais tarde!')
+       }
+     )
+}
+
+export const rejectInviteReq = async (inviteID, token) => {
+
+    const inviteObj = {
+        invitationId: inviteID
+    }
+
+    return axios.post(`${API_URL}/contare/user/invitations`, inviteObj , {headers: {"x-access-token" : token}})
+     .then((response) => {
+        notifySucess(response.data)
+       },
+       (error) => {
+        notifyFailure('Erro ao rejeitar convite, tente novamente mais tarde!')
+       }
+     )
+}

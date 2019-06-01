@@ -4,7 +4,6 @@ import CardStyled from './cardStyled';
 import Modal from 'react-bootstrap/Modal'
 import AdicionarExpenseComponent from '../adicionarExpenseComponent/adicionarExpenseComponent';
 import DetalharExpenseComponent from '../detalharExpenseComponent/detalharExpenseComponent';
-import { ToastContainer } from 'react-toastify';
 
 class CardComponent extends Component {
     constructor(props) {
@@ -126,7 +125,7 @@ class CardComponent extends Component {
                     <AdicionarExpenseComponent updateCard={this.updateCard} onHide={modalAdicionaClose} />
 
                 </Modal>
-                <ToastContainer />
+                
 
             </CardStyled>
         );

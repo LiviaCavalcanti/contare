@@ -9,6 +9,7 @@ import DescriptionProject from './components/descriptionProjectComponent/descrip
 import LoginScreen from './components/loginComponent/loginComponent';
 import DashboardComponent from './components/dasboardComponent/dashboardComponent';
 import InviteComponent from './components/inviteComponent/inviteComponent'
+import { ToastContainer } from 'react-toastify';
 
 export class Routes extends Component {
     render() {
@@ -25,6 +26,7 @@ export class Routes extends Component {
                     <Route path="/invite" component={() => <InviteComponent/>}/>
                     <Route path="*" component={Page404Component} />
                 </Switch>
+                <ToastContainer />
             </ BrowserRouter>
         )
     }

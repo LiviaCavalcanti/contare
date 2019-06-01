@@ -16,6 +16,7 @@ class UserProfile extends Component {
         this.handleSubmit = this.handleSubmit.bind(this)
         this.calculateExpenses = this.calculateExpenses.bind(this)
         this.listInviteNumber = this.listInviteNumber.bind(this)
+        this.formatToReal = this.formatToReal.bind(this)
 
     
         this.state = {
@@ -80,6 +81,10 @@ class UserProfile extends Component {
       this.listInviteNumber()
     }
 
+    formatToReal = (value) => {
+      return value.replace('.', ',')
+    }
+
     render() {
         return (
             <div className="userInfo">
@@ -103,8 +108,8 @@ class UserProfile extends Component {
 
             </div>
             </Alert>
-            <Alert variant="success"> Sua renda atual é de: R$ {this.props.user.rent} </Alert>
-            <Alert variant="danger">Seu gasto atualmente é de: <br/>R$ {this.calculateExpenses(this.props.user)} <br/> Atualmente te sobra por mês: <br/>R$ {this.props.user.rent - this.calculateExpenses(this.props.user) } </Alert>
+            <Alert variant="success"> Sua renda atual é de: R$ {this.formatToReal(Number(this.props.user.rent).toFixed(2))} </Alert>
+            <Alert variant="danger">Seu gasto atualmente é de: <br/>R$ {this.formatToReal(Number(this.calculateExpenses(this.props.user)).toFixed(2))} <br/> Atualmente te sobra por mês: <br/>R$ {this.formatToReal(Number(this.props.user.rent - this.calculateExpenses(this.props.user)).toFixed(2)) } </Alert>
             <Button variant="info" onClick={this.handleShow}>Altere sua renda</Button>
 
 
