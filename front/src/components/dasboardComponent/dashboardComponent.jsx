@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import CardComponent from './cardComponent/cardComponent';
 import DahsboardStyled from './dashboardStyled';
+import AlertExpenses from './alertExpensesComponent/alertExpensesComponent'
 import { verifyUser } from '../../services/index'
 import { Container, Row, Col } from 'react-bootstrap';
 import UserProfile from '../dasboardComponent/userProfileComponent/userProfileComponent'
@@ -48,6 +49,9 @@ class DashboardComponent extends Component {
         }
         let list = [];
         
+        list.push({
+            isNew: true
+        })
         listaRetorno.forEach(element => {
             let aux = {};
             aux = element;
@@ -55,15 +59,12 @@ class DashboardComponent extends Component {
             list.push(aux);
         });
 
-        list.push({
-            isNew: true
-        })
         this.setState({ list: list });
     }
 
     render() {
         return (
-            <Container>
+            <Container fluid={true}>
                 <Row>
                     <Col xs={12} md={3}>
                         <UserProfile user={this.state.user} list={this.state.list} />
@@ -74,7 +75,10 @@ class DashboardComponent extends Component {
                         </DahsboardStyled>
                     </Col>
 
-                    <Col xs={12} md={3}> <h1>Tarefas a vencer</h1></Col>
+                    <Col xs={12} md={3}> 
+                        <AlertExpenses user={this.state.user} list={this.state.list}></AlertExpenses>
+                    
+                    </Col>
                 </Row>
             </Container>
 

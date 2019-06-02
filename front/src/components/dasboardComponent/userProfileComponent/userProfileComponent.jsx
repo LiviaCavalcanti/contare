@@ -5,6 +5,7 @@ import invitationIcon from '../../../images/invitation.svg'
 import {Button, Alert, Modal} from 'react-bootstrap' 
 import {notifyFailure, updateUser, getAllInvitations} from '../../../services'
 import { withRouter } from 'react-router';
+import GoAlert from 'react-icons/lib/go/alert'
 
 class UserProfile extends Component {
 
@@ -89,7 +90,7 @@ class UserProfile extends Component {
         return (
             <div className="userInfo">
             <img alt="" src={avatar} className="avatarImage" />
-            <h1>Bem-Vindo</h1>
+            <h2>Bem-Vindo</h2>
             <Alert variant="primary">
             
             {this.props.user.name} <br/>
@@ -109,7 +110,19 @@ class UserProfile extends Component {
             </div>
             </Alert>
             <Alert variant="success"> Sua renda atual é de: R$ {this.formatToReal(Number(this.props.user.rent).toFixed(2))} </Alert>
-            <Alert variant="danger">Seu gasto atualmente é de: <br/>R$ {this.formatToReal(Number(this.calculateExpenses(this.props.user)).toFixed(2))} <br/> Atualmente te sobra por mês: <br/>R$ {this.formatToReal(Number(this.props.user.rent - this.calculateExpenses(this.props.user)).toFixed(2)) } </Alert>
+            <Alert variant="danger">
+            Seu gasto atualmente é de: <br/>
+            R$ {this.formatToReal(Number(this.calculateExpenses(this.props.user)).toFixed(2))}
+             <br/> Atualmente te sobra por mês: <br/>
+             R$ {this.formatToReal(Number(this.props.user.rent - this.calculateExpenses(this.props.user)).toFixed(2)) } 
+            <br/> 
+            {
+             (Number(this.props.user.rent).toFixed(2) -  Number(this.calculateExpenses(this.props.user)).toFixed(2) < 0) ? <div><GoAlert/> <b>ALERTA </b><GoAlert/> <br/> Você está gastando mais do que recebe  </div>
+             : null
+            }
+              
+            
+            </Alert>
             <Button variant="info" onClick={this.handleShow}>Altere sua renda</Button>
 
 
