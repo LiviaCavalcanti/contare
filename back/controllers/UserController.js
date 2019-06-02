@@ -63,7 +63,6 @@ module.exports = {
                     if (err) return res.status(500).send("Houve um problema ao encontrar o usuario");
                     if (!user) return res.status(404).send("Nenhum usuário encontrado.");                
                     
-                    console.log("res ", res);
 
                     return res.json(await Expense.find({ owner: decoded.id  }))
                         
