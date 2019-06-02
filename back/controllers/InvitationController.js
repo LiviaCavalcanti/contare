@@ -64,6 +64,7 @@ module.exports = {
                                 else return false
                             }).participantStatus = "ACTIVE";
                             await expense.participants.save;
+
                             await Expense.findByIdAndUpdate(expense.id,expense,{new:true})
                         });
                         await Invitation.findByIdAndRemove(invitationId);
@@ -92,6 +93,7 @@ module.exports = {
                     Invitation.findById(invitationId, async function(err,invite){
                         if (err) return res.status(500).send("Houve um problema ao encontrar o convite");
                         if (!invite) return res.status(404).send("Nenhum convite encontrado.");
+
                         await Expense.findById(invite.expense, async function(err, exp){
                             exp.participants.find(function(element,index,array){
                                 if(element.id == user.id) return element;
@@ -100,7 +102,7 @@ module.exports = {
                             exp.participants.save;
                             await Expense.findByIdAndUpdate(exp.id,exp,{new:true})
                         })
-
+                      
                         await Invitation.findByIdAndRemove(invitationId)
                         return res.status(200).send("Convite recusado com sucesso!")
                     });

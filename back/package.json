@@ -4,7 +4,8 @@
   "description": "## 1: Instalando o docker (UBUNTU)",
   "main": "route.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "authenticationTests": "mocha --timeout 5000 'tests/authenticationTests.js'",
+    "test": "mocha --timeout 5000 'tests/test.js'",
     "dev": "nodemon server.js"
   },
   "keywords": [],
@@ -12,14 +13,22 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "chai": "^4.2.0",
     "circular-json": "^0.5.9",
     "cors": "^2.8.5",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.5.1",
+    "request": "^2.88.0",
     "require-dir": "^1.2.0"
   },
   "devDependencies": {
-    "nodemon": "^1.19.1"
+    "agent": "^0.2.1",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "mocha": "^6.1.4",
+    "nodemon": "^1.18.11",
+    "should": "^13.2.3",
+    "supertest": "^4.0.2"
   }
 }

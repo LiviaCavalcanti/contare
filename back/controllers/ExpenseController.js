@@ -4,6 +4,7 @@ const authConfig = require("../config/auth");
 const Expense = mongoose.model("Expense");
 const User = mongoose.model("User")
 const Invitation = mongoose.model("Invitation")
+
 const InvitationController = require("./InvitationController")
 
 module.exports = {
@@ -40,6 +41,7 @@ module.exports = {
                                 dueDate: req.body.dueDate,
                                 owner: user._id,
                                 totalValue: req.body.totalValue
+
                             })
                              
                             thisExpense.participants.push({
@@ -59,6 +61,7 @@ module.exports = {
                             }
                             
                             return res.json(newExpense);
+
                         }
                     })
                 })
@@ -113,3 +116,4 @@ module.exports = {
         })
     }
 };
+
