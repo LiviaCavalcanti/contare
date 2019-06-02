@@ -32,8 +32,16 @@ const ExpenseSchema = new mongoose.Schema({
         name:{type:String},
         email:{type:String},
         payValue: Number,
-        status: Boolean
-    }]
+        status:Boolean,
+        participantStatus: {
+          type:String,
+          enum:["ACTIVE","WAITING","REFUSED"]
+        }
+    }],
+    totalValue:{
+      type: Number,
+      required: true
+    }
 });
 
 mongoose.model('Expense', ExpenseSchema);

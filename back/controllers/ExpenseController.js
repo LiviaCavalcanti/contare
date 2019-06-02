@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const authConfig = require("../config/auth");
 const Expense = mongoose.model("Expense");
 const User = mongoose.model("User")
+const Invitation = mongoose.model("Invitation")
 const InvitationController = require("./InvitationController")
 
 module.exports = {
@@ -45,17 +46,18 @@ module.exports = {
                                 payValue:  req.body.listEmail[0].payValue,
                                 name:user.name,
                                 email:user.email,
-                                status: false
+                                status: false,
+                                participantStatus: "ACTIVE"
                             })
                             thisExpense.participants.save;
                             
-                            let newExpense = await Expense.create(thisExpense)
-                            
+                            let newExpense = await Expense.create(thisExpense);
+
                             if(req.body.listEmail.length > 1){
-                                return await InvitationController.invite(req,res,user,newExpense)
+                                return await InvitationController.invite(req,res,user,newExpense);
                             }
                             
-                            return res.json(newExpense)
+                            return res.json(newExpense);
                         }
                     })
                 })
@@ -98,15 +100,14 @@ module.exports = {
                     if (!user) return res.status(404).send("Nenhum usuário encontrado.");                
                     
                     const expense = await Expense.findByIdAndDelete(req.params.expID);
+                    expense.participants.forEach(p => {
+                        if(p.participantStatus == "WAITING"){
+                            Invitation.findOneAndDelete({expense:expense.id})
+                        }
+                    }); 
                     return res.json(expense);
-                        
                 }
             )
         })
     }
 };
-/*
- const expense = await Expense.findByIdAndUpdate(req.params.expID, req.body, { new: true });
-
-        return res.json(expense);
-*/
