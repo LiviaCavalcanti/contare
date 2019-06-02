@@ -22,8 +22,7 @@ const UserSchema = new mongoose.Schema({
         type: Number,
         required: false,
         default: 0,
-    },
-
+    }
 });
 // encriptando a senha do usuario
 UserSchema.pre("save",async function(next){

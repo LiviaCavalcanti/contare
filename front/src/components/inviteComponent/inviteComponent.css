@@ -1,0 +1,34 @@
+.card {
+margin-left: auto;
+margin-right: auto;
+margin-top: 10px;
+width: 18rem;
+}
+
+#invitePageTitle{
+    text-align: center;
+	font-size: 8vw;
+	color: white;
+	text-align: center;
+    font-family: 'Bree Serif', serif;
+	text-shadow: 3px 3px #187d8d;
+}
+
+#imgBack {
+    width:6%; 
+    height:6%; 
+    float:left;
+    margin-left:2%;
+     margin-top: 2%;
+}
+
+#imgBack:hover {
+    cursor: pointer;
+}
+
+.containerInvites {
+    font-family: 'Bree Serif', serif;
+    background-color: rgb(92, 174, 230) !important;
+    float: left;
+
+}

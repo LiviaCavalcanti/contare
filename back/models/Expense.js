@@ -4,6 +4,7 @@ const ExpenseSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
+        lowercase:true
     },
     description: {
         type: String,
@@ -26,8 +27,10 @@ const ExpenseSchema = new mongoose.Schema({
     participants: [{
         userId: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: 'User'
+          ref: 'User',
         },
+        name:{type:String},
+        email:{type:String},
         payValue: Number,
         status: Boolean
     }]
