@@ -63,8 +63,21 @@ module.exports = {
                     if (err) return res.status(500).send("Houve um problema ao encontrar o usuario");
                     if (!user) return res.status(404).send("Nenhum usuário encontrado.");                
                     
+                    const userExpenses = [];
 
-                    return res.json(await Expense.find({ owner: decoded.id  }))
+                    const allExpenses = await Expense.find();
+
+                    for(let i = 0; i < allExpenses.length;i++){
+                    
+                        if(allExpenses[i].participants.find(function(element,index,array){
+                            if(element._id == user.id && element.participantStatus == "ACTIVE") return allExpenses[i];
+                            else return false;
+                        })!= undefined){
+                            userExpenses.push(allExpenses[i]);
+                            userExpenses.save
+                        }
+                    }
+                    return res.json(userExpenses)
                         
                 }
             )
@@ -115,6 +128,25 @@ module.exports = {
                         }
                     }
                     return res.status(200).send(allEmails)
+                }
+            )
+        })
+    },
+    async getObjUSER(req, res) {
+        
+        var token = req.headers['x-access-token'];
+        if (!token) return res.status(401).send({ user: {}, message: "Nenhum token foi fornecido." });
+        
+        jwt.verify(token, authConfig.secret, function(err, decoded) {
+        
+            if (err) return res.status(500).send({ user: {}, message: "Falha ao autenticar token." });
+        
+            User.findById(decoded.id, 
+                { password: 0 }, 
+               async function (err, user) {
+                    if (err) return res.status(500).send("Houve um problema ao encontrar o usuario");
+                    if (!user) return res.status(404).send("Nenhum usuário encontrado.");
+                    res.status(200).send(await User.findById(req.params.userID));
                 }
             )
         })

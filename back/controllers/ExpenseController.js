@@ -38,7 +38,8 @@ module.exports = {
                                 title: req.body.title,
                                 description: req.body.description,
                                 dueDate: req.body.dueDate,
-                                owner: user._id
+                                owner: user._id,
+                                totalValue: req.body.totalValue
                             })
                              
                             thisExpense.participants.push({
@@ -47,12 +48,12 @@ module.exports = {
                                 name:user.name,
                                 email:user.email,
                                 status: false,
-                                participantStatus: "ACTIVE"
+                                participantStatus: "ACTIVE",
                             })
                             thisExpense.participants.save;
-                            
                             let newExpense = await Expense.create(thisExpense);
-
+                            
+                            
                             if(req.body.listEmail.length > 1){
                                 return await InvitationController.invite(req,res,user,newExpense);
                             }
@@ -100,11 +101,12 @@ module.exports = {
                     if (!user) return res.status(404).send("Nenhum usuário encontrado.");                
                     
                     const expense = await Expense.findByIdAndDelete(req.params.expID);
-                    expense.participants.forEach(p => {
-                        if(p.participantStatus == "WAITING"){
-                            Invitation.findOneAndDelete({expense:expense.id})
+                    
+                    for(let i = 0;i<expense.participants.length; i++){
+                        if(expense.participants[i].participantStatus == "WAITING"){
+                            await Invitation.findOneAndDelete({expense:expense.id})
                         }
-                    }); 
+                    }
                     return res.json(expense);
                 }
             )

@@ -9,6 +9,7 @@ const InvitationController = require("./controllers/InvitationController")
 router.get("/user", UserController.show);
 router.put("/user", UserController.update);
 router.get("/user/getAll",UserController.listEmails) // retorna todos os emails do sistema exceto o email do usuário corrente
+router.get("/user/:userID",UserController.getObjUSER)
 //---------
 
 // DESPESAS
