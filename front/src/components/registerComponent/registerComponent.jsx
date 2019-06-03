@@ -2,7 +2,6 @@ import React, { Component } from "react"
 import { Form, Button } from "react-bootstrap"
 import './registerComponent.css'
 import { registerUser, notifyFailure } from '../../services/index'
-import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 
 
@@ -84,7 +83,6 @@ class RegisterScreen extends Component {
                 </Button>
                 </Form>
 
-                <ToastContainer />
             </div>
         )
     }

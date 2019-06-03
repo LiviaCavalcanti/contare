@@ -20,6 +20,15 @@ module.exports = {
                     expense:newExpense.id,
                     participationValue: req.body.listEmail[i].payValue
                 })
+                newExpense.participants.push({
+                    _id:userTo.id,
+                    payValue:  req.body.listEmail[i].payValue,
+                    name:user.name,
+                    email:userTo.email,
+                    status: false,
+                    participantStatus:"WAITING"
+                })
+                newExpense.participants.save;
             })
         }
         return res.status(200).send("Convites Enviados")
@@ -49,13 +58,7 @@ module.exports = {
                             if(err) return res.status(404).send("Houve um problema ao encontrar a despesa")
                             if(!invitation) return res.status(404).send("Esta despesa não foi encontrada.")
 
-                            expense.participants.push({
-                                _id: user.id,
-                                payValue:  invitation.participationValue,
-                                name:user.name,
-                                email:user.email,
-                                status: false
-                            })
+                            expense.participants.find({_id:user.id}).participantStatus = "ACTIVE";
                             expense.participants.save;
                             await Expense.findByIdAndUpdate(expense.id,expense,{new:true})
                         });
@@ -86,6 +89,10 @@ module.exports = {
                         if (err) return res.status(500).send("Houve um problema ao encontrar o convite");
                         if (!invite) return res.status(404).send("Nenhum convite encontrado.");
 
+                        Expense.findById(invite.expense.id, function(err, exp){
+                            exp.participants.find({_id:user.id}).participantStatus = "REFUSED";
+                            exp.participants.save;
+                        });
                         await Invitation.findByIdAndRemove(invitationId)
                         return res.status(200).send("Convite recusado com sucesso!")
                     });

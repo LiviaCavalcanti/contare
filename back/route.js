@@ -21,7 +21,7 @@ router.delete("/user/expenses/:expID", ExpenseController.delete);
 // CONVITES
 router.get("/user/invitations",UserController.indexInvitations) // Listar convites do cara atual
 router.put("/user/invitations",InvitationController.accept) // Aceitar um convite
-router.delete("/user/invitations",InvitationController.refuse) // Recusar um convite
+router.post("/user/invitations",InvitationController.refuse) // Recusar um convite
 
 router.post("/register", authController.register);
 router.post("/authenticate", authController.authenticate);

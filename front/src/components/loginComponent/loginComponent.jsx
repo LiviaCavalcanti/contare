@@ -2,7 +2,6 @@ import React, { Component } from "react"
 import { Form, Button } from "react-bootstrap"
 import './loginComponent.css'
 import { login } from '../../services/index'
-import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 
 
@@ -59,7 +58,6 @@ class LoginScreen extends Component {
                 </Button>
                 </Form>
 
-                <ToastContainer />
             </div>
         )
     }
