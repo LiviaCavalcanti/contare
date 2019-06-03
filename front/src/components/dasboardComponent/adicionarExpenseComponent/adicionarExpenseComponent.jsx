@@ -146,7 +146,7 @@ class AdicionarExpenseComponent extends Component {
 
     let value = String(this.state.money).replace("R$ ", "");
     value = this.replaceAll(value, ".", "");
-    body.payValue = value.replace(",", ".");
+    body.totalValue = value.replace(",", ".");
 
     
     let date = this.state.isDividirDispesa ? form.elements[2].value : form.elements[3].value;

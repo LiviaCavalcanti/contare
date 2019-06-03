@@ -135,7 +135,7 @@ class DetalharExpenseComponent extends Component {
 
           <div className="div-dado">
             <label>Valor Total da despesa:</label>
-            <p><b>{this.state.valueTotal} </b></p>
+            <p><b>{this.props.expense.totalValue} </b></p>
           </div>
           {/* <div className="div-dado">
             <label>Status:</label>
@@ -150,10 +150,11 @@ class DetalharExpenseComponent extends Component {
           <Table striped bordered hover>
             <thead>
               <tr>
-                <th style={{ width: "30%" }}>Nome</th>
-                <th style={{ width: "30%" }}>Email</th>
+                <th style={{ width: "25%" }}>Nome</th>
+                <th style={{ width: "25%" }}>Email</th>
                 <th >Valor</th>
                 <th className="acao" style={{ width: "20%" }}>Status</th>
+                <th className="acao" style={{ width: "20%" }}>Status Convite</th>
               </tr>
             </thead>
             <tbody>
@@ -173,6 +174,15 @@ class DetalharExpenseComponent extends Component {
                       <td >
                         {p.status ? <b className="campo-pago">Pago</b> : <b className="campo-pagar">À pagar </b>}
                       </td>
+                      <td >
+                        {
+                          i == 0 ?
+                           '- ' : 
+                           (p.participantStatus === 'ACTIVE' ? <b className="campo-pago">Aceito</b> : p.participantStatus === 'WAITING' ? <b className="campo-aguardando">Aguardando</b> : <b className="campo-pagar"> Rejeitado </b>)
+                        }
+                      </td>
+                      
+
                     </tr>
 
                   )
