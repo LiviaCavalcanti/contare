@@ -88,6 +88,7 @@ module.exports = {
                     Invitation.findById(invitationId, async function(err,invite){
                         if (err) return res.status(500).send("Houve um problema ao encontrar o convite");
                         if (!invite) return res.status(404).send("Nenhum convite encontrado.");
+
                         Expense.findById(invite.expense.id, function(err, exp){
                             exp.participants.find({_id:user.id}).participantStatus = "REFUSED";
                             exp.participants.save;
