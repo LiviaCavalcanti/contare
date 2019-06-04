@@ -32,6 +32,7 @@ class DetalharExpenseComponent extends Component {
     this.confirmed = this.confirmed.bind(this);
     this.hideModalAction = this.hideModalAction.bind(this);
     this.updateExpense = this.updateExpense.bind(this);
+    this.checkIfUserPayed = this.checkIfUserPayed.bind(this)
   }
 
   async componentDidMount() {
@@ -90,11 +91,23 @@ class DetalharExpenseComponent extends Component {
 
     let body = this.props.expense;
 
-    body.participants[0].status = true;
+    body.participants.find(x => x._id == this.props.user._id).status = true
 
     await updateExpenses(localStorage.getItem("token-contare"), this.props.expense._id, body);
     this.hideModalAction();
     this.props.updateCard();
+  }
+
+  checkIfUserPayed = (participants, user) =>{
+    let searchedUser = {}
+
+    participants.map(participant=> {
+      if(participant._id === user._id) {
+        searchedUser = participant
+      }
+    })
+
+    return searchedUser.status
   }
 
   render() {
@@ -108,7 +121,7 @@ class DetalharExpenseComponent extends Component {
                 {this.props.expense.title} - Detalhe
               </div>
               <div className="div-acao">
-                {this.props.expense.participants.length > 0 && this.props.expense.participants[0].status ? "" :
+                {this.checkIfUserPayed(this.props.expense.participants, this.props.user) ? "" :
                   <img title="Pagar Despesa" alt="Pagar Despesa" style={{ width: "22px" }} src={payIcon} onClick={() => this.confirmed('Você confirma o pagamaneto da despesa?', this.updateExpense)} />
                 }
                 <img title="Excluir Despesa" alt="Excluir Despesa" src={deleteIcon} onClick={() => this.confirmed('Tem certeza que você quer deletar a despesa?', this.deletedExpense)} />

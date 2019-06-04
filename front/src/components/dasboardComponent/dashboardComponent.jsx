@@ -71,7 +71,7 @@ class DashboardComponent extends Component {
                     </Col>
                     <Col style={{ padding: "0" }}>
                         <DahsboardStyled>
-                            <CardComponent getExpense={this.getExpense} list={this.state.list} />
+                            <CardComponent getExpense={this.getExpense} list={this.state.list} user={this.state.user} />
                         </DahsboardStyled>
                     </Col>
 
