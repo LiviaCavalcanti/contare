@@ -147,7 +147,7 @@ class DetalharExpenseComponent extends Component {
 
           <div className="div-dado">
             <label>Valor Total da despesa:</label>
-            <p><b>{this.props.expense.totalValue} </b></p>
+            <p><b>{this.props.expense.totalValue.toFixed(2)}</b></p>
           </div>
 
           <p className="p-title">

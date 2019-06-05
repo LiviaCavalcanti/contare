@@ -22,7 +22,6 @@ class InviteComponent extends Component {
     }
 
     loadInvites = () => {
-        console.log("TA CHAMANDO..")
         const token = localStorage.getItem('token-contare')
         
         getAllInvitations(token, function(response){
@@ -66,7 +65,8 @@ class InviteComponent extends Component {
       }
 
       getUserName = (userID) => {
-        getUserFromID(userID, function(response){
+          const token = localStorage.getItem('token-contare')
+        getUserFromID(userID, token, function(response){
             let invitationsClone = this.state.invitations.slice(0)
 
             invitationsClone.map(invite =>{
@@ -114,8 +114,9 @@ class InviteComponent extends Component {
                  <Card.Header style={{textAlign:'center', fontSize:'30px'}}>Convite</Card.Header>
                  <Card.Body>
                    <Card.Text>
+                   {this.getUserName(invite.from)}
                      Você foi convidado para a despesa: <a>{invite.expense.expenseTitle} </a> <br/>
-                     Você foi convidado por:<a> NOME DE QUEM CONVIDOU</a><br/>
+                     Você foi convidado por:<a> {invite.from.fromName}</a><br/>
                      Seu valor a pagar é de: <a> R$ {invite.participationValue} </a><br/>
 
                      <div style={{marginTop:'10px'}}>

@@ -167,8 +167,8 @@ export const getExpense = async (id, callback) => {
      )
 }
 
-export const getUserFromID = async (id, callback) => {
-    return axios.get( `${API_URL}/contare/user/${id}`)
+export const getUserFromID = async (id, token, callback) => {
+    return axios.get( `${API_URL}/contare/user/${id}`, {headers: {"x-access-token" : token}})
      .then((response) => {
         callback(response.data)
        },
