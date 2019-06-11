@@ -2,7 +2,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 
-export const API_URL = "http://localhost:8080"
+export const API_URL = "https://escontare.herokuapp.com/"
 
 
 export const notifySucess = (arg) => {
