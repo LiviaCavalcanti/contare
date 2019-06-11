@@ -20,15 +20,16 @@ module.exports = {
                     expense:newExpense.id,
                     participationValue: req.body.listEmail[i].payValue
                 })
-                newExpense.participants.push({
+                await newExpense.participants.push({
                     _id:userTo.id,
                     payValue:  req.body.listEmail[i].payValue,
-                    name:user.name,
+                    name:userTo.name,
                     email:userTo.email,
                     status: false,
                     participantStatus:"WAITING"
                 })
-                newExpense.participants.save;
+                await newExpense.participants.save;
+                await Expense.findByIdAndUpdate(newExpense.id,newExpense,{new:true})
             })
         }
         return res.status(200).send("Convites Enviados")
@@ -58,8 +59,12 @@ module.exports = {
                             if(err) return res.status(404).send("Houve um problema ao encontrar a despesa")
                             if(!invitation) return res.status(404).send("Esta despesa não foi encontrada.")
 
-                            expense.participants.find({_id:user.id}).participantStatus = "ACTIVE";
-                            expense.participants.save;
+                            expense.participants.find(function(element,index,array){
+                                if(element.id == user.id) return element;
+                                else return false
+                            }).participantStatus = "ACTIVE";
+                            await expense.participants.save;
+
                             await Expense.findByIdAndUpdate(expense.id,expense,{new:true})
                         });
                         await Invitation.findByIdAndRemove(invitationId);
@@ -89,10 +94,15 @@ module.exports = {
                         if (err) return res.status(500).send("Houve um problema ao encontrar o convite");
                         if (!invite) return res.status(404).send("Nenhum convite encontrado.");
 
-                        Expense.findById(invite.expense.id, function(err, exp){
-                            exp.participants.find({_id:user.id}).participantStatus = "REFUSED";
+                        await Expense.findById(invite.expense, async function(err, exp){
+                            exp.participants.find(function(element,index,array){
+                                if(element.id == user.id) return element;
+                                else return false
+                            }).participantStatus = "REFUSED";
                             exp.participants.save;
-                        });
+                            await Expense.findByIdAndUpdate(exp.id,exp,{new:true})
+                        })
+                      
                         await Invitation.findByIdAndRemove(invitationId)
                         return res.status(200).send("Convite recusado com sucesso!")
                     });

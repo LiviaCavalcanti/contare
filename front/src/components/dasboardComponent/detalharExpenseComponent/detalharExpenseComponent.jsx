@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { deletedExpenses, updateExpenses } from '../../../services';
+import { deletedExpenses, updateExpenses, getUser } from '../../../services';
 
 import { Col, Table } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
@@ -22,9 +22,10 @@ class DetalharExpenseComponent extends Component {
       modalAction: false,
       nomeAcao: "",
       isEdited: false,
-      modalConfirmedFunction: "", 
-      listParticipants : [], 
-      valueTotal : 0
+      modalConfirmedFunction: "",
+      listParticipants: [],
+      valueTotal: 0,
+      user: {}
     }
 
     this.formataData = this.formataData.bind(this);
@@ -32,34 +33,29 @@ class DetalharExpenseComponent extends Component {
     this.confirmed = this.confirmed.bind(this);
     this.hideModalAction = this.hideModalAction.bind(this);
     this.updateExpense = this.updateExpense.bind(this);
+    this.checkIfUserPayed = this.checkIfUserPayed.bind(this)
   }
 
   async componentDidMount() {
-    // let listAux = [];
     let valueTotal = 0;
-    
+
     this.props.expense.participants.forEach(element => {
-      // element.email = "Buscar email pelo ID ainda não existe " + element._id;
-      // listAux.push(element);
       valueTotal += element.payValue;
     });
 
-    this.setState({
-      // listParticipants : listAux,
-      valueTotal : valueTotal
-    })
 
-    // let user = await getUser(localStorage.getItem("token-contare"));
-    // this.setState({
-    //   user: user,
-    //   listParticipants: [{ email: user.email, payValue: 0.0 }]
-    // })
+    let user = await getUser(localStorage.getItem("token-contare"));
+
+    this.setState({
+      user: user,
+      valueTotal: valueTotal
+    })
 
   }
 
   formataData(d) {
     var date = new Date(d);
-    let data = date.getDate().toLocaleString().length > 1 ? date.getDate()  : '0' + date.getDate();
+    let data = date.getDate().toLocaleString().length > 1 ? date.getDate() : '0' + date.getDate();
     let mes = (date.getMonth() + 1).toLocaleString().length > 1 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1);
     let ano = date.getFullYear();
     return `${data}/${mes}/${ano}`;
@@ -90,11 +86,23 @@ class DetalharExpenseComponent extends Component {
 
     let body = this.props.expense;
 
-    body.participants[0].status = true;
+    body.participants.find(x => x._id == this.props.user._id).status = true
 
     await updateExpenses(localStorage.getItem("token-contare"), this.props.expense._id, body);
     this.hideModalAction();
     this.props.updateCard();
+  }
+
+  checkIfUserPayed = (participants, user) => {
+    let searchedUser = {}
+
+    participants.map(participant => {
+      if (participant._id === user._id) {
+        searchedUser = participant
+      }
+    })
+
+    return searchedUser.status
   }
 
   render() {
@@ -108,10 +116,14 @@ class DetalharExpenseComponent extends Component {
                 {this.props.expense.title} - Detalhe
               </div>
               <div className="div-acao">
-                {this.props.expense.participants.length > 0 && this.props.expense.participants[0].status ? "" :
+                {this.checkIfUserPayed(this.props.expense.participants, this.props.user) ? "" :
                   <img title="Pagar Despesa" alt="Pagar Despesa" style={{ width: "22px" }} src={payIcon} onClick={() => this.confirmed('Você confirma o pagamaneto da despesa?', this.updateExpense)} />
                 }
-                <img title="Excluir Despesa" alt="Excluir Despesa" src={deleteIcon} onClick={() => this.confirmed('Tem certeza que você quer deletar a despesa?', this.deletedExpense)} />
+                {
+                  this.state.user._id === this.props.expense.owner ?
+                    <img title="Excluir Despesa" alt="Excluir Despesa" src={deleteIcon} onClick={() => this.confirmed('Tem certeza que você quer deletar a despesa?', this.deletedExpense)} />
+                    : ''
+                }
               </div>
             </Col>
 
@@ -135,12 +147,8 @@ class DetalharExpenseComponent extends Component {
 
           <div className="div-dado">
             <label>Valor Total da despesa:</label>
-            <p><b>{this.state.valueTotal} </b></p>
+            <p><b>{this.props.expense.totalValue.toFixed(2)}</b></p>
           </div>
-          {/* <div className="div-dado">
-            <label>Status:</label>
-            <p> <b>{this.props.expense.participants[0].status ? <b className="campo-pago">Pago</b> : <b className="campo-pagar">À pagar</b>}</b></p>
-          </div> */}
 
           <p className="p-title">
 
@@ -150,10 +158,11 @@ class DetalharExpenseComponent extends Component {
           <Table striped bordered hover>
             <thead>
               <tr>
-                <th style={{ width: "30%" }}>Nome</th>
-                <th style={{ width: "30%" }}>Email</th>
+                <th style={{ width: "25%" }}>Nome</th>
+                <th style={{ width: "25%" }}>Email</th>
                 <th >Valor</th>
                 <th className="acao" style={{ width: "20%" }}>Status</th>
+                <th className="acao" style={{ width: "20%" }}>Status Convite</th>
               </tr>
             </thead>
             <tbody>
@@ -173,6 +182,15 @@ class DetalharExpenseComponent extends Component {
                       <td >
                         {p.status ? <b className="campo-pago">Pago</b> : <b className="campo-pagar">À pagar </b>}
                       </td>
+                      <td >
+                        {
+                          i == 0 ?
+                            '- ' :
+                            (p.participantStatus === 'ACTIVE' ? <b className="campo-pago">Aceito</b> : p.participantStatus === 'WAITING' ? <b className="campo-aguardando">Aguardando</b> : <b className="campo-pagar"> Rejeitado </b>)
+                        }
+                      </td>
+
+
                     </tr>
 
                   )

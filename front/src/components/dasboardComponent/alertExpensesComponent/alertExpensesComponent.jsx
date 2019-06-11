@@ -47,7 +47,14 @@ class AlertExpenses extends Component {
         this.getTimeDifference(expense.dueDate) >= 0 && this.getTimeDifference(expense.dueDate) <= 7  &&
             <Alert variant='warning'>
             <MdAccountBalanceWallet/> Despesa: {expense.title} <br/>
-               <TiCalendarOutline/> Vence em {this.getTimeDifference(expense.dueDate)} dias
+
+                {this.getTimeDifference(expense.dueDate) == 0 ?
+                    <div><TiCalendarOutline/> Vence <b>Hoje!</b></div>
+                    :
+                    <div><TiCalendarOutline/> Vence em <b>{this.getTimeDifference(expense.dueDate)}</b> dias</div>
+            
+            }
+
           </Alert>
     ))}
 

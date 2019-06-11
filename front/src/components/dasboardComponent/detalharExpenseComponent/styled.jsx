@@ -10,6 +10,10 @@ const DetalharExpenseStyled = styled.div`
     .campo-pagar{
         color: red;
     }
+    
+    .campo-aguardando{
+        color: #d5c933;
+    }
 
     .div-title{
         display: inline;

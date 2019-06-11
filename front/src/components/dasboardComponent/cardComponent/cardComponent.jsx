@@ -19,6 +19,7 @@ class CardComponent extends Component {
         this.abreAdicionarExpense = this.abreAdicionarExpense.bind(this);
         this.formataData = this.formataData.bind(this);
         this.updateCard = this.updateCard.bind(this);
+        this.statusParticipant = this.statusParticipant.bind(this)
 
     }
 
@@ -46,6 +47,23 @@ class CardComponent extends Component {
     updateCard(){
         this.props.getExpense();
         this.setState({ modalAdicionarShow: false, modalDetalharShow: false })
+    }
+
+    statusParticipant =  (participants, user) => {
+       let ownerIsPayed = false
+
+        participants.map(participant =>{
+            if(participant._id === user._id) {
+                if(participant.status == true) {
+                    ownerIsPayed = true
+                } 
+            }
+        })
+        if(ownerIsPayed) {
+            return "expense-name expense-pay"
+        } else {
+            return "expense-name expense-not-pay"
+        }
     }
 
     render() {
@@ -94,8 +112,8 @@ class CardComponent extends Component {
                                     <p>R$ {expense.participants.length > 0 && String(expense.participants[0].payValue).replace(".", ",")}</p>
 
                                 </div>
-
-                                <div className={ expense.participants.length > 0 && "expense-name " + (expense.participants[0].status ? "expense-pay" : "expense-not-pay")}>
+                                {console.log(this.statusParticipant(expense.participants, this.props.user))}
+                                <div className={this.statusParticipant(expense.participants, this.props.user)}>
                                     <p>
                                         {expense.title}
                                     </p>
@@ -112,7 +130,7 @@ class CardComponent extends Component {
                     centered
                     show={this.state.modalDetalharShow}
                 >
-                    <DetalharExpenseComponent updateCard={this.updateCard} onHide={modalDetalheClose} expense={this.state.expense} />
+                    <DetalharExpenseComponent updateCard={this.updateCard} onHide={modalDetalheClose} expense={this.state.expense} user={this.props.user}/>
 
                 </Modal>
 
