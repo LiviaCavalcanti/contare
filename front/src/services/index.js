@@ -2,7 +2,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 
-export const API_URL = "https://escontare.herokuapp.com/"
+export const API_URL = "http://localhost:8080" // SEM BARRA NO FINAL
 
 
 export const notifySucess = (arg) => {
@@ -17,14 +17,15 @@ export const notifyFailure = (arg) => {
     });
 }
 
-export const registerUser = async (name, email, pass) => {
+export const registerUser = async (name, email, pass, callback) => {
     const user = { name, email, password: pass }
     await axios.post(`${API_URL}/contare/register`, user)
         .then(function (response) {
             notifySucess(response.data.sucess)
+            callback()
         })
         .catch(function (error) {
-            notifyFailure('Ocorreu um erro inesperado, tente novamente!')
+            notifyFailure('Ocorreu um problema no registro! Tente outras credenciais!')
         })
 }
 
@@ -36,7 +37,7 @@ export const login = async (email, password) => {
             window.location.href = "/dashboard"
         })
         .catch(function (error) {
-            notifyFailure('Ocorreu um erro inesperado, tente novamente!')
+            notifyFailure('Usuário ou senha não conferem!')
         })
 }
 

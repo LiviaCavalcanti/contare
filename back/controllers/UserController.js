@@ -6,6 +6,8 @@ const JSON = require('circular-json');
 const Expense = mongoose.model("Expense");
 const User = mongoose.model("User")
 const Invitation = mongoose.model("Invitation")
+const bcrypt = require("bcryptjs");
+
 
 module.exports = {
     async show(req, res) {
@@ -32,6 +34,10 @@ module.exports = {
         var token = req.headers['x-access-token'];
         if (!token) return res.status(401).send({ user: {}, message: "Nenhum token foi fornecido." });
         
+
+        const hash = await bcrypt.hash(req.body.password,10)
+        req.body.password = hash
+
         jwt.verify(token, authConfig.secret, function(err, decoded) {
         
             if (err) return res.status(500).send({ user: {}, message: "Falha ao autenticar token." });
