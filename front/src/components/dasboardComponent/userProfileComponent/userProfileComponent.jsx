@@ -77,7 +77,6 @@ class UserProfile extends Component {
             let newUser = this.props.user
             newUser.name = newName
             newUser.password = newPass
-            console.log(newUser)
             const token = localStorage.getItem('token-contare')
             updateUser(token, newUser, function(response){
               notifySucess("Perfil alterado com sucesso!")
@@ -93,15 +92,13 @@ class UserProfile extends Component {
       handleSubmit() {
           const newRent = document.getElementById('rent').value
         const token = localStorage.getItem('token-contare')
-          if(newRent != ""){
+
+          if(newRent != "" && newRent >= 0){
               let actualUser = this.props.user
               actualUser.rent = newRent
             updateUser(token, actualUser, function(response){
-                console.log(response)
+              notifySucess("Renda alterada com sucesso!")
             })
-
-
-
               this.setState({ show: false });
           } else {
             notifyFailure("Insira um valor válido!")
@@ -162,8 +159,8 @@ class UserProfile extends Component {
               
             
             </Alert>
-            <Button variant="info" onClick={this.handleShow}>Altere sua renda</Button>
-            <Button style={{marginLeft: '5px'}} variant="warning" onClick={this.handleShowEdit}>Altere seu perfil</Button>
+            <Button style={{marginTop: '5px', marginBottom:'5px'}} variant="info" onClick={this.handleShow}>Altere sua renda</Button>
+            <Button style={{marginLeft: '5px', marginTop: '5px', marginBottom:'5px'}} variant="warning" onClick={this.handleShowEdit}>Altere seu perfil</Button>
 
         <Modal show={this.state.show} onHide={this.handleClose}>
           <Modal.Header  className="userRentModal"> 

@@ -112,7 +112,6 @@ class CardComponent extends Component {
                                     <p>R$ {expense.participants.length > 0 && String(expense.participants[0].payValue).replace(".", ",")}</p>
 
                                 </div>
-                                {console.log(this.statusParticipant(expense.participants, this.props.user))}
                                 <div className={this.statusParticipant(expense.participants, this.props.user)}>
                                     <p>
                                         {expense.title}

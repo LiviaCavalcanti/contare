@@ -30,9 +30,20 @@ class RegisterScreen extends Component {
             if (pass !== confirmPass) {
                 notifyFailure("Senhas não conferem!")
             } else {
-                registerUser(name, email, pass, function(){
-                    this.props.history.push("/login")
-                }.bind(this))
+                if(pass.length < 5) {
+                    notifyFailure("Sua senha deve ter ao menos 5 caracteres!")
+                } else {
+
+                    if(name.trim() === ""){
+                        notifyFailure("Nome inválido")
+                    } else {
+                        registerUser(name, email, pass, function(){
+                            this.props.history.push("/login")
+                        }.bind(this))
+                    }
+                }
+
+
             }
         } else {
             this.setState({ validated: true });

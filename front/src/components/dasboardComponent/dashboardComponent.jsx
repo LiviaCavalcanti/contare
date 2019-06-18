@@ -25,7 +25,7 @@ class DashboardComponent extends Component {
 
     getUserFromToken = () => {
         const token = localStorage.getItem("token-contare")
-        if (token === null || token === undefined) {
+        if (token === null || token === undefined || token === "") {
             this.props.history.push("/")
         }
         verifyUser(token, function (response) {
