@@ -6,6 +6,8 @@ const JSON = require('circular-json');
 const Expense = mongoose.model("Expense");
 const User = mongoose.model("User")
 const Invitation = mongoose.model("Invitation")
+const bcrypt = require("bcryptjs");
+
 
 module.exports = {
     async show(req, res) {
@@ -31,12 +33,24 @@ module.exports = {
     async update(req, res) {
         var token = req.headers['x-access-token'];
         if (!token) return res.status(401).send({ user: {}, message: "Nenhum token foi fornecido." });
-        
+    
+        let objToUpdate = {}
+
+        if(req.body.password){
+            const hash = await bcrypt.hash(req.body.password,10)
+            req.body.password = hash
+            objToUpdate = req.body
+        } else{
+            objToUpdate = {rent:req.body.rent}
+        }
+
         jwt.verify(token, authConfig.secret, function(err, decoded) {
         
             if (err) return res.status(500).send({ user: {}, message: "Falha ao autenticar token." });
+
+            console.log(() => {if(reqWithPass){ return req.body } else{ return {rent:req.body.rent}}})
             User.findByIdAndUpdate(decoded.id, 
-                req.body, 
+                objToUpdate, 
                 {new: true},
                 function (err, newUser) {
                     if (err) return res.status(500).send("Houve um problema ao encontrar o usuario");

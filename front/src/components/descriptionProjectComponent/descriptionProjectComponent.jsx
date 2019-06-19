@@ -6,7 +6,7 @@ class DescriptionProject extends Component {
     render() {
         return (
             <Card.Text>
-                Lorem ipsum ultrices velit faucibus donec adipiscing nulla arcu consectetur velit etiam donec, aliquet sapien purus quisque tempor auctor habitant imperdiet lacus at mollis, nec sit venenatis hendrerit primis taciti facilisis aenean mattis lorem vitae. cras integer morbi id nunc per etiam class per, commodo turpis morbi iaculis at lectus sociosqu, fringilla magna sociosqu dictumst non massa taciti. cursus potenti nibh in dictum torquent cras sagittis molestie, scelerisque curae elementum at diam egestas placerat curabitur, posuere iaculis ultrices congue dolor integer inceptos. interdum maecenas sit neque bibendum nec quisque massa scelerisque, dui nostra in blandit conubia accumsan suspendisse, eros aliquam massa justo sagittis ullamcorper feugiat.
+                Contare é um web site de uso gratuito construido com intuito de ajudar as pessoas a controlar seus gastos. Aqui, você pode manusear todas suas despesas, podendo compartilha-las com outros usuários. Nosso maior objetivo é manter você sempre alerta de quanto está gastando mediante quanto você recebe, e para isso, diversos alertas e mensagens personalizadas irão surgir para melhor orientá-lo.
             </Card.Text>
         );
     }

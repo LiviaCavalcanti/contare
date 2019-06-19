@@ -442,8 +442,8 @@ class AdicionarExpenseComponent extends Component {
           </Modal.Body>
 
           <Modal.Footer>
-            <Button variant="primary" type="submit">Adicionar</Button>
-            <Button onClick={this.props.onHide}>Close</Button>
+            <Button variant="success" type="submit">Adicionar</Button>
+            <Button variant="danger" onClick={this.props.onHide}>Fechar</Button>
           </Modal.Footer>
         </Form>
       </AddExpenseStyled>

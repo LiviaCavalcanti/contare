@@ -22,7 +22,6 @@ class AlertExpenses extends Component {
     }
 
     checkisPayed = (participants) => {
-        console.log(participants)
         let isPayed = false
         participants.map(participant => {
             if(participant._id == this.props.user._id && participant.status == true){

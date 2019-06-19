@@ -202,7 +202,7 @@ class DetalharExpenseComponent extends Component {
 
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={this.props.onHide}>Close</Button>
+          <Button variant="danger" onClick={this.props.onHide}>Fechar</Button>
         </Modal.Footer>
 
 

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 
-export const API_URL = "https://escontare.herokuapp.com/"
+export const API_URL = process.env.REACT_APP_API_URL
 
 
 export const notifySucess = (arg) => {
@@ -17,14 +17,15 @@ export const notifyFailure = (arg) => {
     });
 }
 
-export const registerUser = async (name, email, pass) => {
+export const registerUser = async (name, email, pass, callback) => {
     const user = { name, email, password: pass }
     await axios.post(`${API_URL}/contare/register`, user)
         .then(function (response) {
             notifySucess(response.data.sucess)
+            callback()
         })
         .catch(function (error) {
-            notifyFailure('Ocorreu um erro inesperado, tente novamente!')
+            notifyFailure('Ocorreu um problema no registro! Tente outras credenciais!')
         })
 }
 
@@ -36,7 +37,7 @@ export const login = async (email, password) => {
             window.location.href = "/dashboard"
         })
         .catch(function (error) {
-            notifyFailure('Ocorreu um erro inesperado, tente novamente!')
+            notifyFailure('Usuário ou senha não conferem!')
         })
 }
 
@@ -90,7 +91,7 @@ export const addExpenses = async (token, body) => {
             return response;
        },
        (error) => {
-           notifyFailure(error.response.data.error)
+           notifyFailure("Você já adicionou uma despesa com esse nome! Tente outro")
            return false;
         }
      )
@@ -134,13 +135,13 @@ export const getAllEmail = async (token) => {
 }
 
 export const updateUser = async (token, newUser, callback) => {
-    console.log(token)
-    axios.put( `${API_URL}/contare/user`, newUser, {headers: {"x-access-token" : token}})
+    console.log('uSER QUE CHEGA:', newUser)
+    axios.post(`${API_URL}/contare/user/edit`, newUser, {headers: {"x-access-token" : token}})
     .then((response) => {
         callback(response.data)
       },
       (error) => {
-         
+         console.log(error)
       }
     )
 }

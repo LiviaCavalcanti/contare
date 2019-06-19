@@ -3,7 +3,7 @@ import './userProfileComponent.css'
 import avatar from '../../../images/avatar.jpg'
 import invitationIcon from '../../../images/invitation.svg'
 import {Button, Alert, Modal} from 'react-bootstrap' 
-import {notifyFailure, updateUser, getAllInvitations} from '../../../services'
+import {notifyFailure, updateUser, getAllInvitations, notifySucess} from '../../../services'
 import { withRouter } from 'react-router';
 import GoAlert from 'react-icons/lib/go/alert'
 
@@ -14,7 +14,10 @@ class UserProfile extends Component {
     
         this.handleShow = this.handleShow.bind(this)
         this.handleClose = this.handleClose.bind(this)
+        this.handleShowEdit = this.handleShowEdit.bind(this)
+        this.handleCloseEdit = this.handleCloseEdit.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
+        this.handleSubmitEdit = this.handleSubmitEdit.bind(this)
         this.calculateExpenses = this.calculateExpenses.bind(this)
         this.listInviteNumber = this.listInviteNumber.bind(this)
         this.formatToReal = this.formatToReal.bind(this)
@@ -22,6 +25,7 @@ class UserProfile extends Component {
     
         this.state = {
           show: false,
+          showEdit: false,
           inviteNumber: 0
         }
 
@@ -51,18 +55,50 @@ class UserProfile extends Component {
         this.setState({ show: true });
       }
 
+      handleCloseEdit() {
+        this.setState({ showEdit: false });
+      }
+    
+      handleShowEdit() {
+        this.setState({ showEdit: true });
+      }
+
+      handleSubmitEdit() {
+        const newName = document.getElementById('newName').value
+        const newPass = document.getElementById('newPass').value
+        const newPassConfirm = document.getElementById('newPassConfirm').value
+
+        if(newName == "" || newPass == "" || newPassConfirm == "") {
+          notifyFailure("Preencha todos os campos corretamente!")
+        } else {
+          if(newPass !== newPassConfirm) {
+            notifyFailure("Senhas não conferem!")
+          } else {
+            let newUser = this.props.user
+            newUser.name = newName
+            newUser.password = newPass
+            const token = localStorage.getItem('token-contare')
+            updateUser(token, newUser, function(response){
+              notifySucess("Perfil alterado com sucesso!")
+              this.setState({ showEdit: false });
+          }.bind(this))
+
+
+          }
+        }
+
+      }
+
       handleSubmit() {
           const newRent = document.getElementById('rent').value
         const token = localStorage.getItem('token-contare')
-          if(newRent != ""){
+
+          if(newRent != "" && newRent >= 0){
               let actualUser = this.props.user
               actualUser.rent = newRent
             updateUser(token, actualUser, function(response){
-                console.log(response)
+              notifySucess("Renda alterada com sucesso!")
             })
-
-
-
               this.setState({ show: false });
           } else {
             notifyFailure("Insira um valor válido!")
@@ -95,6 +131,7 @@ class UserProfile extends Component {
             
             {this.props.user.name} <br/>
             <div className="inviteDiv">
+
             {this.state.inviteNumber == 0 ? 
                         <p id="invitesText">Convites ({this.state.inviteNumber})</p>
 
@@ -103,7 +140,6 @@ class UserProfile extends Component {
                         <p id="invitesText">Convites <a style={{color:'red'}}>({this.state.inviteNumber})</a></p>
           
           }
-            
             
             <img id="invitesIcon" onClick={() => this.props.history.push("/invite")}  src={invitationIcon} style={{width:"30px", height:"30px"}}/>
 
@@ -123,8 +159,8 @@ class UserProfile extends Component {
               
             
             </Alert>
-            <Button variant="info" onClick={this.handleShow}>Altere sua renda</Button>
-
+            <Button style={{marginTop: '5px', marginBottom:'5px'}} variant="info" onClick={this.handleShow}>Altere sua renda</Button>
+            <Button style={{marginLeft: '5px', marginTop: '5px', marginBottom:'5px'}} variant="warning" onClick={this.handleShowEdit}>Altere seu perfil</Button>
 
         <Modal show={this.state.show} onHide={this.handleClose}>
           <Modal.Header  className="userRentModal"> 
@@ -148,6 +184,38 @@ class UserProfile extends Component {
             </Button>
           </Modal.Footer>
         </Modal>
+
+
+
+        <Modal show={this.state.showEdit} onHide={this.handleCloseEdit}>
+          <Modal.Header className="userRentModal">
+            <Modal.Title className="modalTitle">Edite seu perfil!</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+
+          <Alert variant="warning"><b>Sobre mudanças no perfil: </b><br/> 
+          É importante que você escolha uma senha segura, por isso, evite senhas genéricas ou com informações pessoais.
+          </Alert>
+
+            
+            Escolha um novo nome: <br/> 
+            <input id="newName" type="text" defaultValue={this.props.user.name}/><br/> 
+            Escolha uma nova senha: <br/> 
+            <input id="newPass" type="password"/><br/> 
+            Confirme sua nova senha: <br/> 
+            <input id="newPassConfirm" type="password"/>
+             
+            </Modal.Body>
+          <Modal.Footer>
+            <Button variant="danger" onClick={this.handleCloseEdit}>
+              Fechar
+            </Button>
+            <Button variant="primary" onClick={this.handleSubmitEdit}>
+              Salvar mudanças
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
             </div>
         )
     }

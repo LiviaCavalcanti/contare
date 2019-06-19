@@ -3,6 +3,7 @@ import { Form, Button } from "react-bootstrap"
 import './registerComponent.css'
 import { registerUser, notifyFailure } from '../../services/index'
 import 'react-toastify/dist/ReactToastify.min.css';
+import { withRouter } from 'react-router';
 
 
 class RegisterScreen extends Component {
@@ -29,7 +30,20 @@ class RegisterScreen extends Component {
             if (pass !== confirmPass) {
                 notifyFailure("Senhas não conferem!")
             } else {
-                registerUser(name, email, pass)
+                if(pass.length < 5) {
+                    notifyFailure("Sua senha deve ter ao menos 5 caracteres!")
+                } else {
+
+                    if(name.trim() === ""){
+                        notifyFailure("Nome inválido")
+                    } else {
+                        registerUser(name, email, pass, function(){
+                            this.props.history.push("/login")
+                        }.bind(this))
+                    }
+                }
+
+
             }
         } else {
             this.setState({ validated: true });
@@ -88,4 +102,4 @@ class RegisterScreen extends Component {
     }
 }
 
-export default RegisterScreen
+export default withRouter(RegisterScreen)

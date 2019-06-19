@@ -10,10 +10,10 @@ app.use(cors())
 app.use(express.json());
 
 // Iniciando e conectando o DB
-mongoose.connect('mongodb://localhost:27017/contare',{useNewUrlParser: true});
+mongoose.connect('mongodb://localhost:27017/contare', {useNewUrlParser: true});
 requireDir("./models")
 
 app.use("/contare", require("./route"));
-app.listen(8080);
+app.listen(process.env.PORT || 8080);
 
 module.exports = app
