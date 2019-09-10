@@ -1,16 +1,10 @@
-# Projeto desenvolvido durante a disciplina de Engenharia de Software 
 ### Ciência da Computação - UFCG
 ##### GRUPO:
 Anarco Quaresma<br>
-Evelinne de Carvalho<br>
-Helena Dantas<br>
-Hiago Fernandes<br> 
+Rafael Pontes<br>
+Gabriel Fernandes<br> 
 Lívia Cavalcanti<br>
-Luiz Nascimento<br>
 Marcus Costa<br>
-Misael Augusto<br>
-Rebeca Miranda<br>
-Thiago Montenegro<br>
 Wagner Magno<br>
 
 -------------------------------------------------------------------------------------
