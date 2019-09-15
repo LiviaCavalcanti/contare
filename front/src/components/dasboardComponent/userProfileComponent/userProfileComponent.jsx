@@ -3,7 +3,9 @@ import './userProfileComponent.css'
 import avatar from '../../../images/avatar.jpg'
 import invitationIcon from '../../../images/invitation.svg'
 import {Button, Alert, Modal} from 'react-bootstrap' 
-import {notifyFailure, updateUser, getAllInvitations, notifySucess} from '../../../services'
+import {updateUser} from '../../../services/userService'
+import {getAllInvitations} from '../../../services/inviteService'
+import {notifyFailure, notifySucess} from '../../../services/notifyService'
 import { withRouter } from 'react-router';
 import GoAlert from 'react-icons/lib/go/alert'
 

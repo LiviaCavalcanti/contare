@@ -13,7 +13,6 @@ function generateToken(params = {}){
 
 module.exports = {
     async register(req,res) {
-    
         const { email } = req.body;
         try{
             // se o email ja for usado o usuario n pode se cadastrar 

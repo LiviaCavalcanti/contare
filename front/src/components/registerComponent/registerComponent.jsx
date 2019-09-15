@@ -1,7 +1,8 @@
 import React, { Component } from "react"
 import { Form, Button } from "react-bootstrap"
 import './registerComponent.css'
-import { registerUser, notifyFailure } from '../../services/index'
+import { registerUser } from '../../services/userService'
+import {notifyFailure} from '../../services/notifyService'
 import 'react-toastify/dist/ReactToastify.min.css';
 import { withRouter } from 'react-router';
 

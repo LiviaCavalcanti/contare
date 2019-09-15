@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
-import { deletedExpenses, updateExpenses, getUser } from '../../../services';
+import { deletedExpenses, updateExpenses } from '../../../services/expenseService';
+import {getUser} from '../../../services/userService'
 
 import { Col, Table } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';

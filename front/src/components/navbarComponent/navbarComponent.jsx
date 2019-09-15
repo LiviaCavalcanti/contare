@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './navbarComponent.css';
 import {Navbar, Button} from 'react-bootstrap'
 import {NavLink} from 'react-router-dom'
-import {redirectLoggedUser, verifyUser} from '../../services/index'
+import {redirectLoggedUser, verifyUser} from '../../services/userService'
 
 class NavbarComponent extends Component {
 
