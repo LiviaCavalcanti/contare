@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import { Form, Button } from "react-bootstrap"
 import './loginComponent.css'
-import { login } from '../../services/index'
+import { login } from '../../services/userService'
 import 'react-toastify/dist/ReactToastify.min.css';
 
 

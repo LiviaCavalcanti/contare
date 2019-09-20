@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import CardComponent from './cardComponent/cardComponent';
 import DahsboardStyled from './dashboardStyled';
 import AlertExpenses from './alertExpensesComponent/alertExpensesComponent'
-import { verifyUser } from '../../services/index'
+import { verifyUser } from '../../services/userService'
 import { Container, Row, Col } from 'react-bootstrap';
 import UserProfile from '../dasboardComponent/userProfileComponent/userProfileComponent'
 import { withRouter } from 'react-router';
-import { getExpenses } from '../../services/index';
+import { getExpenses } from '../../services/expenseService';
 
 
 

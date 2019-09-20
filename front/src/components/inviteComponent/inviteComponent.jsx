@@ -1,5 +1,7 @@
 import React, {Component} from 'react'
-import {getAllInvitations, getExpense, getUserFromID, acceptInviteReq, rejectInviteReq} from '../../services/index'
+import {getExpense} from '../../services/expenseService'
+import {getUserFromID} from '../../services/userService'
+import { acceptInviteReq, rejectInviteReq, getAllInvitations} from '../../services/inviteService.js'
 import { withRouter } from 'react-router';
 import {Card, Button,Container, Row, Col} from 'react-bootstrap'
 import './inviteComponent.css'

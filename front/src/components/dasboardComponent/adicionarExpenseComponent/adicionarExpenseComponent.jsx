@@ -6,7 +6,9 @@ import AddExpenseStyled from './styled';
 import Form from 'react-bootstrap/Form'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import { addExpenses, getUser, getAllEmail } from '../../../services';
+
+import {addExpenses} from '../../../services/expenseService'
+import {getUser, getAllEmail} from '../../../services/userService'
 
 import "react-datepicker/dist/react-datepicker.css";
 import { Table } from 'react-bootstrap';
