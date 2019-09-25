@@ -266,15 +266,25 @@ var style = {
 // // // For tables
 // //
 //
-const thArray = ["ID", "Name", "Salary", "Country", "City"];
-const tdArray = [
-  ["1", "Dakota Rice", "$36,738", "Niger", "Oud-Turnhout"],
-  ["2", "Minerva Hooper", "$23,789", "Curaçao", "Sinaai-Waas"],
-  ["3", "Sage Rodriguez", "$56,142", "Netherlands", "Baileux"],
-  ["4", "Philip Chaney", "$38,735", "Korea, South", "Overland Park"],
-  ["5", "Doris Greene", "$63,542", "Malawi", "Feldkirchen in Kärnten"],
-  ["6", "Mason Porter", "$78,615", "Chile", "Gloucester"]
-];
+const thArray = ["Nome", "Grupos em Comum", "Gastos Compartilhados", "Valor Bruto Total de Gastos"];
+const tdArray = createRandomFriends();
+
+function createRandomFriends() {
+  var data = []
+  var firstNames = ["Rafael", "Marcus", "Lívia", "Anarco", "Gabriel", "Wagner"];
+  var lastNames = ["Pontes", "Guerra", "Oliveira", "Silva", "Campos", "Souza", "Paz", "Moura", "César"]
+  for (var i = 0; i < 10; i++) {
+    let newPerson = []
+    let name = firstNames[parseInt(Math.random() * firstNames.length)] + " " +
+               lastNames[parseInt(String(Math.random() * lastNames.length))]
+    newPerson.push(name)
+    newPerson.push(parseInt(Math.random() * 10) + 1)
+    newPerson.push(parseInt(Math.random() * 100))
+    newPerson.push("R$ " + String(Number.parseFloat(Math.random() * 5000).toFixed(2)))
+    data.push(newPerson);
+  }
+  return data;
+}
 
 //
 // //

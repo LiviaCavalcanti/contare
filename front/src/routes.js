@@ -26,6 +26,7 @@ import Upgrade from "views/Upgrade.jsx";
 
 // New imports
 import Friends from "views/Friends"
+import Income from "views/Income"
 
 const dashboardRoutes = [
   {
@@ -53,7 +54,7 @@ const dashboardRoutes = [
     path: "/income",
     name: "Renda",
     icon: "pe-7s-cash",
-    component: Icons,
+    component: Income,
     layout: "/admin"
   },
   {

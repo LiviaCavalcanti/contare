@@ -29,6 +29,7 @@ import { Card } from "components/Card/Card.jsx";
 import { FormInputs } from "components/FormInputs/FormInputs.jsx";
 import { UserCard } from "components/UserCard/UserCard.jsx";
 import Button from "components/CustomButton/CustomButton.jsx";
+import defaultBgImg from "assets/img/default-user-profile-bg.jpeg";
 
 import avatar from "assets/img/faces/face-1.jpg";
 
@@ -151,7 +152,8 @@ class UserProfile extends Component {
             </Col>
             <Col md={4}>
               <UserCard
-                bgImage="https://ununsplash.imgix.net/photo-1431578500526-4d9613015464?fit=crop&fm=jpg&h=300&q=75&w=400"
+                //bgImage="https://ununsplash.imgix.net/photo-1431578500526-4d9613015464?fit=crop&fm=jpg&h=300&q=75&w=400"
+                bgImage={defaultBgImg}
                 avatar={avatar}
                 name="Rafael Pontes"
                 userName="rafaelpontes"
