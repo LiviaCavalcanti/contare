@@ -4,6 +4,7 @@ const UserController = require("./controllers/UserController");
 const ExpenseController = require("./controllers/ExpenseController");
 const authController = require("./controllers/authController")
 const InvitationController = require("./controllers/InvitationController")
+const incomeController = require("./controllers/incomeController")
 
 // Usuario ------------
 router.get("/user", UserController.show);
@@ -18,6 +19,13 @@ router.get("/user/expenses/:expID", ExpenseController.show);
 router.post("/user/expenses", ExpenseController.store);
 router.put("/user/expenses/:expID", ExpenseController.update);
 router.delete("/user/expenses/:expID", ExpenseController.delete);
+
+// RECEITAS
+router.get("/user/incomes", incomeController.getAll);
+router.get("/user/incomes/:incomeId", incomeController.get);
+router.post("/user/incomes", incomeController.create);
+router.put("/user/incomes/:incomeId", incomeController.update);
+router.delete("/user/incomes/:incomeId", incomeController.delete);
 
 // CONVITES
 router.get("/user/invitations",UserController.indexInvitations) // Listar convites do cara atual
