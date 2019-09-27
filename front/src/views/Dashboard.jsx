@@ -51,7 +51,7 @@ class Dashboard extends Component {
       <div className="content">
         <Grid fluid>
           <Row>
-            <Col lg={3} sm={6}>
+            <Col lg={4} sm={6}>
               <StatsCard
                 bigIcon={<i className="pe-7s-server text-warning" />}
                 statsText="Renda Mensal"
@@ -60,7 +60,7 @@ class Dashboard extends Component {
                 statsIconText="Atualizado há pouco"
               />
             </Col>
-            <Col lg={3} sm={6}>
+            <Col lg={4} sm={6}>
               <StatsCard
                 bigIcon={<i className="pe-7s-wallet text-success" />}
                 statsText="Gastos deste mês"
@@ -69,7 +69,7 @@ class Dashboard extends Component {
                 statsIconText="Atualizado ontem"
               />
             </Col>
-            <Col lg={3} sm={6}>
+            <Col lg={4} sm={6}>
               <StatsCard
                 bigIcon={<i className="pe-7s-graph1 text-danger" />}
                 statsText="Gastos deste ano"
@@ -78,7 +78,7 @@ class Dashboard extends Component {
                 statsIconText="Atualizado ontem"
               />
             </Col>
-            <Col lg={3} sm={6}>
+            <Col lg={4} sm={6}>
               <StatsCard
                 bigIcon={<i className="fa fa-twitter text-info" />}
                 statsText="Amigos"

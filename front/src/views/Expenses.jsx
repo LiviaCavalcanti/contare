@@ -23,7 +23,7 @@ class Dashboard extends Component {
       <div className="content">
         <Grid fluid>
           <Row>
-            <h3>Rendas Periódicas</h3>
+            <h3>Gasto Total</h3>
           </Row>
           <Row>
             <h4>Mensais</h4>
@@ -32,27 +32,44 @@ class Dashboard extends Component {
             <Col lg={4} sm={6}>
               <StatsCard
                 bigIcon={<i className="pe-7s-server text-warning" />}
-                statsText="Emprego 1"
-                statsValue="R$4.500,00"
+                statsText="Total do Mês Atual"
+                statsValue="R$6.500,00"
                 statsIcon={<i className="fa fa-refresh" />}
                 statsIconText="Atualizado há pouco"
               />
             </Col>
+            <Col lg={4} sm={6}>
+              <Card style={{ width: '18rem' }}>
+                {/* <Card.Img variant="top" src="holder.js/100px180" /> */}
+                <Card.Body>
+                  <Card.Title>Card Title</Card.Title>
+                  <Card.Text>
+                    Some quick example text to build on the card title and make up the bulk of
+                    the card's content.
+                  </Card.Text>
+                  <Button variant="primary">Go somewhere</Button>
+                </Card.Body>
+              </Card>
+            </Col>
           </Row>
           <Row>
-            <Button variant={"primary"} className={"text-center"}>
-              Adicionar Renda Periódica
-            </Button>
-          </Row>
-          <Row>
-            <h3>Rendas Únicas</h3>
+            <h3>Gastos por Categoria</h3>
           </Row>
           <Row>
             <Col lg={4} sm={6}>
               <StatsCard
                 bigIcon={<i className="pe-7s-server text-warning" />}
-                statsText="Renda Mensal"
-                statsValue="R$4.500,00"
+                statsText="Comida"
+                statsValue="R$1.500,00"
+                statsIcon={<i className="fa fa-refresh" />}
+                statsIconText="Atualizado há pouco"
+              />
+            </Col>
+            <Col lg={4} sm={6}>
+              <StatsCard
+                bigIcon={<i className="pe-7s-server text-warning" />}
+                statsText="Aluguel"
+                statsValue="R$800,00"
                 statsIcon={<i className="fa fa-refresh" />}
                 statsIconText="Atualizado há pouco"
               />
