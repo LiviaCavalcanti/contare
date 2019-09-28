@@ -5,6 +5,9 @@ const ExpenseController = require("./controllers/ExpenseController");
 const authController = require("./controllers/authController")
 const InvitationController = require("./controllers/InvitationController")
 const incomeController = require("./controllers/incomeController")
+const authMiddleware = require("./middleware/auth")
+
+router.use(authMiddleware);
 
 // Usuario ------------
 router.get("/user", UserController.show);

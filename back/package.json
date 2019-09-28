@@ -28,7 +28,7 @@
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
     "mocha": "^6.1.4",
-    "nodemon": "^1.18.11",
+    "nodemon": "^1.19.2",
     "should": "^13.2.3",
     "supertest": "^4.0.2"
   }
