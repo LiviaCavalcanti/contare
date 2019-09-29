@@ -5,8 +5,7 @@ const User = mongoose.model("User")
 const Invitation = mongoose.model("Invitation")
 const bcrypt = require("bcryptjs");
 
-
-let findUser = function(userId){
+findUser = function(userId,res){
     return User.findById(userId, {password: 0}, function (err, user) {
         if (err) return res.status(500).send("Houve um problema ao encontrar o usuario");
         if (!user) return res.status(404).send("Nenhum usuário encontrado.");
@@ -15,7 +14,7 @@ let findUser = function(userId){
 }
 module.exports = {
     async show(req, res) {
-        const user = await findUser(req.userId);
+        const user = await findUser(req.userId,res);
         if(!user) return res;
         else return res.status(200).send(user);
     },
@@ -36,33 +35,27 @@ module.exports = {
     },
 
     async indexExpenses(req, res){
-        const user = await findUser(req.userId);
+        const user = await findUser(req.userId,res);
         if(!user) return res;
-        const userExpenses = await Expense.find({participants:{
-                                                    userId:user.id,
-                                                    participantStatus:"ACTIVE"
-                                                    }
-                                                });
-        return res.json(userExpenses)
+        const userExpenses = await Expense.find({participants:{$elemMatch:{_id:user.id,
+                                                 participantStatus:"ACTIVE"}}});
+        return res.status(200).send(userExpenses)
     },
 
     async indexInvitations(req, res){
-        const user = await findUser(req.userId);
+        const user = await findUser(req.userId,res);
         if(!user) return res;
-        else return res.json(await Invitation.find({to:user.id}))
+        else return res.status(200).json(await Invitation.find({to:user.id}))
     },
 
     async listEmails(req,res){
-        const user = await findUser(req.userId);
-        
+        const user = await findUser(req.userId,res);
         const allEmails = await User.find({"email":{$ne:user.email}}).distinct("email")
-
         return res.status(200).send(allEmails)
     },
     
     async getObjUSER(req, res) {
-
-        const user = await findUser(req.userId);
+        const user = await findUser(req.userId,res);
         if (!user) return res;
         else return res.status(200).send(user);
     }
