@@ -1,0 +1,44 @@
+.board {
+    background-image: url('../../images/loginbg.jpg');
+    height: 100vh;
+    filter: blur(8px);
+    -webkit-filter: blur(8px);
+  
+    /* Full height */
+  
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+}
+
+.loginForm {
+    background-color: rgb(231, 231, 231); /* Black w/opacity/see-through */
+    color: black;
+    font-weight: bold;
+    border: 3px solid black;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    width: 80%;
+    text-align: center;
+    width: 40%;
+}
+
+.loginHeader {
+    width: 100%;
+    background-color: white;
+    height: 100px;
+    margin: 0;
+}
+
+.loginInputs {
+
+}
+
+.inputRegister{
+    width: 100%;
+}

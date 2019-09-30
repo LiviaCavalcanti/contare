@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { Form, Button } from "react-bootstrap"
+import { Form, Button, Col } from "react-bootstrap"
 import './registerComponent.css'
 import { registerUser } from '../../services/userService'
 import {notifyFailure} from '../../services/notifyService'
@@ -54,14 +54,21 @@ class RegisterScreen extends Component {
     render() {
         return (
             <div>
-                <h3>Registre-se</h3>
+            <div className="board"></div>
+                <div className="loginForm">
+
+                    <div className="loginHeader"><h3>Registre-se</h3></div>
+                    <div className="loginInputs">
+
+             
                 <Form
                     noValidate
                     validated={this.state.validated}
                     onSubmit={e => this.handleSubmit(e)}>
                     <Form.Group controlId="formBasicName">
                         <Form.Label>Insira seu nome</Form.Label>
-                        <Form.Control required={true} type="text" placeholder="Insira seu nome" />
+
+                        <Form.Control  className="inputRegister" required={true} type="text" placeholder="Insira seu nome" />
                         <Form.Control.Feedback type="invalid">
                             Por favor digite seu nome.
                         </Form.Control.Feedback>
@@ -70,7 +77,7 @@ class RegisterScreen extends Component {
 
                     <Form.Group controlId="formBasicEmail">
                         <Form.Label>Insira seu e-mail</Form.Label>
-                        <Form.Control required={true} type="email" placeholder="Insira um e-mail válido" />
+                        <Form.Control className="inputRegister" required={true} type="email" placeholder="Insira um e-mail válido" />
                         <Form.Control.Feedback type="invalid">
                             Por favor digite um email válido.
                         </Form.Control.Feedback>
@@ -78,7 +85,7 @@ class RegisterScreen extends Component {
 
                     <Form.Group controlId="formBasicPassword">
                         <Form.Label>Insira sua senha</Form.Label>
-                        <Form.Control required={true} type="password" placeholder="Escolha uma senha" />
+                        <Form.Control className="inputRegister" required={true} type="password" placeholder="Escolha uma senha" />
                         <Form.Control.Feedback type="invalid">
                             Por favor digite sua senha.
                         </Form.Control.Feedback>
@@ -86,19 +93,21 @@ class RegisterScreen extends Component {
 
                     <Form.Group controlId="formBasicPasswordConfirm">
                         <Form.Label>Confirme sua senha</Form.Label>
-                        <Form.Control required={true} type="password" placeholder="Confirme sua senha escolhida" />
+                        <Form.Control className="inputRegister" required={true} type="password" placeholder="Confirme sua senha escolhida" />
                         <Form.Control.Feedback type="invalid">
                             Por favor confirme sua senha.
                         </Form.Control.Feedback>
 
                     </Form.Group>
-
-                    <Button variant="primary" type="submit">
+                    <Button variant="success" type="submit" size="lg" block>
                         Cadastrar
                 </Button>
                 </Form>
-
-            </div>
+                
+                </div>
+                
+                </div>
+                </div>
         )
     }
 }
