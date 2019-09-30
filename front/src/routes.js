@@ -17,17 +17,15 @@
 */
 import Dashboard from "views/Dashboard.jsx";
 import UserProfile from "views/UserProfile.jsx";
-import TableList from "views/TableList.jsx";
-// import Typography from "views/Typography.jsx";
-import Icons from "views/Icons.jsx";
-// import Maps from "views/Maps.jsx";
 import Notifications from "views/Notifications.jsx";
 import Upgrade from "views/Upgrade.jsx";
 
 // New imports
-import Friends from "views/Friends"
-import Income from "views/Income"
-import Expenses from "views/Expenses"
+import Friends from "views/Friends";
+import Income from "views/Income";
+import Expenses from "views/Expenses";
+import Report from "views/Report";
+import LoginScreen from "views/Login/Login";
 
 const dashboardRoutes = [
   {
@@ -69,30 +67,9 @@ const dashboardRoutes = [
     path: "/table",
     name: "Relatório",
     icon: "pe-7s-note2",
-    component: TableList,
+    component: Report,
     layout: "/admin"
   },
-  // {
-  //   path: "/typography",
-  //   name: "Tipografia (Dev)",
-  //   icon: "pe-7s-news-paper",
-  //   component: Typography,
-  //   layout: "/admin"
-  // },
-  // {
-  //   path: "/icons",
-  //   name: "Ícones (Dev)",
-  //   icon: "pe-7s-science",
-  //   component: Icons,
-  //   layout: "/admin"
-  // },
-  // {
-  //   path: "/maps",
-  //   name: "Mapas (Dev)",
-  //   icon: "pe-7s-map-marker",
-  //   component: Maps,
-  //   layout: "/admin"
-  // },
   {
     path: "/notifications",
     name: "Notificações",
@@ -110,4 +87,15 @@ const dashboardRoutes = [
   }
 ];
 
-export default dashboardRoutes;
+const loginRoute = [{
+  path: "/login",
+  name: "Login",
+  icon: "pe-7s-user",
+  component: LoginScreen,
+  layout: ""
+}];
+
+export {
+  dashboardRoutes,
+  loginRoute,
+};
