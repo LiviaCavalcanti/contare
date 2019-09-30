@@ -1,26 +1,27 @@
 const mongoose = require("mongoose");
 const Expense = mongoose.model("Expense");
-const User = mongoose.model("User")
 const Invitation = mongoose.model("Invitation")
 const InvitationController = require("./InvitationController")
+const findUser = require("./UserController").findUser;
 
-findUser = function(userId,res){
-    return User.findById(userId, {password: 0}, function (err, user) {
-        if (err) return res.status(500).send("Houve um problema ao encontrar o usuario");
-        if (!user) return res.status(404).send("Nenhum usuário encontrado.");
-        return user;
+function findExpenseById(expenseId, res){
+   return Expense.findById(expenseId,function(err,exp){
+        if(err) return res.status(500).send("Houve um erro ao procurar a despesa");
+        if(!exp) return res.status(404).send("Despesa não encontrada")
+        return exp;
     })
 }
 
 module.exports = {
+
+    async findExpenseById(expenseId,res){
+        return findExpenseById(expenseId,res);
+    },
     
     async show(req, res) {
-        return await Expense.findById(req.params.expID,function(err,exp){
-            if(err) return res.status(500).send("Houve um erro ao procurar a despesa");
-            if(!exp) return res.status(404).send("Despesa não encontrada")
-
-            return res.status(200).send(exp);
-        });
+        const exp = await findExpenseById(req.params.expID,res);
+        if(!exp) return res;
+        return res.status(200).send(exp);
     },
 
     async store(req, res) {
@@ -62,28 +63,22 @@ module.exports = {
     },
 
     async update(req, res) {
-        const expense = await Expense.findByIdAndUpdate(req.params.expID, req.body, 
-            { new: true },function(err,exp){
-                if(err) return res.status(500).send("Houve um erro ao procurar a despesa");
-                if(!exp) return res.status(404).send("Despesa não encontrada");
-                return exp;
-            });
-        
-        if(!expense) return res;
-        else return res.status(200).send(expense);
+        var expense = await findExpenseById(req.params.expID,res);
+        if(!expense) return res; 
+        else expense = await Expense.findByIdAndUpdate(expense.id, req.body, { new: true });
+        return res.status(200).send(expense);
     },
 
     async delete(req,res){
-        let thisExpense = await Expense.findById(req.params.expID,function(err,exp){
-            if(err) return res.status(500).send("Houve um erro ao procurar a despesa");
-            if(!exp) return res.status(404).send("Despesa não encontrada")
-            return exp;
-        });
+        const expense = await findExpenseById(req.params.expID,res);
 
-        if(thisExpense === null) return res;
+        if(!expense) return res;
         else{
-            await Invitation.deleteMany({expense:thisExpense.id});
-            return res.status(200).send(await Expense.findByIdAndDelete(thisExpense.id));
+            const reportInvites = await Invitation.deleteMany({expense:expense.id});
+            return res.status(200).send({
+                                 "Expense":await Expense.findByIdAndDelete(expense.id),
+                                 "Deleted Invites":reportInvites
+                                });
         }
     }
 };
