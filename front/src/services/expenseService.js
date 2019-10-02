@@ -4,11 +4,14 @@ import {API_URL} from './index'
 
 
 export const getExpenses = async (token, callback) => {
-    return await axios.get( `${API_URL}/contare/user/expenses`, {headers: {"x-access-token" : token}})
+    console.log("chamou getExpense ", token);
+    return await axios.get( "https://contare-backend.herokuapp.com/contare/user/expenses", {headers: {"x-access-token" : token}})
      .then((response) => {
-            return response.data;
-       },
-       (error) => {
+         console.log("response ", response);
+         return response.data;
+        },
+        (error) => {
+            console.log("erro  ", error);
             return error;
        }
      )

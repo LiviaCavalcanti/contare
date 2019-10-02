@@ -27,6 +27,9 @@ import Expenses from "views/Expenses";
 import Report from "views/Report";
 import LoginScreen from "views/Login/Login";
 
+//Imports contare antigo
+import dashboardComponent from "views/dasboardComponent/dashboardComponent";
+
 const dashboardRoutes = [
   {
     path: "/dashboard",
@@ -77,14 +80,58 @@ const dashboardRoutes = [
     component: Notifications,
     layout: "/admin"
   },
+
+// Contare Antigo
+
   {
-    upgrade: true,
-    path: "/upgrade",
-    name: "Comprar Premium!",
-    icon: "pe-7s-rocket",
-    component: Upgrade,
+    path: "/dashboardContareAntigo",
+    name: "Dashboard Contare Antigo",
+    icon: "pe-7s-graph",
+    component: dashboardComponent,
     layout: "/admin"
-  }
+  },
+  {
+    path: "/user",
+    name: "Perfil",
+    icon: "pe-7s-user",
+    component: UserProfile,
+    layout: "/admin"
+  },
+  {
+    path: "/friends",
+    name: "Amigos",
+    icon: "pe-7s-users",
+    component: Friends,
+    layout: "/admin"
+  },
+  {
+    path: "/income",
+    name: "Renda",
+    icon: "pe-7s-cash",
+    component: Income,
+    layout: "/admin"
+  },
+  {
+    path: "/expenses",
+    name: "Gastos",
+    icon: "pe-7s-wallet",
+    component: Expenses,
+    layout: "/admin"
+  },
+  {
+    path: "/table",
+    name: "Relatório",
+    icon: "pe-7s-note2",
+    component: Report,
+    layout: "/admin"
+  },
+  {
+    path: "/notifications",
+    name: "Notificações",
+    icon: "pe-7s-bell",
+    component: Notifications,
+    layout: "/admin"
+  },
 ];
 
 const loginRoute = [{
