@@ -90,48 +90,7 @@ const dashboardRoutes = [
     component: dashboardComponent,
     layout: "/admin"
   },
-  {
-    path: "/user",
-    name: "Perfil",
-    icon: "pe-7s-user",
-    component: UserProfile,
-    layout: "/admin"
-  },
-  {
-    path: "/friends",
-    name: "Amigos",
-    icon: "pe-7s-users",
-    component: Friends,
-    layout: "/admin"
-  },
-  {
-    path: "/income",
-    name: "Renda",
-    icon: "pe-7s-cash",
-    component: Income,
-    layout: "/admin"
-  },
-  {
-    path: "/expenses",
-    name: "Gastos",
-    icon: "pe-7s-wallet",
-    component: Expenses,
-    layout: "/admin"
-  },
-  {
-    path: "/table",
-    name: "Relatório",
-    icon: "pe-7s-note2",
-    component: Report,
-    layout: "/admin"
-  },
-  {
-    path: "/notifications",
-    name: "Notificações",
-    icon: "pe-7s-bell",
-    component: Notifications,
-    layout: "/admin"
-  },
+  
 ];
 
 const loginRoute = [{
