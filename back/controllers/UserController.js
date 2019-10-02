@@ -1,169 +1,66 @@
-const mongoose = require("mongoose")
-const jwt = require("jsonwebtoken");
-const authConfig = require("../config/auth");
-const JSON = require('circular-json');
-
-const Expense = mongoose.model("Expense");
-const User = mongoose.model("User")
-const Invitation = mongoose.model("Invitation")
+const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
+const Expense = mongoose.model("Expense");
+const User = mongoose.model("User");
+const Invitation = mongoose.model("Invitation");
+
+function findUser(userId,res){
+    return User.findById(userId, {password: 0}, function (err, user) {
+        if (err) return res.status(500).send("Houve um problema ao encontrar o usuario");
+        if (!user) return res.status(404).send("Nenhum usuário encontrado.");
+        return user;
+    })
+}
 
 module.exports = {
+    async findUser(userId,res){
+        return findUser(userId,res);
+    },
+
     async show(req, res) {
-        
-        var token = req.headers['x-access-token'];
-        if (!token) return res.status(401).send({ user: {}, message: "Nenhum token foi fornecido." });
-        
-        jwt.verify(token, authConfig.secret, function(err, decoded) {
-        
-            if (err) return res.status(500).send({ user: {}, message: "Falha ao autenticar token." });
-        
-            User.findById(decoded.id, 
-                { password: 0 }, 
-                function (err, user) {
-                    if (err) return res.status(500).send("Houve um problema ao encontrar o usuario");
-                    if (!user) return res.status(404).send("Nenhum usuário encontrado.");
-                    res.status(200).send(user);
-                }
-            )
-        })
+        const user = await findUser(req.userId,res);
+        if(!user) return res;
+        else return res.status(200).send(user);
     },
 
     async update(req, res) {
-        var token = req.headers['x-access-token'];
-        if (!token) return res.status(401).send({ user: {}, message: "Nenhum token foi fornecido." });
-    
-        let objToUpdate = {}
-
         if(req.body.password){
             const hash = await bcrypt.hash(req.body.password,10)
             req.body.password = hash
-            objToUpdate = req.body
-        } else{
-            objToUpdate = {rent:req.body.rent}
         }
 
-        jwt.verify(token, authConfig.secret, function(err, decoded) {
-        
-            if (err) return res.status(500).send({ user: {}, message: "Falha ao autenticar token." });
+        var user = await findUser(req.userId,res);
+        if(!user) return res;
 
-            console.log(() => {if(reqWithPass){ return req.body } else{ return {rent:req.body.rent}}})
-            User.findByIdAndUpdate(decoded.id, 
-                objToUpdate, 
-                {new: true},
-                function (err, newUser) {
-                    if (err) return res.status(500).send("Houve um problema ao encontrar o usuario");
-                    if (!newUser) return res.status(404).send("Nenhum usuário encontrado.");
-                    res.status(200).send(newUser);
-                }
-            )
-        })
+        user = await User.findByIdAndUpdate(req.userId,req.body,{new:true});
+        return res.status(200).send(user);
     },
 
     async indexExpenses(req, res){
-        var token = req.headers['x-access-token'];
-        if (!token) return res.status(401).send({ user: {}, message: "Nenhum token foi fornecido." });
-        
-        jwt.verify(token, authConfig.secret, function(err, decoded) {
-        
-            if (err) return res.status(500).send({ user: {}, message: "Falha ao autenticar token." });
-
-            // return res.json(await Expense.find({ owner: req.params.id  }))
-
-            User.findById(decoded.id, 
-                { password: 0 }, 
-                async function (err, user) {
-                    if (err) return res.status(500).send("Houve um problema ao encontrar o usuario");
-                    if (!user) return res.status(404).send("Nenhum usuário encontrado.");                
-                    
-                    const userExpenses = [];
-
-                    const allExpenses = await Expense.find();
-
-                    for(let i = 0; i < allExpenses.length;i++){
-                    
-                        if(allExpenses[i].participants.find(function(element,index,array){
-                            if(element._id == user.id && element.participantStatus == "ACTIVE") return allExpenses[i];
-                            else return false;
-                        })!= undefined){
-                            userExpenses.push(allExpenses[i]);
-                            userExpenses.save
-                        }
-                    }
-                    return res.json(userExpenses)
-                        
-                }
-            )
-        })
+        const user = await findUser(req.userId,res);
+        if(!user) return res;
+        const userExpenses = await Expense.find({participants:{$elemMatch:{_id:user.id,
+                                                 participantStatus:"ACTIVE"}}});
+        return res.status(200).send(userExpenses)
     },
-    async indexInvitations(req, res){
-        var token = req.headers['x-access-token'];
-        if (!token) return res.status(401).send({ user: {}, message: "Nenhum token foi fornecido." });
-        
-        jwt.verify(token, authConfig.secret, function(err, decoded) {
-        
-            if (err) return res.status(500).send({ user: {}, message: "Falha ao autenticar token." });
 
-            User.findById(decoded.id, 
-                { password: 0 }, 
-                async function (err, user) {
-                    if (err) return res.status(500).send("Houve um problema ao encontrar o usuario");
-                    if (!user) return res.status(404).send("Nenhum usuário encontrado.");                
-                    return res.json(await Invitation.find({ to: user.id  }))
-                }
-            )
-        })
+    async indexInvitations(req, res){
+        const user = await findUser(req.userId,res);
+        if(!user) return res;
+        else return res.status(200).json(await Invitation.find({to:user.id}))
     },
 
     async listEmails(req,res){
-        var token = req.headers['x-access-token'];
-        if (!token) return res.status(401).send({ user: {}, message: "Nenhum token foi fornecido." });
-        
-        jwt.verify(token, authConfig.secret, function(err, decoded) {
-        
-            if (err) return res.status(500).send({ user: {}, message: "Falha ao autenticar token." });
-
-            User.findById(decoded.id, 
-                { password: 0 }, 
-                async function (err, user) {
-                    if (err) return res.status(500).send("Houve um problema ao encontrar o usuario");
-                    if (!user) return res.status(404).send("Nenhum usuário encontrado.");
-                    
-                    
-                    const allUsers = await User.find({},'email')
-                    const allEmails = []
-
-                    for (let i = 0; i < allUsers.length; i++) {
-                        const element = allUsers[i];
-                        if(element.email != user.email) {
-                            allEmails.push(element.email)
-                            allEmails.save                       
-                        }
-                    }
-                    return res.status(200).send(allEmails)
-                }
-            )
-        })
+        const user = await findUser(req.userId,res);
+        if(!user) return res;
+        const allEmails = await User.find({"email":{$ne:user.email}}).distinct("email")
+        return res.status(200).send(allEmails)
     },
+    
     async getObjUSER(req, res) {
-        
-        var token = req.headers['x-access-token'];
-        if (!token) return res.status(401).send({ user: {}, message: "Nenhum token foi fornecido." });
-        
-        jwt.verify(token, authConfig.secret, function(err, decoded) {
-        
-            if (err) return res.status(500).send({ user: {}, message: "Falha ao autenticar token." });
-        
-            User.findById(decoded.id, 
-                { password: 0 }, 
-               async function (err, user) {
-                    if (err) return res.status(500).send("Houve um problema ao encontrar o usuario");
-                    if (!user) return res.status(404).send("Nenhum usuário encontrado.");
-                    res.status(200).send(await User.findById(req.params.userID));
-                }
-            )
-        })
-
+        const user = await findUser(req.userId,res);
+        if (!user) return res;
+        else return res.status(200).send(user);
     }
 }
