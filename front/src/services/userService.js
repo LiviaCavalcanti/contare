@@ -50,7 +50,7 @@ export const verifyUser = async (token, callback) => {
 
 export const getUser = async (token) => {
     console.log("Inside getUser function. Received this token: ", token);
-    return axios.get( `${API_URL}/contare/user`, {headers: {"Authorization" :  "Bearer " + token}})
+    return axios.get( `${API_URL}/contare/user`, {headers: {"x-access-token" : token}})
      .then((response) => {
          return (response.data)
        },
@@ -77,7 +77,7 @@ export const updateUser = async (token, newUser, callback) => {
         {
             headers: {
                 "x-access-token" : token,
-                "Authorization": "Bearer " + token
+                //"Authorization": "Bearer " + token
             }
         })
     .then((response) => {
