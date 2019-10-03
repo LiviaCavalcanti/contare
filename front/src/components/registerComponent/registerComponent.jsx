@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { Form, Button, Col } from "react-bootstrap"
+import { Form, Button, Col, Container } from "react-bootstrap"
 import './registerComponent.css'
 import { registerUser } from '../../services/userService'
 import {notifyFailure} from '../../services/notifyService'
@@ -53,14 +53,12 @@ class RegisterScreen extends Component {
 
     render() {
         return (
-            <div>
+            <div className="full-div">
             <div className="board"></div>
-                <div className="loginForm">
-
-                    <div className="loginHeader"><h3>Registre-se</h3></div>
-                    <div className="loginInputs">
-
-             
+                <div className="login-div" >
+                
+             <h1 className="login-title">REGISTRE-SE</h1>  
+             <div className="form-div">
                 <Form
                     noValidate
                     validated={this.state.validated}
@@ -99,15 +97,17 @@ class RegisterScreen extends Component {
                         </Form.Control.Feedback>
 
                     </Form.Group>
-                    <Button variant="success" type="submit" size="lg" block>
+                    <Button className="login-bt" variant="success" type="submit" >
                         Cadastrar
                 </Button>
                 </Form>
-                
                 </div>
                 
+                
+
                 </div>
                 </div>
+                
         )
     }
 }

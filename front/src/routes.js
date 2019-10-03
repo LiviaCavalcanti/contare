@@ -16,7 +16,7 @@ export class Routes extends Component {
         return (
             <BrowserRouter>
             
-            <NavbarComponent/>
+
 
                 <Switch>
                     <Route path="/" exact={true} component={() => <App component={DescriptionProject}/>} />
