@@ -38,33 +38,33 @@ class LoginScreen extends Component {
                     validated={this.state.validated}
                     onSubmit={e => this.handleSubmit(e)}>
 
-                <FormInputs
-                      ncols={["col-md-5"]}
-                      properties={[
-                        {
-                          label: "Endereço de Email",
-                          type: "email",
-                          bsClass: "form-control",
-                          placeholder: "Email"
-                        }
-                      ]}
-                    />
+                    <FormInputs
+                        ncols={["col-md-5"]}
+                        properties={[
+                            {
+                            label: "Endereço de Email",
+                            type: "email",
+                            bsClass: "form-control",
+                            placeholder: "Email"
+                            }
+                        ]}
+                        />
 
                     <FormInputs
-                      ncols={["col-md-5"]}
-                      properties={[
+                        ncols={["col-md-5"]}
+                        properties={[
                         {
                         label: "Senha",
                         type: "password",
                         bsClass: "form-control",
                         placeholder: "Senha"
                         }
-                      ]}
+                        ]}
                     />
                     <Button variant="primary" type="submit">
                         Entrar
-                </Button>
-                </Form>
+                    </Button>
+            </Form>
             </div>
         )
     }

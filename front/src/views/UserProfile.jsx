@@ -33,7 +33,51 @@ import defaultBgImg from "assets/img/default-user-profile-bg.jpeg";
 
 import avatar from "assets/img/faces/face-1.jpg";
 
+// New imports for communicating with backend
+import {updateUser, getUser} from 'services/userService'
+import {notifyFailure, notifySucess} from 'services/notifyService'
+
+
 class UserProfile extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.handleUpdateUserProfile = this.handleUpdateUserProfile.bind(this)
+
+  }
+
+  handleUpdateUserProfile() {
+
+    console.log(this.props.user);
+    const token = localStorage.getItem("token-contare");
+    console.log("localStorage: ", localStorage);
+    console.log("Trying to get user with this token: ", token);
+    let user = getUser(token);
+    console.log(user);
+
+    // const newName = document.getElementById('newName').value
+    // const newPass = document.getElementById('newPass').value
+    // const newPassConfirm = document.getElementById('newPassConfirm').value
+
+    // if(newName == "" || newPass == "" || newPassConfirm == "") {
+    //   notifyFailure("Preencha todos os campos corretamente!")
+    // } else {
+    //   if(newPass !== newPassConfirm) {
+    //     notifyFailure("Senhas não conferem!")
+    //   } else {
+    //     let newUser = this.props.user
+    //     newUser.name = newName
+    //     newUser.password = newPass
+    //     const token = localStorage.getItem('token-contare')
+    //     updateUser(token, newUser, function(response){
+    //       notifySucess("Perfil alterado com sucesso!")
+    //       this.setState({ showEdit: false });
+    //   }.bind(this))
+    //   }
+    // }
+  }
+
   render() {
     return (
       <div className="content">
@@ -53,7 +97,6 @@ class UserProfile extends Component {
                           bsClass: "form-control",
                           placeholder: "Empresa",
                           defaultValue: "Contare Ltda.",
-                          disabled: true
                         },
                         {
                           label: "Usuário",
@@ -142,7 +185,7 @@ class UserProfile extends Component {
                         </FormGroup>
                       </Col>
                     </Row>
-                    <Button bsStyle="info" pullRight fill type="submit">
+                    <Button bsStyle="info" pullRight fill onClick={this.handleUpdateUserProfile}>
                       Atualizar Perfil
                     </Button>
                     <div className="clearfix" />

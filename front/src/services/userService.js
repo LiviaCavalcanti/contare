@@ -49,7 +49,8 @@ export const verifyUser = async (token, callback) => {
 }
 
 export const getUser = async (token) => {
-    return axios.get( `${API_URL}/contare/user`, {headers: {"x-access-token" : token}})
+    console.log("Inside getUser function. Received this token: ", token);
+    return axios.get( `${API_URL}/contare/user`, {headers: {"Authorization" :  "Bearer " + token}})
      .then((response) => {
          return (response.data)
        },
@@ -72,14 +73,22 @@ export const getAllEmail = async (token) => {
 
 export const updateUser = async (token, newUser, callback) => {
     console.log('uSER QUE CHEGA:', newUser)
-    axios.post(`${API_URL}/contare/user/edit`, newUser, {headers: {"x-access-token" : token}})
+    axios.post(`${API_URL}/contare/user/edit`, newUser, 
+        {
+            headers: {
+                "x-access-token" : token,
+                "Authorization": "Bearer " + token
+            }
+        })
     .then((response) => {
         callback(response.data)
       },
       (error) => {
-         console.log(error)
+         console.log("Response came back, but got this error: ", error)
       }
-    )
+    ).catch((error) => {
+        console.log("Deu algum erro... This is what I know: ", error);
+    })
 }
 
 export const getUserFromID = async (id, token, callback) => {
