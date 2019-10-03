@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Modal from 'react-bootstrap/Modal'
+import {Modal} from 'reactstrap'
 import {Button} from 'react-bootstrap'
 
 import ConfirmedActionStyled from './styled';

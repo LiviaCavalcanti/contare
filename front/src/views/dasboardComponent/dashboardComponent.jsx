@@ -3,7 +3,7 @@ import DahsboardStyled from './dashboardStyled';
 import AlertExpenses from './alertExpensesComponent/alertExpensesComponent'
 import { verifyUser } from '../../services/userService'
 import {  Row, Col } from 'react-bootstrap';
-import Container from 'react-bootstrap/Container'
+import { Container } from 'reactstrap';
 import UserProfile from '../dasboardComponent/userProfileComponent/userProfileComponent'
 import { withRouter } from 'react-router';
 import { getExpenses } from '../../services/expenseService';

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import Modal from 'react-bootstrap/Modal'
+import {Modal} from 'reactstrap'
 import AddExpenseStyled from './styled';
 
-import Form from 'react-bootstrap/Form'
-import Row from 'react-bootstrap/Row'
+import {Form} from 'reactstrap';
+import {Row} from 'reactstrap';
 import {Col} from 'react-bootstrap';
 
 import {addExpenses} from '../../../services/expenseService'

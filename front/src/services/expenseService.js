@@ -5,7 +5,7 @@ import {API_URL} from './index'
 
 export const getExpenses = async (token, callback) => {
     console.log("chamou getExpense ", token);
-    return await axios.get( "https://contare-backend.herokuapp.com/contare/user/expenses", {headers: {"x-access-token" : token}})
+    return await axios.get( `${API_URL}/contare/user/expenses`, {headers: {"x-access-token" : token}})
      .then((response) => {
          console.log("response ", response);
          return response.data;

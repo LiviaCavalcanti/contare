@@ -1,3 +1,4 @@
 node_modules/
 .vscode/
 .Rhistory
+package-lock.json

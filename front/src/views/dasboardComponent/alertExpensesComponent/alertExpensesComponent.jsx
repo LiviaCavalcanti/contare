@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { Col, Row, Alert} from 'react-bootstrap'
-import Container from 'react-bootstrap/Container'
+import {Container} from 'reactstrap'
 import './alertExpensesComponent.css'
 import TiCalendarOutline from 'react-icons/lib/ti/calendar-outline'
 import MdAccountBalanceWallet from 'react-icons/lib/md/account-balance-wallet'

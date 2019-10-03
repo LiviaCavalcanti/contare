@@ -35,47 +35,47 @@ import avatar from "assets/img/faces/face-1.jpg";
 
 // New imports for communicating with backend
 import {updateUser, getUser} from 'services/userService'
-import {notifyFailure, notifySucess} from 'services/notifyService'
 
 
 class UserProfile extends Component {
 
   constructor(props) {
     super(props);
-
     this.handleUpdateUserProfile = this.handleUpdateUserProfile.bind(this)
-
   }
 
-  handleUpdateUserProfile() {
+  async updateUserFields(user) {
+    if (user == null) {
+      user = getUser(localStorage.getItem("token-contare"));
+    }
+    let userFields = ["name", "lastName", "email", "username", "company", "address", "city", "country", "zip"] 
+    userFields.forEach(field => {
+      let element = document.getElementById(field)
+      if (element) {
+        element.value = user[field] || "";
+      }
+    });
+  }
 
-    console.log(this.props.user);
+  async handleUpdateUserProfile() {
     const token = localStorage.getItem("token-contare");
-    console.log("localStorage: ", localStorage);
-    console.log("Trying to get user with this token: ", token);
-    let user = getUser(token);
-    console.log(user);
+    let user = await getUser(token);
+    const newName = document.getElementById('name').value
 
-    // const newName = document.getElementById('newName').value
-    // const newPass = document.getElementById('newPass').value
-    // const newPassConfirm = document.getElementById('newPassConfirm').value
-
-    // if(newName == "" || newPass == "" || newPassConfirm == "") {
-    //   notifyFailure("Preencha todos os campos corretamente!")
-    // } else {
-    //   if(newPass !== newPassConfirm) {
-    //     notifyFailure("Senhas não conferem!")
-    //   } else {
-    //     let newUser = this.props.user
-    //     newUser.name = newName
-    //     newUser.password = newPass
-    //     const token = localStorage.getItem('token-contare')
-    //     updateUser(token, newUser, function(response){
-    //       notifySucess("Perfil alterado com sucesso!")
-    //       this.setState({ showEdit: false });
-    //   }.bind(this))
-    //   }
-    // }
+    if(newName == "") {
+      //notifyFailure("Preencha todos os campos corretamente!")
+    } else {
+        let newUser = user
+        newUser.name = newName
+        console.log("Changed name: ", newName)
+        const token = localStorage.getItem('token-contare')
+        updateUser(token, newUser, function(response) {
+          console.log("Received this res from op: %o", response);
+          this.updateUserFields(newUser);
+          //notifySucess("Perfil alterado com sucesso!")
+          //this.setState({ showEdit: false });
+      }.bind(this))
+    }
   }
 
   render() {
@@ -92,24 +92,27 @@ class UserProfile extends Component {
                       ncols={["col-md-5", "col-md-3", "col-md-4"]}
                       properties={[
                         {
-                          label: "Empresa (desativado)",
+                          label: "Empresa",
                           type: "text",
                           bsClass: "form-control",
                           placeholder: "Empresa",
                           defaultValue: "Contare Ltda.",
+                          id: "company"
                         },
                         {
                           label: "Usuário",
                           type: "text",
                           bsClass: "form-control",
                           placeholder: "Usuário",
-                          defaultValue: "rafaelpontes"
+                          defaultValue: "rafaelpontes",
+                          id: "username"
                         },
                         {
                           label: "Endereço de Email",
                           type: "email",
                           bsClass: "form-control",
-                          placeholder: "Email"
+                          placeholder: "Email",
+                          id: "email"
                         }
                       ]}
                     />
@@ -121,14 +124,16 @@ class UserProfile extends Component {
                           type: "text",
                           bsClass: "form-control",
                           placeholder: "Primeiro Nome",
-                          defaultValue: "Rafael"
+                          defaultValue: "Rafael",
+                          id: "name"
                         },
                         {
                           label: "Sobrenome",
                           type: "text",
                           bsClass: "form-control",
                           placeholder: "Sobrenome",
-                          defaultValue: "Pontes"
+                          defaultValue: "Pontes",
+                          id: "lastName"
                         }
                       ]}
                     />
@@ -141,7 +146,8 @@ class UserProfile extends Component {
                           bsClass: "form-control",
                           placeholder: "Endereço Residencial",
                           defaultValue:
-                            "Avenida da Paz, número 234"
+                            "Avenida da Paz, número 234",
+                          id: "address"
                         }
                       ]}
                     />
@@ -153,7 +159,8 @@ class UserProfile extends Component {
                           type: "text",
                           bsClass: "form-control",
                           placeholder: "Cidade",
-                          defaultValue: "Campina Grande"
+                          defaultValue: "Campina Grande",
+                          id: "city"
                         },
                         {
                           label: "País",

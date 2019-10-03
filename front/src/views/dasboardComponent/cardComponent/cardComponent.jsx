@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import plus from '../../../images/plus.svg';
 import CardStyled from './cardStyled';
-import Modal from 'react-bootstrap/Modal'
+import {Modal} from 'reactstrap'
 import AdicionarExpenseComponent from '../adicionarExpenseComponent/adicionarExpenseComponent';
 import DetalharExpenseComponent from '../detalharExpenseComponent/detalharExpenseComponent';
 

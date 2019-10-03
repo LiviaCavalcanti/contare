@@ -26,6 +26,7 @@ import Income from "views/Income";
 import Expenses from "views/Expenses";
 import Report from "views/Report";
 import LoginScreen from "views/Login/Login";
+import RegisterScreen from "views/registerComponent/registerComponent";
 
 //Imports contare antigo
 import dashboardComponent from "views/dasboardComponent/dashboardComponent";
@@ -101,7 +102,16 @@ const loginRoute = [{
   layout: ""
 }];
 
+const registerRoute = [{
+  path: "/register",
+  name: "Register",
+  icon: "pe-7s-user",
+  component: RegisterScreen,
+  layout: ""
+}];
+
 export {
   dashboardRoutes,
   loginRoute,
+  registerRoute
 };

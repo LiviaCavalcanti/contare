@@ -73,14 +73,9 @@ export const getAllEmail = async (token) => {
 
 export const updateUser = async (token, newUser, callback) => {
     console.log('uSER QUE CHEGA:', newUser)
-    axios.post(`${API_URL}/contare/user/edit`, newUser, 
-        {
-            headers: {
-                "x-access-token" : token,
-                //"Authorization": "Bearer " + token
-            }
-        })
+    axios.post(`${API_URL}/contare/user/edit`, newUser, {headers: {"x-access-token" : token}})
     .then((response) => {
+        console.log("update user post req came back with this obj: %o", response);
         callback(response.data)
       },
       (error) => {
@@ -97,7 +92,6 @@ export const getUserFromID = async (id, token, callback) => {
         callback(response.data)
        },
        (error) => {
-
        }
      )
 }

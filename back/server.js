@@ -10,7 +10,13 @@ app.use(cors())
 app.use(express.json());
 
 // Iniciando e conectando o DB
-mongoose.connect('mongodb://localhost:27017/contare', {useNewUrlParser: true});
+mongoose.connect('mongodb://localhost:27017/contare', {useNewUrlParser: true})
+    .then((msg) => {
+        console.log("Connection to mongo successful. %o", msg);
+    })
+    .catch((error) => {
+        console.error("ERROR!!!!!!!!!!!!!!! " + error)
+    })
 requireDir("./models")
 
 app.use("/contare", require("./route"));
