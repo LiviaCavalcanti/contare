@@ -7,6 +7,14 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    lastName: {
+        type: String,
+        required: false
+    },
+    username: {
+        type: String,
+        required: false
+    },
     email: {
         type: String,
         unique: true,
@@ -18,6 +26,27 @@ const UserSchema = new mongoose.Schema({
         required: true,
         select: false,
     },
+    bio: {
+        type: String,
+        required: false
+    },
+    address: {
+        type: String,
+        required: false
+    },
+    city: {
+        type: String,
+        required: false
+    },
+    country: {
+        type: String,
+        required: false
+    },
+    zip: {
+        type: String,
+        required: false
+    },
+    // What is a rent????????
     rent: {
         type: Number,
         required: false,
