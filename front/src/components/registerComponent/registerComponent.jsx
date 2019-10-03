@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { Form, Button, Col, Container } from "react-bootstrap"
+import { Form, Button, Col, Container, InputGroup, FormControl } from "react-bootstrap"
 import './registerComponent.css'
 import { registerUser } from '../../services/userService'
 import {notifyFailure} from '../../services/notifyService'
