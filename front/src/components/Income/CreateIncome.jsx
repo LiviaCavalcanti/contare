@@ -23,6 +23,7 @@ export default function CreateIncome(props) {
     function createIncomeResp(resp) {
         if (resp.ok) {
             clearForm()
+            props.created(true)
             setShowSuccessAlert(true)
             setShowFailureAlert(false)
         } else {
@@ -79,7 +80,7 @@ export default function CreateIncome(props) {
                 </div>
             </Modal.Body>
             <Modal.Footer>
-                <Button bsStyle="primary" onClick={() => createIncome(title, description, value, date, periodicity, createIncomeResp) & props.created(true)}>
+                <Button bsStyle="primary" onClick={() => createIncome(title, description, value, date, periodicity, createIncomeResp)}>
                     Criar
                 </Button>
             </Modal.Footer>

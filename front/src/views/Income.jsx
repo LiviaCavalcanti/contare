@@ -1,8 +1,7 @@
 import React, {useState} from "react"
-import {Grid, Row, Col } from "react-bootstrap"
-import {StatsCard} from "components/StatsCard/StatsCard.jsx"
-import {Button} from "react-bootstrap"
+import {Button, Grid, Row} from "react-bootstrap"
 import CreateIncome from '../components/Income/CreateIncome'
+import ListIncomes from '../components/Income/ListIncomes'
 
 export default function() {
     const [showModal, setShowModal] = useState(false)
@@ -19,15 +18,7 @@ export default function() {
                 </Row>
                 <br/>
                 <Row>
-                    <Col lg={4} sm={6}>
-                        <StatsCard
-                            bigIcon={<i className="pe-7s-server text-warning" />}
-                            statsText="Renda Mensal"
-                            statsValue="R$4.500,00"
-                            statsIcon={<i className="fa fa-refresh" />}
-                            statsIconText="Atualizado há pouco"
-                        />
-                    </Col>
+                    <ListIncomes update={updateList} setUpdate={SetUpdateList} />
                 </Row>
             </Grid>
         </div>
