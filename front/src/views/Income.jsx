@@ -1,67 +1,35 @@
-import React, { Component } from "react";
-import ChartistGraph from "react-chartist";
-import { Grid, Row, Col } from "react-bootstrap";
+import React, {useState} from "react"
+import {Grid, Row, Col } from "react-bootstrap"
+import {StatsCard} from "components/StatsCard/StatsCard.jsx"
+import {Button} from "react-bootstrap"
+import CreateIncome from '../components/Income/CreateIncome'
 
-import { Card } from "components/Card/Card.jsx";
-import { StatsCard } from "components/StatsCard/StatsCard.jsx";
+export default function() {
+    const [showModal, setShowModal] = useState(false)
+    const [updateList, SetUpdateList] = useState(true)
 
-import {Button} from "react-bootstrap";
-
-class Dashboard extends Component {
-  createLegend(json) {
-    var legend = [];
-    for (var i = 0; i < json["names"].length; i++) {
-      var type = "fa fa-circle text-" + json["types"][i];
-      legend.push(<i className={type} key={i} />);
-      legend.push(" ");
-      legend.push(json["names"][i]);
-    }
-    return legend;
-  }
-  render() {
     return (
-      <div className="content">
-        <Grid fluid>
-          <Row>
-            <h3>Rendas Periódicas</h3>
-          </Row>
-          <Row>
-            <h4>Mensais</h4>
-          </Row>
-          <Row>
-            <Col lg={4} sm={6}>
-              <StatsCard
-                bigIcon={<i className="pe-7s-server text-warning" />}
-                statsText="Emprego 1"
-                statsValue="R$4.500,00"
-                statsIcon={<i className="fa fa-refresh" />}
-                statsIconText="Atualizado há pouco"
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Button variant={"primary"} className={"text-center"}>
-              Adicionar Renda Periódica
-            </Button>
-          </Row>
-          <Row>
-            <h3>Rendas Únicas</h3>
-          </Row>
-          <Row>
-            <Col lg={4} sm={6}>
-              <StatsCard
-                bigIcon={<i className="pe-7s-server text-warning" />}
-                statsText="Renda Mensal"
-                statsValue="R$4.500,00"
-                statsIcon={<i className="fa fa-refresh" />}
-                statsIconText="Atualizado há pouco"
-              />
-            </Col>
-          </Row>
-        </Grid>
-      </div>
-    );
-  }
+        <div className="content">
+            <CreateIncome show={showModal} setShow={setShowModal} created={SetUpdateList} />
+            <Grid fluid>
+                <Row>
+                    <Button variant={"primary"} className={"text-center"} onClick={() => setShowModal(true)}>
+                        Adicionar Renda
+                    </Button>
+                </Row>
+                <br/>
+                <Row>
+                    <Col lg={4} sm={6}>
+                        <StatsCard
+                            bigIcon={<i className="pe-7s-server text-warning" />}
+                            statsText="Renda Mensal"
+                            statsValue="R$4.500,00"
+                            statsIcon={<i className="fa fa-refresh" />}
+                            statsIconText="Atualizado há pouco"
+                        />
+                    </Col>
+                </Row>
+            </Grid>
+        </div>
+    )
 }
-
-export default Dashboard;
