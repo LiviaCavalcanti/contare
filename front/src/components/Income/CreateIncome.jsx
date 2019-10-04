@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {Alert, Modal, Button, Form, FormGroup, FormControl, ControlLabel} from 'react-bootstrap'
+import {Modal, Button, Form, FormGroup, FormControl, ControlLabel} from 'react-bootstrap'
 import {createIncome} from '../../services/income'
 
 export default function CreateIncome(props) {
