@@ -26,6 +26,10 @@ const UserSchema = new mongoose.Schema({
         required: true,
         select: false,
     },
+    company: {
+        type: String,
+        required: false
+    },
     bio: {
         type: String,
         required: false

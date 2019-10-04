@@ -42,12 +42,20 @@ class UserProfile extends Component {
   constructor(props) {
     super(props);
     this.handleUpdateUserProfile = this.handleUpdateUserProfile.bind(this)
+    this.state = {
+      user: null
+    }
+  }
+
+  componentDidMount() {
+    this.updateUserFields(this.state.user)
   }
 
   async updateUserFields(user) {
     if (user == null) {
-      user = getUser(localStorage.getItem("token-contare"));
+      user = await getUser(localStorage.getItem("token-contare"));
     }
+    console.log("Updating user fields in page with this obj: %o.", user)
     let userFields = ["name", "lastName", "email", "username", "company", "address", "city", "country", "zip"] 
     userFields.forEach(field => {
       let element = document.getElementById(field)
@@ -57,23 +65,30 @@ class UserProfile extends Component {
     });
   }
 
+
+
   async handleUpdateUserProfile() {
     const token = localStorage.getItem("token-contare");
     let user = await getUser(token);
-    const newName = document.getElementById('name').value
 
-    if(newName == "") {
+    // Reading fields
+    let fieldNames = ["name", "lastName", "email", "username", "company", "address", "city", "country", "zip", "password"] 
+    let newFields = {}
+    fieldNames.forEach(field => {
+      newFields[field] = document.getElementById(field).value || ""
+    })
+
+    if(newFields["name"] == "" || newFields["email"] == "" || newFields["password"] == "") {
       //notifyFailure("Preencha todos os campos corretamente!")
+      alert("Preencher pelo menos os campos de nome, email e senha com alguma coisa.")
     } else {
-        let newUser = user
-        newUser.name = newName
-        console.log("Changed name: ", newName)
+        console.log("This is the user I got: %o", user);
         const token = localStorage.getItem('token-contare')
-        updateUser(token, newUser, function(response) {
+        updateUser(token, newFields, function(response) {
           console.log("Received this res from op: %o", response);
-          this.updateUserFields(newUser);
+          this.updateUserFields(newFields);
           //notifySucess("Perfil alterado com sucesso!")
-          //this.setState({ showEdit: false });
+          alert("Perfil alterado com sucesso!")
       }.bind(this))
     }
   }
@@ -96,7 +111,6 @@ class UserProfile extends Component {
                           type: "text",
                           bsClass: "form-control",
                           placeholder: "Empresa",
-                          defaultValue: "Contare Ltda.",
                           id: "company"
                         },
                         {
@@ -104,7 +118,6 @@ class UserProfile extends Component {
                           type: "text",
                           bsClass: "form-control",
                           placeholder: "Usuário",
-                          defaultValue: "rafaelpontes",
                           id: "username"
                         },
                         {
@@ -124,7 +137,6 @@ class UserProfile extends Component {
                           type: "text",
                           bsClass: "form-control",
                           placeholder: "Primeiro Nome",
-                          defaultValue: "Rafael",
                           id: "name"
                         },
                         {
@@ -132,7 +144,6 @@ class UserProfile extends Component {
                           type: "text",
                           bsClass: "form-control",
                           placeholder: "Sobrenome",
-                          defaultValue: "Pontes",
                           id: "lastName"
                         }
                       ]}
@@ -145,8 +156,6 @@ class UserProfile extends Component {
                           type: "text",
                           bsClass: "form-control",
                           placeholder: "Endereço Residencial",
-                          defaultValue:
-                            "Avenida da Paz, número 234",
                           id: "address"
                         }
                       ]}
@@ -159,7 +168,6 @@ class UserProfile extends Component {
                           type: "text",
                           bsClass: "form-control",
                           placeholder: "Cidade",
-                          defaultValue: "Campina Grande",
                           id: "city"
                         },
                         {
@@ -167,13 +175,14 @@ class UserProfile extends Component {
                           type: "text",
                           bsClass: "form-control",
                           placeholder: "País",
-                          defaultValue: "Brasil"
+                          id: "country"
                         },
                         {
                           label: "CEP",
                           type: "number",
                           bsClass: "form-control",
-                          placeholder: "CEP"
+                          placeholder: "CEP",
+                          id: "zip"
                         }
                       ]}
                     />
@@ -188,13 +197,32 @@ class UserProfile extends Component {
                             bsClass="form-control"
                             placeholder="Sua descrição"
                             defaultValue="Agora, serei uma pessoa financeiramente consciente. :)"
+                            id="bio"
                           />
                         </FormGroup>
                       </Col>
                     </Row>
-                    <Button bsStyle="info" pullRight fill onClick={this.handleUpdateUserProfile}>
-                      Atualizar Perfil
-                    </Button>
+                    <Row>
+                      <Col md={8}>
+                        <FormGroup>
+                          <FormInputs ncols={["col-md-8"]}
+                            properties={[{
+                              label: "Senha",
+                              type: "password",
+                              bsClass: "form-control",
+                              placeholder: "Para alterar dados, digite sua senha.",
+                              defaultValue: "",
+                              id: "password"
+                            }]}
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col md={2}>
+                        <Button bsStyle="info" pullRight fill onClick={this.handleUpdateUserProfile}>
+                          Atualizar Perfil
+                        </Button>
+                      </Col>
+                    </Row>
                     <div className="clearfix" />
                   </form>
                 }
@@ -205,15 +233,10 @@ class UserProfile extends Component {
                 //bgImage="https://ununsplash.imgix.net/photo-1431578500526-4d9613015464?fit=crop&fm=jpg&h=300&q=75&w=400"
                 bgImage={defaultBgImg}
                 avatar={avatar}
-                name="Rafael Pontes"
-                userName="rafaelpontes"
+                name=""
+                userName=""
                 description={
                   <span>
-                    "Um cara comum,
-                    <br />
-                    porém, financeiramente,
-                    <br />
-                    Contaresciente!"
                   </span>
                 }
                 socials={
@@ -229,6 +252,7 @@ class UserProfile extends Component {
                     </Button>
                   </div>
                 }
+                id={"usercard"}
               />
             </Col>
           </Row>

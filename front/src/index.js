@@ -35,7 +35,7 @@ ReactDOM.render(
     <Switch>
       <Route path="/admin" render={props => <AdminLayout {...props} />} />
       <Route path="/login" render={props => <LoginLayout {...props} />} />
-      {/* <Route path="/register" render={props => <Register {...props} />} /> */}
+      <Route path="/register" render={props => <Register {...props} />} />
       <Redirect from="/" to="/admin/dashboard" />
     </Switch>
   </BrowserRouter>,

@@ -12,7 +12,7 @@ app.use(express.json());
 // Iniciando e conectando o DB
 mongoose.connect('mongodb://localhost:27017/contare', {useNewUrlParser: true})
     .then((msg) => {
-        console.log("Connection to mongo successful. %o", msg);
+        console.log("Connection to mongo successful!");
     })
     .catch((error) => {
         console.error("ERROR!!!!!!!!!!!!!!! " + error)
