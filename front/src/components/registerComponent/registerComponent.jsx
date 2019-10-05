@@ -5,6 +5,7 @@ import { registerUser } from '../../services/userService'
 import {notifyFailure} from '../../services/notifyService'
 import 'react-toastify/dist/ReactToastify.min.css';
 import { withRouter } from 'react-router';
+import Logo from '../../images/logo.png'
 
 
 class RegisterScreen extends Component {
@@ -14,6 +15,10 @@ class RegisterScreen extends Component {
         this.state = {
             validated: false
         }
+    }
+
+    redirectToMain = () => {
+        this.props.history.push("/")
     }
 
 
@@ -54,9 +59,9 @@ class RegisterScreen extends Component {
     render() {
         return (
             <div className="full-div">
+                <h1 onClick={() => this.redirectToMain()} className="logo">Contare</h1>
             <div className="board"></div>
                 <div className="login-div" >
-                
              <h1 className="login-title">REGISTRE-SE</h1>  
              <div className="form-div">
                 <Form
@@ -95,12 +100,18 @@ class RegisterScreen extends Component {
                         <Form.Control.Feedback type="invalid">
                             Por favor confirme sua senha.
                         </Form.Control.Feedback>
+    
 
+                    </Form.Group>
+                    <Form.Group controlId="formBasicCheckbox">
+                        <Form.Check required className="checkBox" type="checkbox" label={"Li e aceito os Termos de Licença"} />
                     </Form.Group>
                     <Button className="login-bt" variant="success" type="submit" >
                         Cadastrar
                 </Button>
                 </Form>
+                <a className="footer-text">Já possui cadastro? <a className="footer-text-click" href="/login">Faça login</a></a>
+
                 </div>
                 
                 

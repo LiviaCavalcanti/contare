@@ -21,7 +21,7 @@ export class Routes extends Component {
                 <Switch>
                     <Route path="/" exact={true} component={() => <App component={DescriptionProject}/>} />
                     <Route path="/register" component={() => <RegisterScreen/>}/>
-                    <Route path="/login" component={() => <App component={LoginScreen}/>}/>
+                    <Route path="/login" component={() => <LoginScreen/>}/>
                     <Route path="/dashboard" component={() => <DashboardComponent/>}/>
                     <Route path="/invite" component={() => <InviteComponent/>}/>
                     <Route path="*" component={Page404Component} />
