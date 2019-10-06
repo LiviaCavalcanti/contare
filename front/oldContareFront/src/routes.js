@@ -16,12 +16,12 @@ export class Routes extends Component {
         return (
             <BrowserRouter>
             
-            <NavbarComponent/>
+
 
                 <Switch>
                     <Route path="/" exact={true} component={() => <App component={DescriptionProject}/>} />
-                    <Route path="/register" component={() => <App component={RegisterScreen}/>}/>
-                    <Route path="/login" component={() => <App component={LoginScreen}/>}/>
+                    <Route path="/register" component={() => <RegisterScreen/>}/>
+                    <Route path="/login" component={() => <LoginScreen/>}/>
                     <Route path="/dashboard" component={() => <DashboardComponent/>}/>
                     <Route path="/invite" component={() => <InviteComponent/>}/>
                     <Route path="*" component={Page404Component} />
