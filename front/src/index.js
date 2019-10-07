@@ -29,8 +29,9 @@ import "./assets/css/pe-icon-7-stroke.css";
 import AdminLayout from "layouts/Admin.jsx";
 // import LoginLayout from "layouts/Login.jsx";
 // import Register from "views/Register/Register.jsx";
-import LoginScreen from 'components/loginComponent/loginComponent'
-import RegisterScreen from 'components/registerComponent/registerComponent'
+import LoginScreen from "components/loginComponent/loginComponent"
+import RegisterScreen from "components/registerComponent/registerComponent"
+import {ToastContainer} from 'react-toastify'
 
 ReactDOM.render(
   <BrowserRouter>
@@ -40,6 +41,7 @@ ReactDOM.render(
       <Route path="/login" component={() => <LoginScreen/>}/>
       <Redirect from="/" to="/admin/dashboard" />
     </Switch>
+    <ToastContainer />
   </BrowserRouter>,
   document.getElementById("root")
 );
