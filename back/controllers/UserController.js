@@ -62,5 +62,25 @@ module.exports = {
         const user = await findUser(req.userId,res);
         if (!user) return res;
         else return res.status(200).send(user);
+    },
+
+    async deleteFriendship(req,res){
+        const user = findUser(req.userId, res);
+        if(!user) return res;
+        else {
+            const friend = await User.find({email: req.friend});
+            if(!friend) return res.status(404).send("Usuario ".concat(req.friend).concat(" não encontrado"));
+            
+            var index = user.friends.indexOf(friend.id);
+
+            if(index === -1) return res.status(404).send(friend.name.concat(" não é seu amigo."));
+            user.friends.splice(index,1);
+            user.friends.save();
+            
+            index = friend.friends.indexOf(user.id);
+            friend.friends.splice(index,1);
+            friends.friends.save();
+        }
+        return res.status(200).send("Amizade desfeita.")
     }
 }
