@@ -14,8 +14,9 @@ class LoginScreen extends Component {
         }
     }
 
-    redirectToMain = () => {
-        this.props.history.push("/")
+
+    redirect = (path) => {
+        this.props.history.push(path)
     }
 
 
@@ -61,7 +62,7 @@ class LoginScreen extends Component {
                         Entrar
                 </Button>
                 </form>
-                <a className="footer-text">Não possui cadastro? <a className="footer-text-click" href="/register">Registre-se</a></a>
+                <a className="footer-text">Não possui cadastro? <a className="footer-text-click" onClick={() => this.redirect("/register")}>Registre-se</a></a>
                 </div>
 </div>
             </div>
