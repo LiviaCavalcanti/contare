@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { Form, Button } from "react-bootstrap"
+import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap"
 import '../registerComponent/registerComponent.css'
 import { login } from '../../services/userService'
 import 'react-toastify/dist/ReactToastify.min.css';
@@ -35,36 +35,32 @@ class LoginScreen extends Component {
     render() {
         return (
             <div className="full-div">
-                                <h1 onClick={() => this.redirectToMain()} className="logo">Contare</h1>
             <div className="board"></div>
             <div className="login-div" >
             <h1 className="login-title">FAÇA SEU LOGIN</h1>  
             <div className="form-div">
-                <Form
-                    noValidate
-                    validated={this.state.validated}
+                <form
                     onSubmit={e => this.handleSubmit(e)}>
 
-                    <Form.Group controlId="formBasicEmail">
-                        <Form.Label>Email</Form.Label>
-                        <Form.Control className="inputRegister"  required={true} type="email" placeholder="Digite seu email" />
-                        <Form.Control.Feedback type="invalid">
-                            Por favor digite o email.
-                        </Form.Control.Feedback>
-                    </Form.Group>
+                    <FormGroup controlId="formBasicEmail">
+                        <ControlLabel>Email</ControlLabel>
+                        <FormControl className="inputRegister"  required={true} type="email" placeholder="Digite seu email" />
+                        <FormControl.Feedback type="invalid">
+        
+                        </FormControl.Feedback>
+                    </FormGroup>
 
-                    <Form.Group controlId="formBasicPassword">
-                        <Form.Label>Senha</Form.Label>
-                        <Form.Control className="inputRegister"  required={true} type="password" placeholder="Digite sua senha" />
-                        <Form.Control.Feedback type="invalid">
-                            Por favor digite sua senha.
-                        </Form.Control.Feedback>
-                    </Form.Group>
+                    <FormGroup controlId="formBasicPassword">
+                        <ControlLabel>Senha</ControlLabel>
+                        <FormControl className="inputRegister"  required={true} type="password" placeholder="Digite sua senha" />
+                        <FormControl.Feedback type="invalid">
+                        </FormControl.Feedback>
+                    </FormGroup>
 
                     <Button className="login-bt" variant="success" type="submit">
                         Entrar
                 </Button>
-                </Form>
+                </form>
                 <a className="footer-text">Não possui cadastro? <a className="footer-text-click" href="/register">Registre-se</a></a>
                 </div>
 </div>

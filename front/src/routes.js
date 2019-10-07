@@ -25,8 +25,8 @@ import Friends from "views/Friends";
 import Income from "views/Income";
 import Expenses from "views/Expenses";
 import Report from "views/Report";
-import LoginScreen from "views/Login/Login";
-import RegisterScreen from "views/registerComponent/registerComponent";
+import LoginScreen from "components/loginComponent/loginComponent";
+import RegisterScreen from "components/registerComponent/registerComponent";
 
 //Imports contare antigo
 import dashboardComponent from "views/dasboardComponent/dashboardComponent";
@@ -115,3 +115,5 @@ export {
   loginRoute,
   registerRoute
 };
+
+
