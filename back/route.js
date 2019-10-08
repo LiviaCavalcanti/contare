@@ -35,6 +35,10 @@ router.get("/user/invitations",UserController.indexInvitations) // Listar convit
 router.put("/user/invitations",InvitationController.accept) // Aceitar um convite
 router.post("/user/invitations",InvitationController.refuse) // Recusar um convite
 
+// AMIGOS
+router.get("/user/friends", UserController.getFriends);
+router.post("/user/friends", UserController.addNewFriendship);
+router.delete("/user/friends",UserController.deleteFriendship);
 
 router.post("/register", authController.register);
 router.post("/authenticate", authController.authenticate);

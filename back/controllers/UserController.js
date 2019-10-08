@@ -64,23 +64,60 @@ module.exports = {
         else return res.status(200).send(user);
     },
 
+    async addNewFriendship(req,res){
+        const user = await findUser(req.userId,res);
+        if(!user) return res;
+
+        const friend = await User.findOne({email: req.body.friend});
+        if(!friend) return res.status(404).send("Usuario ".concat(req.body.friend).concat(" não encontrado"));
+        if(friend.email === user.email) return res.status(400).send("Você nao pode ser seu amigo");
+        
+        var index = user.friends.findIndex(e=>{
+            return (e._id.equals(friend.id))
+        });
+
+        if(index != -1){
+            return res.status(400).send(friend.name.concat(" já é seu amigo."));
+        }else{
+            user.friends.push(friend.id);
+            friend.friends.push(user.id);
+
+            await User.findByIdAndUpdate(user.id,user,{new:true});
+            await User.findByIdAndUpdate(friend.id,friend,{new:true});
+        }
+
+        return res.status(200).send(user.friends)
+    },
+
     async deleteFriendship(req,res){
-        const user = findUser(req.userId, res);
+        const user = await findUser(req.userId, res);
         if(!user) return res;
         else {
-            const friend = await User.find({email: req.friend});
-            if(!friend) return res.status(404).send("Usuario ".concat(req.friend).concat(" não encontrado"));
+            const friend = await User.findOne({email: req.body.friend});
+            if(!friend) return res.status(404).send("Usuario ".concat(req.body.friend).concat(" não encontrado"));
             
-            var index = user.friends.indexOf(friend.id);
+            var index = user.friends.findIndex(e=>{
+                return (e._id.equals(friend.id))
+            });
 
             if(index === -1) return res.status(404).send(friend.name.concat(" não é seu amigo."));
             user.friends.splice(index,1);
-            user.friends.save();
             
             index = friend.friends.indexOf(user.id);
             friend.friends.splice(index,1);
-            friends.friends.save();
+
+            await User.findByIdAndUpdate(user.id,user,{new:true});
+            await User.findByIdAndUpdate(friend.id,friend,{new:true});
         }
         return res.status(200).send("Amizade desfeita.")
+    },
+    
+    async getFriends(req,res){
+        const user = await findUser(req.userId,res);
+        if(!user) return res;
+        
+        var friends = await User.find({friends:{$elemMatch:{_id:user.id}}},"name + email");
+
+        return res.status(200).send(friends);
     }
 }
