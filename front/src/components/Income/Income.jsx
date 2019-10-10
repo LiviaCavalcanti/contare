@@ -14,6 +14,13 @@ export default function Income(props) {
         let incomeModals = props.incomeModals.slice()
         incomeModals[props.i] = false
         props.setIncomeModals(incomeModals)
+
+        setTitle(props.income.title)
+        setDescription(props.income.description)
+        setValue(props.income.value)
+        setDate((new Date(props.income.receivedOn)).toISOString().slice(0, 10))
+        setPeriodicity(props.income.periodicity)
+        setCanceledDate(props.income.canceledOn ? (new Date(props.income.canceledOn)).toISOString().slice(0, 10) : '')
     }
 
     return (
