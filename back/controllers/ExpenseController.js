@@ -40,7 +40,9 @@ module.exports = {
                     description: req.body.description,
                     dueDate: req.body.dueDate,
                     owner: user.id,
-                    totalValue: req.body.totalValue
+                    totalValue: req.body.totalValue,
+                    category: req.body.category,
+                    periodicity: req.body.periodicity
                 })
                     
                 thisExpense.participants.push({
