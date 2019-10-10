@@ -56,8 +56,8 @@ export default function Income(props) {
                             <option value='ANNUALLY'>Anual</option>
                         </FormControl>
                     </FormGroup>
-                    <FormGroup>
-                        <ControlLabel>Até quando renda ainda foi recebida (deixar sem data caso renda ainda é recebida ou se renda não tem recorrencia)</ControlLabel>
+                    <FormGroup className={periodicity != 'NONE' ? '' : 'hidden'}>
+                        <ControlLabel>Até quando renda ainda foi recebida (deixar sem data caso renda ainda é recebida)</ControlLabel>
                         <FormControl type="date" value={canceledDate} onChange={val => setCanceledDate(val.target.value)}/>
                     </FormGroup>
                 </Form>
