@@ -12,12 +12,18 @@ export default function CreateIncome(props) {
     const [showSuccessAlert, setShowSuccessAlert] = useState(false)
     const [showFailureAlert, setShowFailureAlert] = useState(false)
 
+    const [showTitleAlert, setShowTitleAlert] = useState(false)
+    const [showValueAlert, setShowValueAlert] = useState(false)
+
     function clearForm() {
         setTitle('')
         setDescription('')
         setValue('')
         setDate((new Date()).toISOString().slice(0, 10))
         setPeriodicity('NONE')
+
+        setShowTitleAlert(false)
+        setShowValueAlert(false)
     }
 
     function createIncomeResp(resp) {
@@ -32,6 +38,33 @@ export default function CreateIncome(props) {
         }
     }
 
+    function validateTitle(title) {
+        if (title.length > 0) {
+            setShowTitleAlert(false)
+            return true
+        } else {
+            setShowTitleAlert(true)
+            return false
+        }
+    }
+
+    function validateValue(value) {
+        if (value > 0) {
+            setShowValueAlert(false)
+            return true
+        } else {
+            setShowValueAlert(true)
+            return false
+        }
+    }
+
+    function submit() {
+        let isValidTitle = validateTitle(title)
+        let isValidValue = validateValue(value)
+        if (isValidTitle && isValidValue)
+            createIncome(title, description, value, date, periodicity, createIncomeResp)
+    }
+
     return (
         <Modal show={props.show} onHide={() => props.setShow(false) & clearForm() & setShowSuccessAlert(false) & setShowFailureAlert(false)}>
             <Modal.Header closeButton>
@@ -41,7 +74,8 @@ export default function CreateIncome(props) {
                 <Form>
                     <FormGroup>
                         <ControlLabel>Título</ControlLabel>
-                        <FormControl type="text"  value={title} onChange={val => setTitle(val.target.value)}/>
+                        <FormControl type="text"  value={title} onChange={val => setTitle(val.target.value) & validateTitle(val.target.value)} style={showTitleAlert ? {borderColor: 'red', color: 'red'} : {}}/>
+                        {showTitleAlert && <span style={{color: 'red'}}>Título necessário</span>}
                     </FormGroup>
                     <FormGroup>
                         <ControlLabel>Descrição</ControlLabel>
@@ -49,7 +83,8 @@ export default function CreateIncome(props) {
                     </FormGroup>
                     <FormGroup>
                         <ControlLabel>Valor</ControlLabel>
-                        <FormControl type="number" value={value} onChange={val => setValue(val.target.value)}/>
+                        <FormControl type="number" value={value} onChange={val => setValue(val.target.value) & validateValue(val.target.value)} style={showValueAlert ? {borderColor: 'red', color: 'red'} : {}}/>
+                        {showValueAlert && <span style={{color: 'red'}}>Valor acima de zero necessário</span>}
                     </FormGroup>
                     <FormGroup>
                         <ControlLabel>Data de recebimento</ControlLabel>
@@ -80,7 +115,7 @@ export default function CreateIncome(props) {
                 </div>
             </Modal.Body>
             <Modal.Footer>
-                <Button bsStyle="primary" onClick={() => createIncome(title, description, value, date, periodicity, createIncomeResp)}>
+                <Button bsStyle="primary" onClick={submit}>
                     Criar
                 </Button>
             </Modal.Footer>

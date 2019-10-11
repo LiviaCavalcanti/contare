@@ -10,6 +10,10 @@ export default function Income(props) {
     const [periodicity, setPeriodicity] = useState(props.income.periodicity)
     const [canceledDate, setCanceledDate] = useState(props.income.canceledOn ? (new Date(props.income.canceledOn)).toISOString().slice(0, 10) : '')
 
+    const [showTitleAlert, setShowTitleAlert] = useState(false)
+    const [showValueAlert, setShowValueAlert] = useState(false)
+    const [showCanceledDateAlert, setShowCanceledDateAlert] = useState(false)
+
     function onHide() {
         let incomeModals = props.incomeModals.slice()
         incomeModals[props.i] = false
@@ -21,6 +25,55 @@ export default function Income(props) {
         setDate((new Date(props.income.receivedOn)).toISOString().slice(0, 10))
         setPeriodicity(props.income.periodicity)
         setCanceledDate(props.income.canceledOn ? (new Date(props.income.canceledOn)).toISOString().slice(0, 10) : '')
+
+        setShowTitleAlert(false)
+        setShowValueAlert(false)
+        setShowCanceledDateAlert(false)
+    }
+
+    function validateTitle(title) {
+        if (title.length > 0) {
+            setShowTitleAlert(false)
+            return true
+        } else {
+            setShowTitleAlert(true)
+            return false
+        }
+    }
+
+    function validateValue(value) {
+        if (value > 0) {
+            setShowValueAlert(false)
+            return true
+        } else {
+            setShowValueAlert(true)
+            return false
+        }
+    }
+
+    function validateCanceledDate(canceledDate) {
+        if (date) {
+            let d1 = new Date(date)
+            let d2 = new Date(canceledDate)
+            window.d1 = d1
+            window.d2 = d2
+            if (d1 > d2) {
+                setShowCanceledDateAlert(true)
+                return false
+            }
+        }
+        setShowCanceledDateAlert(false)
+        return true
+    }
+
+    function submit() {
+        let isValidTitle = validateTitle(title)
+        let isValidValue = validateValue(value)
+        let isValidCanceledDate = validateCanceledDate(canceledDate)
+        if (isValidTitle && isValidValue && isValidCanceledDate) {
+            updateIncome(props.income._id, title, description, value, date, periodicity, canceledDate)
+            props.setUpdate(true)
+        }
     }
 
     return (
@@ -32,7 +85,8 @@ export default function Income(props) {
                 <Form>
                     <FormGroup>
                         <ControlLabel>Título</ControlLabel>
-                        <FormControl type="text"  value={title} onChange={val => setTitle(val.target.value)}/>
+                        <FormControl type="text"  value={title} onChange={val => setTitle(val.target.value) & validateTitle(val.target.value)} style={showTitleAlert ? {borderColor: 'red', color: 'red'} : {}}/>
+                        {showTitleAlert && <span style={{color: 'red'}}>Título necessário</span>}
                     </FormGroup>
                     <FormGroup>
                         <ControlLabel>Descrição</ControlLabel>
@@ -40,7 +94,8 @@ export default function Income(props) {
                     </FormGroup>
                     <FormGroup>
                         <ControlLabel>Valor</ControlLabel>
-                        <FormControl type="number" value={value} onChange={val => setValue(val.target.value)}/>
+                        <FormControl type="number" value={value} onChange={val => setValue(val.target.value) & validateValue(val.target.value)} style={showValueAlert ? {borderColor: 'red', color: 'red'} : {}}/>
+                        {showValueAlert && <span style={{color: 'red'}}>Valor acima de zero necessário</span>}
                     </FormGroup>
                     <FormGroup>
                         <ControlLabel>Data de recebimento</ControlLabel>
@@ -58,7 +113,8 @@ export default function Income(props) {
                     </FormGroup>
                     <FormGroup className={periodicity != 'NONE' ? '' : 'hidden'}>
                         <ControlLabel>Até quando renda ainda foi recebida (deixar sem data caso renda ainda é recebida)</ControlLabel>
-                        <FormControl type="date" value={canceledDate} onChange={val => setCanceledDate(val.target.value)}/>
+                        <FormControl type="date" value={canceledDate} onChange={val => setCanceledDate(val.target.value) & validateCanceledDate(val.target.value)} style={showCanceledDateAlert ? {borderColor: 'red', color: 'red'} : {}}/>
+                        {showCanceledDateAlert && <span style={{color: 'red'}}>Não pode ser antes da data de recebimento</span>}
                     </FormGroup>
                 </Form>
             </Modal.Body>
@@ -66,7 +122,7 @@ export default function Income(props) {
                 <Button bsStyle="danger" onClick={() => deleteIncome(props.income._id) & props.setUpdate(true)}>
                     Deletar
                 </Button>
-                <Button bsStyle="primary" onClick={() => updateIncome(props.income._id, title, description, value, date, periodicity, canceledDate) & props.setUpdate(true)}>
+                <Button bsStyle="primary" onClick={submit}>
                     Atualizar
                 </Button>
             </Modal.Footer>
