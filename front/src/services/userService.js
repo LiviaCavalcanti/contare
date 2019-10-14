@@ -55,7 +55,7 @@ export const getUser = async (token) => {
          return (response.data)
        },
        (error) => {
-            //window.location.href = "/"
+            window.location.href = "/register"
        }
      )
 }
