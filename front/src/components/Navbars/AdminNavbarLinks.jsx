@@ -18,8 +18,40 @@
 import React, { Component } from "react";
 import { NavItem, Nav, NavDropdown, MenuItem } from "react-bootstrap";
 import {Img} from "react";
+import {getUser} from '../../services/userService'
 
 class AdminNavbarLinks extends Component {
+
+  constructor(props) {
+    super(props)
+    this.getUserFromToken = this.getUserFromToken.bind(this)
+    this.logOut = this.logOut.bind(this)
+    this.state = {
+      user:{},
+      token: localStorage.getItem("token-contare")
+    }
+  }
+
+  componentWillMount() {
+    this.getUserFromToken()
+  }
+
+  getUserFromToken = async () => {
+
+    if(this.state.token == null || this.state.token == undefined) {
+      window.location.href = "/register"
+    } else {
+      const user = await getUser(this.state.token)
+      this.setState({user})
+
+      }
+  }
+
+  logOut = () => {
+    localStorage.removeItem("token-contare")
+    window.location.href = "/login"
+  }
+
   render() {
     const notification = (
       <div>
@@ -52,7 +84,7 @@ class AdminNavbarLinks extends Component {
         </Nav>
         <Nav pullRight>
           <NavItem eventKey={1}>
-            Rafael Pontes
+            {this.state.user.name}
           </NavItem>
           <NavItem eventKey={1} href="#">
             Conta
@@ -70,7 +102,7 @@ class AdminNavbarLinks extends Component {
             <MenuItem divider />
             <MenuItem eventKey={2.5}>Separated link</MenuItem>
           </NavDropdown> */}
-          <NavItem eventKey={3} href="#">
+          <NavItem onClick={() => this.logOut()} eventKey={3} href="#">
             Log out
           </NavItem>
         </Nav>

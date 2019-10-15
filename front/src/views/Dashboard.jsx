@@ -18,7 +18,8 @@
 import React, { Component } from "react";
 import ChartistGraph from "react-chartist";
 import { Grid, Row, Col } from "react-bootstrap";
-
+import {getUser} from '../services/userService'
+import {getExpenses} from '../services/expenseService'
 import { Card } from "components/Card/Card.jsx";
 import { StatsCard } from "components/StatsCard/StatsCard.jsx";
 import { Tasks } from "components/Tasks/Tasks.jsx";
@@ -36,6 +37,21 @@ import {
 } from "variables/Variables.jsx";
 
 class Dashboard extends Component {
+
+  constructor(props) {
+    super(props)
+    this.getUserFromToken = this.getUserFromToken.bind(this)
+    this.getExpensesFromToken = this.getExpensesFromToken.bind(this)
+    this.calculateYearExpenses = this.calculateYearExpenses.bind(this)
+    this.calculateMonthExpenses = this.calculateMonthExpenses.bind(this)
+    this.createDataBarPlot = this.createDataBarPlot.bind(this)
+    this.state = {
+      user: {},
+      userExpenses: [],
+      token: localStorage.getItem("token-contare"),
+      yearTotal: 0
+    }
+  }
   createLegend(json) {
     var legend = [];
     for (var i = 0; i < json["names"].length; i++) {
@@ -46,6 +62,125 @@ class Dashboard extends Component {
     }
     return legend;
   }
+
+  componentWillMount() {
+    this.getUserFromToken()
+    this.getExpensesFromToken()
+  }
+
+  calculateYearExpenses = () => {
+    let total = 0
+    let expenses = this.state.userExpenses
+    const currentDate = new Date()
+
+
+    expenses.map(expense => {
+      const expenseDueDate = new Date(expense.dueDate)
+
+      if(expenseDueDate.getFullYear() === currentDate.getFullYear()) {
+        total += expense.totalValue
+      }
+      
+    })
+
+    return total
+  }
+
+  calculateMonthExpenses = () => {
+    let total = 0
+    let expenses = this.state.userExpenses
+    const currentDate = new Date()
+
+
+    expenses.map(expense => {
+      const expenseDueDate = new Date(expense.dueDate)
+
+      if((expenseDueDate.getFullYear() === currentDate.getFullYear()) && expenseDueDate.getMonth() == currentDate.getMonth()) {
+        total += expense.totalValue
+      }
+      
+    })
+
+    return total
+  }
+
+  createDataBarPlot = () => {
+    let expenses = this.state.userExpenses
+    const months = dataBar.labels
+    const series = new Array(12).fill(0);
+    const currentDate = new Date()
+    expenses.map(expense => {
+      const expenseDueDate = new Date(expense.dueDate)
+      if(expenseDueDate.getFullYear() === currentDate.getFullYear()) {
+        series[expenseDueDate.getMonth()] += expense.totalValue
+      }
+    })
+
+    const data = {
+      labels: months,
+      series:[series]
+    }
+    return data
+  
+  }
+
+  createDataPointPlot = () => {
+    let expenses = this.state.userExpenses
+    const months = dataBar.labels
+    const series = new Array(12).fill(0);
+    const currentDate = new Date()
+    const currentMonth = currentDate.getMonth()
+    let N_MONTHS = 6
+    expenses.map(expense => {
+      const expenseDueDate = new Date(expense.dueDate)
+      if(expenseDueDate.getFullYear() === currentDate.getFullYear()) {
+        series[expenseDueDate.getMonth()] += expense.totalValue
+      }
+    })
+
+    let newMonths = []
+    let newSeries = []
+
+    for(let i = currentMonth  ; i >= 0; i--){
+      if(N_MONTHS === 0){
+        break;
+      }
+      newMonths.push(months[i])
+      newSeries.push(series[i])
+      N_MONTHS--;
+    }
+
+
+    const data = {
+      labels: newMonths.reverse(),
+      series: [newSeries.reverse()]
+    }
+    return data
+  }
+
+
+
+
+
+  getUserFromToken = async () => {
+
+    if(this.state.token == null || this.state.token == undefined) {
+      window.location.href = "/register"
+    } else {
+      const user = await getUser(this.state.token)
+      this.setState({user})
+
+      }
+  }
+
+  getExpensesFromToken = async() => {
+    const expenses =  await getExpenses(this.state.token);
+
+    this.setState({userExpenses: expenses})
+
+  }
+
+
   render() {
     return (
       <div className="content">
@@ -55,7 +190,7 @@ class Dashboard extends Component {
               <StatsCard
                 bigIcon={<i className="pe-7s-server text-warning" />}
                 statsText="Renda Mensal"
-                statsValue="R$4.500,00"
+                statsValue={"R$ " + this.state.user.rent}
                 statsIcon={<i className="fa fa-refresh" />}
                 statsIconText="Atualizado há pouco"
               />
@@ -64,7 +199,7 @@ class Dashboard extends Component {
               <StatsCard
                 bigIcon={<i className="pe-7s-wallet text-success" />}
                 statsText="Gastos deste mês"
-                statsValue="R$1.345,45"
+                statsValue={"R$ " + this.calculateMonthExpenses()}
                 statsIcon={<i className="fa fa-calendar-o" />}
                 statsIconText="Atualizado ontem"
               />
@@ -73,7 +208,7 @@ class Dashboard extends Component {
               <StatsCard
                 bigIcon={<i className="pe-7s-graph1 text-danger" />}
                 statsText="Gastos deste ano"
-                statsValue="R$12.876,98"
+                statsValue={"R$ " + this.calculateYearExpenses()}
                 statsIcon={<i className="fa fa-clock-o" />}
                 statsIconText="Atualizado ontem"
               />
@@ -82,14 +217,14 @@ class Dashboard extends Component {
               <StatsCard
                 bigIcon={<i className="fa fa-twitter text-info" />}
                 statsText="Amigos"
-                statsValue="12"
+                statsValue="#TODO"
                 statsIcon={<i className="fa fa-refresh" />}
                 statsIconText="Atualizado há 13 dias"
               />
             </Col>
           </Row>
           <Row>
-            <Col md={8}>
+            <Col md={6}>
               <Card
                 statsIcon="fa fa-history"
                 id="chartHours"
@@ -99,19 +234,15 @@ class Dashboard extends Component {
                 content={
                   <div className="ct-chart">
                     <ChartistGraph
-                      data={dataSales}
+                      data={this.createDataPointPlot()}
                       type="Line"
-                      options={optionsSales}
                       responsiveOptions={responsiveSales}
                     />
                   </div>
                 }
-                legend={
-                  <div className="legend">{this.createLegend(legendSales)}</div>
-                }
               />
             </Col>
-            <Col md={4}>
+            {/* <Col md={4}>
               <Card
                 statsIcon="fa fa-clock-o"
                 title="Distribuição de Gastos"
@@ -129,30 +260,26 @@ class Dashboard extends Component {
                   <div className="legend">{this.createLegend(legendPie)}</div>
                 }
               />
-            </Col>
-          </Row>
+            </Col> */}
 
-          <Row>
             <Col md={6}>
               <Card
                 id="chartActivity"
-                title="Gastos brutos mensais"
-                category="2018/2019"
+                title="Total de gastos por mês do último ano"
+                category={new Date().getFullYear()}
                 stats="Atualizado ontem"
                 statsIcon="fa fa-check"
                 content={
                   <div className="ct-chart">
                     <ChartistGraph
-                      data={dataBar}
+                      data={this.createDataBarPlot()}
                       type="Bar"
                       options={optionsBar}
                       responsiveOptions={responsiveBar}
                     />
                   </div>
                 }
-                legend={
-                  <div className="legend">{this.createLegend(legendBar)}</div>
-                }
+
               />
             </Col>
 
