@@ -55,7 +55,15 @@ const UserSchema = new mongoose.Schema({
         type: Number,
         required: false,
         default: 0,
-    }
+    },
+    friends: [{
+        id: {
+            type: mongoose.Schema.Types.ObjectId,
+            required:true,
+            ref: 'User'
+        },
+        required:false
+    }]
 });
 // encriptando a senha do usuario
 UserSchema.pre("save",async function(next){
