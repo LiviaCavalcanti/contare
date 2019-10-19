@@ -4,7 +4,7 @@ export function createIncome(title, description, value, date, periodicity, callb
     fetch(`${API_URL}/contare/user/incomes`, {
         method: 'POST',
         headers: {
-            'x-access-token': localStorage.getItem("token-contare"),
+            'Authorization': "Bearer " + localStorage.getItem("token-contare"),
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -17,7 +17,7 @@ export function getIncomes() {
     return fetch(`${API_URL}/contare/user/incomes`, {
         method: 'GET',
         headers: {
-            'x-access-token': localStorage.getItem("token-contare")
+            'Authorization': "Bearer " + localStorage.getItem("token-contare")
         }
     }).then(resp => resp.json())
 }
@@ -26,7 +26,7 @@ export function updateIncome(id, title, description, value, date, periodicity, c
     fetch(`${API_URL}/contare/user/incomes` + id, {
         method: 'PUT',
         headers: {
-            'x-access-token': localStorage.getItem("token-contare"),
+            'Authorization': "Bearer " + localStorage.getItem("token-contare"),
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -39,7 +39,7 @@ export function deleteIncome(id) {
     fetch(`${API_URL}/contare/user/incomes` + id, {
         method: 'DELETE',
         headers: {
-            'x-access-token': localStorage.getItem("token-contare"),
+            'Authorization': "Bearer " + localStorage.getItem("token-contare"),
             'Content-Type': 'application/json'
         }
     })
