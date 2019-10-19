@@ -23,7 +23,7 @@ export function getIncomes() {
 }
 
 export function updateIncome(id, title, description, value, date, periodicity, canceledDate, callback) {
-    fetch(`${API_URL}/contare/user/incomes` + id, {
+    fetch(`${API_URL}/contare/user/incomes/${id}`, {
         method: 'PUT',
         headers: {
             'Authorization': "Bearer " + localStorage.getItem("token-contare"),
@@ -36,7 +36,7 @@ export function updateIncome(id, title, description, value, date, periodicity, c
 }
 
 export function deleteIncome(id) {
-    fetch(`${API_URL}/contare/user/incomes` + id, {
+    fetch(`${API_URL}/contare/user/incomes/${id}`, {
         method: 'DELETE',
         headers: {
             'Authorization': "Bearer " + localStorage.getItem("token-contare"),
