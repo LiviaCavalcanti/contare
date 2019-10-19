@@ -5,7 +5,7 @@ import {API_URL} from './index'
 
 export const getExpenses = async (token) => {
     console.log("chamou getExpense ", token);
-    return await axios.get( `${API_URL}/contare/user/expenses`, {headers: {"x-access-token" : token}})
+    return await axios.get( `${API_URL}/contare/user/expenses`, {headers: {Authorization : "Bearer " + token}})
      .then((response) => {
          console.log("response ------------ ", response);
          return response.data;
@@ -18,7 +18,7 @@ export const getExpenses = async (token) => {
 }
 
 export const addExpenses = async (token, body) => {
-    return await axios.post( `${API_URL}/contare/user/expenses`, body ,{headers: {"x-access-token" : token}})
+    return await axios.post( `${API_URL}/contare/user/expenses`, body ,{headers: {Authorization : "Bearer " + token}})
      .then((response) => {
             notifySucess("Despesa adicionada com sucesso!")
             return response;
@@ -31,7 +31,7 @@ export const addExpenses = async (token, body) => {
 }
 
 export const deletedExpenses = async (token, id) => {
-    return await axios.delete( `${API_URL}/contare/user/expenses/${id}`, {headers: {"x-access-token" : token}})
+    return await axios.delete( `${API_URL}/contare/user/expenses/${id}`, {headers: {Authorization : "Bearer " + token}})
      .then((response) => {
             notifySucess("Despesa deletada com sucesso!")
             return response;
@@ -44,7 +44,7 @@ export const deletedExpenses = async (token, id) => {
 }
 
 export const updateExpenses = async (token, id, body) => {
-    return await axios.put( `${API_URL}/contare/user/expenses/${id}`, body ,{headers: {"x-access-token" : token}})
+    return await axios.put( `${API_URL}/contare/user/expenses/${id}`, body ,{headers: {Authorization : "Bearer " + token}})
      .then((response) => {
             notifySucess("Despesa alterada com sucesso!")
             return response;

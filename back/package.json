@@ -21,7 +21,8 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.5.1",
     "request": "^2.88.0",
-    "require-dir": "^1.2.0"
+    "require-dir": "^1.2.0",
+    "socket.io": "^2.3.0"
   },
   "devDependencies": {
     "agent": "^0.2.1",

@@ -28,7 +28,7 @@ export const login = async (email, password) => {
 }
 
 export const redirectLoggedUser = async (token) => {
-     axios.get( `${API_URL}/contare/user`, {headers: {"x-access-token" : token}})
+     axios.get( `${API_URL}/contare/user`, {headers: {Authorization : "Bearer " + token}})
       .then((response) => {
           window.location.href = "/dashboard"
         },
@@ -38,7 +38,7 @@ export const redirectLoggedUser = async (token) => {
 }
 
 export const verifyUser = async (token, callback) => {
-    axios.get( `${API_URL}/contare/user`, {headers: {"x-access-token" : token}})
+    axios.get( `${API_URL}/contare/user`, {headers: {Authorization : "Bearer " + token}})
      .then((response) => {
          callback(response.data)
        },
@@ -50,18 +50,19 @@ export const verifyUser = async (token, callback) => {
 
 export const getUser = async (token) => {
     console.log("Inside getUser function. Received this token: ", token);
-    return axios.get( `${API_URL}/contare/user`, {headers: {"x-access-token" : token}})
+    return axios.get( `${API_URL}/contare/user`, {headers: {Authorization : "Bearer " + token}})
      .then((response) => {
          return (response.data)
        },
        (error) => {
-            window.location.href = "/register"
+           alert("Trouble with user retrieval!");
+            // window.location.href = "/register"
        }
      )
 }
 
 export const getAllEmail = async (token) => {
-    return await axios.get( `${API_URL}/contare/user/getAll` ,{headers: {"x-access-token" : token}})
+    return await axios.get( `${API_URL}/contare/user/getAll` ,{headers: {Authorization : "Bearer " + token}})
     .then((response) => {
         return response.data;
     },
@@ -73,7 +74,7 @@ export const getAllEmail = async (token) => {
 
 export const updateUser = async (token, newUser, callback) => {
     console.log('uSER QUE CHEGA:', newUser)
-    axios.post(`${API_URL}/contare/user/edit`, newUser, {headers: {"x-access-token" : token}})
+    axios.post(`${API_URL}/contare/user/edit`, newUser, {headers: {Authorization : "Bearer " + token}})
     .then((response) => {
         console.log("update user post req came back with this obj: %o", response);
         callback(response.data)
@@ -87,7 +88,7 @@ export const updateUser = async (token, newUser, callback) => {
 }
 
 export const getUserFromID = async (id, token, callback) => {
-    return axios.get( `${API_URL}/contare/user/${id}`, {headers: {"x-access-token" : token}})
+    return axios.get( `${API_URL}/contare/user/${id}`, {headers: {Authorization : "Bearer " + token}})
      .then((response) => {
         callback(response.data)
        },
