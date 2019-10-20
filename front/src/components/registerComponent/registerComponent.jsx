@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { Form, Button } from "react-bootstrap"
+import { FormGroup, Button, ControlLabel, Checkbox, FormControl } from "react-bootstrap"
 import './registerComponent.css'
 import { registerUser } from '../../services/userService'
 import {notifyFailure} from '../../services/notifyService'
@@ -14,6 +14,10 @@ class RegisterScreen extends Component {
         this.state = {
             validated: false
         }
+    }
+
+    redirect = (path) => {
+        this.props.history.push(path)
     }
 
 
@@ -53,52 +57,61 @@ class RegisterScreen extends Component {
 
     render() {
         return (
-            <div>
-                <h3>Registre-se</h3>
-                <Form
-                    noValidate
-                    validated={this.state.validated}
-                    onSubmit={e => this.handleSubmit(e)}>
-                    <Form.Group controlId="formBasicName">
-                        <Form.Label>Insira seu nome</Form.Label>
-                        <Form.Control required={true} type="text" placeholder="Insira seu nome" />
-                        <Form.Control.Feedback type="invalid">
-                            Por favor digite seu nome.
-                        </Form.Control.Feedback>
+         <div className="full-div">
+            <div className="board"></div>
+                <div className="login-div" >
+             <h1 className="login-title">REGISTRE-SE</h1>  
+             <div className="form-div">
+                <form onSubmit={e => this.handleSubmit(e)}>
+                    <FormGroup controlId="formBasicName">
+                       <ControlLabel>Insira seu nome</ControlLabel>
 
-                    </Form.Group>
+                        <FormControl  className="inputRegister" required={true} type="text" placeholder="Insira seu nome" />
+                        <FormControl.Feedback type="invalid"/>
+                    </FormGroup>
 
-                    <Form.Group controlId="formBasicEmail">
-                        <Form.Label>Insira seu e-mail</Form.Label>
-                        <Form.Control required={true} type="email" placeholder="Insira um e-mail válido" />
-                        <Form.Control.Feedback type="invalid">
-                            Por favor digite um email válido.
-                        </Form.Control.Feedback>
-                    </Form.Group>
+                    <FormGroup controlId="formBasicEmail">
+                       <ControlLabel>Insira seu e-mail</ControlLabel>
+                        <FormControl className="inputRegister" required={true} type="email" placeholder="Insira um e-mail válido" />
+                        <FormControl.Feedback type="invalid"/>
+                    </FormGroup>
 
-                    <Form.Group controlId="formBasicPassword">
-                        <Form.Label>Insira sua senha</Form.Label>
-                        <Form.Control required={true} type="password" placeholder="Escolha uma senha" />
-                        <Form.Control.Feedback type="invalid">
-                            Por favor digite sua senha.
-                        </Form.Control.Feedback>
-                    </Form.Group>
+                    <FormGroup controlId="formBasicPassword">
+                       <ControlLabel>Insira sua senha</ControlLabel>
+                        <FormControl className="inputRegister" required={true} type="password" placeholder="Escolha uma senha" />
+                        <FormControl.Feedback type="invalid"/>
+                    </FormGroup>
 
-                    <Form.Group controlId="formBasicPasswordConfirm">
-                        <Form.Label>Confirme sua senha</Form.Label>
-                        <Form.Control required={true} type="password" placeholder="Confirme sua senha escolhida" />
-                        <Form.Control.Feedback type="invalid">
-                            Por favor confirme sua senha.
-                        </Form.Control.Feedback>
+                    <FormGroup controlId="formBasicPasswordConfirm">
+                       <ControlLabel>Confirme sua senha</ControlLabel>
+                        <FormControl className="inputRegister" required={true} type="password" placeholder="Confirme sua senha escolhida" />
+                        <FormControl.Feedback type="invalid"/>
+    
 
-                    </Form.Group>
+                    </FormGroup>
+                    <FormGroup controlId="formBasicCheckbox">
 
-                    <Button variant="primary" type="submit">
+                    <div className="terms-div">
+                    <input className="checkbox-input" required type="checkbox">
+                    </input>
+                        Li e aceito os <a className="footer-text-term">termos de uso</a>
+                    </div>
+                    </FormGroup>
+                    <Button className="login-bt" bsStyle="success" type="submit" >
                         Cadastrar
                 </Button>
-                </Form>
+                </form>
+                <a className="footer-text">Já possui cadastro? <a className="footer-text-click" onClick={() => this.redirect("/login")}>Faça login</a></a>
 
-            </div>
+                </div>
+                
+                
+
+                </div>
+                </div>
+
+
+                
         )
     }
 }

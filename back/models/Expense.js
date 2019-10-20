@@ -41,6 +41,16 @@ const ExpenseSchema = new mongoose.Schema({
     totalValue:{
       type: Number,
       required: true
+    },
+    periodicity: {
+        type: String,
+        enum: ['DAILY', 'WEEKLY', 'MONTHLY', 'ANNUALLY', 'NONE'],
+        default: 'NONE'
+    },
+    category:{
+      type: String,
+      required: false,
+      default:"NONE"
     }
 });
 

@@ -1,0 +1,92 @@
+.full-div {
+    width: 100%;
+    height: 100vh;
+
+}
+
+.board {
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: -1;
+    background: url('../../images/loginbg3.jpeg');
+    -webkit-background-size: 100%;
+    background-size: 100%;
+    height: 100vh;
+    filter: blur(9px);
+    transform: scale(1.3); 
+}
+
+.login-div {
+    text-align: center;
+    color: white;
+    position: absolute;
+    width: 50%;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
+    margin: 10px;
+    padding: 10px;
+    -webkit-box-shadow: -1px 4px 26px 11px rgba(0,0,0,0.75);
+    -moz-box-shadow: -1px 4px 26px 11px rgba(0,0,0,0.75);
+    box-shadow: -1px 4px 26px 11px rgba(0,0,0,0.75);
+    word-wrap: break-word;
+    font-weight: bolder;
+    font-family: 'Roboto', sans-serif;
+    border-radius: 10px 10px 10px 10px;
+
+    
+}
+
+.login-title {
+    font-size: 7vh;
+    font-weight: bolder;
+    font-family: 'Roboto', sans-serif;
+
+}
+
+.inputRegister{
+    width: 70%;
+    position: relative;
+    display: block;
+    margin : 0 auto;
+    
+}
+
+.form-div { 
+    font-size: 3vh;
+}
+
+.login-bt {
+    margin-top: 10px;
+    width: 70% !important;
+}
+
+.logo {
+    font-family: 'Staatliches', cursive;
+    margin-left: 10px;
+    cursor: pointer;
+    font: bold arial, sans-serif;
+    background-color: #565656;
+    color: transparent;
+    text-shadow: 1px 2px 0px rgba(255,255,255,0.6);
+    -webkit-background-clip: text;
+       -moz-background-clip: text;
+            background-clip: text;
+
+}
+
+.checkBox{
+    font-size: 2vh;
+}
+
+.footer-text{
+    font-size: 70%;
+}
+
+.footer-text-click {
+    font-weight: bolder;
+    color: #ad2d29;
+}

@@ -8,7 +8,7 @@ export const acceptInviteReq = async (inviteID, token) => {
         invitationId: inviteID
     }
 
-    return axios.put( `${API_URL}/contare/user/invitations`, inviteObj , {headers: {"x-access-token" : token}})
+    return axios.put( `${API_URL}/contare/user/invitations`, inviteObj , {headers: {Authorization : "Bearer " + token}})
      .then((response) => {
         notifySucess(response.data)
        },
@@ -24,7 +24,7 @@ export const rejectInviteReq = async (inviteID, token) => {
         invitationId: inviteID
     }
 
-    return axios.post(`${API_URL}/contare/user/invitations`, inviteObj , {headers: {"x-access-token" : token}})
+    return axios.post(`${API_URL}/contare/user/invitations`, inviteObj , {headers: {Authorization : "Bearer " + token}})
      .then((response) => {
         notifySucess(response.data)
        },
@@ -35,7 +35,7 @@ export const rejectInviteReq = async (inviteID, token) => {
 }
 
 export const getAllInvitations = async (token, callback) => {
-    return await axios.get( `${API_URL}/contare/user/invitations` ,{headers: {"x-access-token" : token}})
+    return await axios.get( `${API_URL}/contare/user/invitations` ,{headers: {Authorization : "Bearer " + token}})
     .then((response) => {
         callback(response.data)
     },
