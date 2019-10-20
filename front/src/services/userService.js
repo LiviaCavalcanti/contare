@@ -49,14 +49,13 @@ export const verifyUser = async (token, callback) => {
 }
 
 export const getUser = async (token) => {
-    console.log("Inside getUser function. Received this token: ", token);
+    // console.log("Inside getUser function. Received this token: ", token);
     return axios.get( `${API_URL}/contare/user`, {headers: {Authorization : "Bearer " + token}})
      .then((response) => {
-         console.log("Got this response from API: %o", response); 
          return (response.data)
        },
        (error) => {
-           alert("Trouble with user retrieval! " + error);
+            alert("Trouble with user retrieval! " + error);
             // window.location.href = "/register"
        }
      )
@@ -74,7 +73,7 @@ export const getAllEmail = async (token) => {
 }
 
 export const updateUser = async (token, newUser, callback) => {
-    console.log('uSER QUE CHEGA:', newUser)
+    // console.log('uSER QUE CHEGA:', newUser)
     axios.post(`${API_URL}/contare/user/edit`, newUser, {headers: {Authorization : "Bearer " + token}})
     .then((response) => {
         console.log("update user post req came back with this obj: %o", response);
