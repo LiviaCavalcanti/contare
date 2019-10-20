@@ -5,6 +5,8 @@ const Expense = mongoose.model("Expense");
 const User = mongoose.model("User");
 const Invitation = mongoose.model("Invitation");
 
+const emitUserProfileUpdate = require("./ConnectionController").emitUserProfileUpdate;
+
 function findUser(userId,res){
     return User.findById(userId, {password: 0}, function (err, user) {
         if (err) return res.status(500).send("Houve um problema ao encontrar o usuario");
@@ -16,6 +18,22 @@ function findUser(userId,res){
 module.exports = {
     async findUser(userId,res){
         return findUser(userId,res);
+    },
+
+    async findUserById(userId) {
+        return User.findById(userId, {password: 0}, function (err, user) {
+            if (err) {
+                let msg = "Houve um problema ao encontrar o usuario";
+                console.error(msg);
+                return msg;
+            }
+            if (!user) {
+                let msg = "Nenhum usuário encontrado.";
+                console.error(msg);
+                return msg;
+            }
+            return user;
+        });
     },
 
     async show(req, res) {
@@ -34,6 +52,7 @@ module.exports = {
         if(!user) return res;
 
         user = await User.findByIdAndUpdate(req.userId,req.body,{new:true});
+        await emitUserProfileUpdate(req.userId, user);
         return res.status(200).send(user);
     },
 

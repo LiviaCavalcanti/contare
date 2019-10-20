@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const Income = mongoose.model("Income");
 const findUser = require("./UserController").findUser
 
+const emitIncomeUpdate = require("./ConnectionController").emitIncomeUpdate;
+
 module.exports = {
 
     async getAll(req, res) {
@@ -28,7 +30,7 @@ module.exports = {
     async create(req, res) {
         const user = await findUser(req.userId,res);
         if(!user) return res;
-
+        emitIncomeUpdate(req.userId);
         return await Income.create({
             title: req.body.title,
             description: req.body.description,
@@ -46,7 +48,7 @@ module.exports = {
     async update(req, res) {
         const user = await findUser(req.userId,res);
         if(!user) return res;
-
+        emitIncomeUpdate(req.userId);
         mongoose.set('useFindAndModify', false);
         return await Income.findOneAndUpdate({ _id: req.params.incomeId, owner: user.id }, req.body,{new:true}, (err, income) => {
             if (err || !income) return res.status(500).send({ error: "Não foi possível atualizar a renda." });
@@ -57,7 +59,7 @@ module.exports = {
     async delete(req, res) {
         const user = await findUser(req.userId,res);
         if(!user) return res;
-
+        emitIncomeUpdate(req.userId);
         return await Income.findOneAndRemove({ _id: req.params.incomeId, owner: user.id }, (err, income) => {
             if (err || !income) return res.status(500).send({ error: "Não foi possível remover a renda." });
             return res.status(200).send(income);

@@ -1,4 +1,4 @@
-const findUser =  require("./UserController").findUser;
+const findUserById =  require("./UserController").findUserById;
 const jwt = require("jsonwebtoken");
 const authConfig = require("../config/auth.json");
 const mongoose = require("mongoose");
@@ -6,10 +6,14 @@ const User = mongoose.model("User");
 
 var connectedClients = {};
 var connectedSockets = {};
+var socketio
 
 module.exports = {
 
     initializeConnections(io) {
+
+        socketio = io;
+
         io.on("connection", (socket) => {
             console.log("Someone connected here...");
         
@@ -24,12 +28,14 @@ module.exports = {
                     if (connectedClients[userId] == null) {
                         connectedClients[userId] = []
                     }
-                    connectedClients[userId].push({
-                        socket: socket,
-                        sid: socket.id,
-                        token: token
-                    });
-                    connectedSockets[socket.id] = userId;
+                    if (connectedSockets[socket.id] == null) {
+                        connectedClients[userId].push({
+                            socket: socket,
+                            sid: socket.id,
+                            token: token
+                        });
+                        connectedSockets[socket.id] = userId;
+                    }
                 }
 
                 console.log("List of connected clients: ", connectedClients);
@@ -49,12 +55,32 @@ module.exports = {
                     connectedSockets[socket.id] = null;
 
                 } else {
-                    console.log("I did not find a socket with id ", socket.id);
+                    console.error("I did not find a socket with id ", socket.id);
                 }
             });
         
         })
         
+    }, // End of initialize connections
+
+    emitUserProfileUpdate(userId, user) {
+        let userSockets = connectedClients[userId];
+        if (userSockets !== "undefined" && user !== "undefined") {
+            userSockets.forEach(userConn => {
+                userConn.socket.emit("updateprofile", user);
+            });
+        } else {
+            console.error("Tentando atualizar user sem sockets vinculados...");
+        }
+    },
+
+    emitIncomeUpdate(userId) {
+        let userSockets = connectedClients[userId];
+        if (userSockets) {
+            userSockets.forEach(userConn => {
+                userConn.socket.emit("updateincome");
+            });
+        }
     }
 
 }

@@ -34,9 +34,8 @@ import defaultBgImg from "assets/img/default-user-profile-bg.jpeg";
 import avatar from "assets/img/faces/face-1.jpg";
 
 // New imports for communicating with backend
-import {updateUser, getUser} from 'services/userService';
+import { updateUser, getUser } from 'services/userService';
 import { initializeConnection } from 'services/ConnectionService';
-
 
 class UserProfile extends Component {
 
@@ -46,50 +45,48 @@ class UserProfile extends Component {
     this.state = {
       user: null
     }
-    initializeConnection();
+    this.socket = initializeConnection();
   }
 
   componentDidMount() {
-    this.updateUserFields(this.state.user)
+    this.updateUserFields(this.state.user);
+    this.socket.on("updateprofile", function (user) {
+      this.updateUserFields(user);
+    }.bind(this));
   }
 
   async updateUserFields(user) {
     if (user == null) {
       user = await getUser(localStorage.getItem("token-contare"));
     }
-    console.log("Updating user fields in page with this obj: %o.", user)
-    let userFields = ["name", "lastName", "email", "username", "company", "address", "city", "country", "zip"] 
+    if (user == null || user === "undefined") return;
+    let userFields = ["name", "lastName", "email", "username", "company", "address", "city", "country", "zip", "bio"] 
     userFields.forEach(field => {
       let element = document.getElementById(field)
       if (element) {
-        element.value = user[field] || "";
+        if (user[field]) {
+          element.value = user[field];
+        } else {
+          element.value = "";
+        }
       }
     });
   }
 
-
-
   async handleUpdateUserProfile() {
     const token = localStorage.getItem("token-contare");
-    let user = await getUser(token);
-
-    // Reading fields
-    let fieldNames = ["name", "lastName", "email", "username", "company", "address", "city", "country", "zip", "password"] 
+    let fieldNames = ["name", "lastName", "email", "username", "company", "address", "city", "country", "zip", "password", "bio"] 
     let newFields = {}
     fieldNames.forEach(field => {
       newFields[field] = document.getElementById(field).value || ""
     })
 
     if(newFields["name"] == "" || newFields["email"] == "" || newFields["password"] == "") {
-      //notifyFailure("Preencha todos os campos corretamente!")
       alert("Preencher pelo menos os campos de nome, email e senha com alguma coisa.")
     } else {
-        console.log("This is the user I got: %o", user);
         const token = localStorage.getItem('token-contare')
         updateUser(token, newFields, function(response) {
-          console.log("Received this res from op: %o", response);
           this.updateUserFields(newFields);
-          //notifySucess("Perfil alterado com sucesso!")
           alert("Perfil alterado com sucesso!")
       }.bind(this))
     }
@@ -198,7 +195,7 @@ class UserProfile extends Component {
                             componentClass="textarea"
                             bsClass="form-control"
                             placeholder="Sua descrição"
-                            defaultValue="Agora, serei uma pessoa financeiramente consciente. :)"
+                            defaultValue=""
                             id="bio"
                           />
                         </FormGroup>
@@ -232,7 +229,6 @@ class UserProfile extends Component {
             </Col>
             <Col md={4}>
               <UserCard
-                //bgImage="https://ununsplash.imgix.net/photo-1431578500526-4d9613015464?fit=crop&fm=jpg&h=300&q=75&w=400"
                 bgImage={defaultBgImg}
                 avatar={avatar}
                 name=""
