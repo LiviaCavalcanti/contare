@@ -35,7 +35,7 @@ import avatar from "assets/img/faces/face-1.jpg";
 
 // New imports for communicating with backend
 import {updateUser, getUser} from 'services/userService';
-// import { initializeConnection } from 'services/ConnectionService';
+import { initializeConnection } from 'services/ConnectionService';
 
 
 class UserProfile extends Component {
@@ -46,7 +46,7 @@ class UserProfile extends Component {
     this.state = {
       user: null
     }
-    // initializeConnection();
+    initializeConnection();
   }
 
   componentDidMount() {

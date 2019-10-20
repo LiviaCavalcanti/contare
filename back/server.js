@@ -20,16 +20,14 @@ mongoose.connect('mongodb://localhost:27017/contare', {useNewUrlParser: true})
 requireDir("./models")
 
 app.use("/contare", require("./route"));
-app.listen(process.env.PORT || 8080); // replaced by socket.io implementation
+// app.listen(process.env.PORT || 8080); // replaced by socket.io implementation
 
 // Socket.io implementation
-// var port = process.env.PORT || 8080;
+var port = process.env.PORT || 8080;
 // This gives socketio access to the server port
-// var io = require('socket.io').listen(app.listen(port));
+var io = require('socket.io').listen(app.listen(port));
 
-// io.on("connection", (conn) => {
-//     console.log("Someone connected here...");
-//     console.log("This is the guy: %o", conn);
-// })
+var connectionController = require("./controllers/ConnectionController");
+connectionController.initializeConnections(io);
 
 module.exports = app
