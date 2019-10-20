@@ -52,10 +52,11 @@ export const getUser = async (token) => {
     console.log("Inside getUser function. Received this token: ", token);
     return axios.get( `${API_URL}/contare/user`, {headers: {Authorization : "Bearer " + token}})
      .then((response) => {
+         console.log("Got this response from API: %o", response); 
          return (response.data)
        },
        (error) => {
-           alert("Trouble with user retrieval!");
+           alert("Trouble with user retrieval! " + error);
             // window.location.href = "/register"
        }
      )

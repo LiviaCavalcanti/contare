@@ -23,7 +23,7 @@ module.exports = {
             user.password = undefined;
             return res.send({ user ,  token: generateToken({id: user.id}),  sucess: "Cadastrado com sucesso!"});
     
-        }catch (err){
+        } catch (err){
             return res.status(400).send({ error: err});
         }
     },

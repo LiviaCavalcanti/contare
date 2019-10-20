@@ -46,11 +46,19 @@ class UserProfile extends Component {
     this.state = {
       user: null
     }
-    initializeConnection();
+    this.socket = initializeConnection();
   }
 
   componentDidMount() {
-    this.updateUserFields(this.state.user)
+    this.updateUserFields(this.state.user);
+    this.socket.on("updateprofile", function (user) {
+      this.updateUserFields(user);
+      console.log("This is my this: ", this);
+      console.log("Received an update profile signal with user " + user.name);
+    }.bind(this));
+    setInterval(() => {
+      console.log("I have this socket: ", this.socket);     
+    }, 10000);
   }
 
   async updateUserFields(user) {
@@ -58,16 +66,19 @@ class UserProfile extends Component {
       user = await getUser(localStorage.getItem("token-contare"));
     }
     console.log("Updating user fields in page with this obj: %o.", user)
+    if (user == null || user === "undefined") return;
     let userFields = ["name", "lastName", "email", "username", "company", "address", "city", "country", "zip"] 
     userFields.forEach(field => {
       let element = document.getElementById(field)
       if (element) {
-        element.value = user[field] || "";
+        if (user[field]) {
+          element.value = user[field];
+        } else {
+          element.value = "";
+        }
       }
     });
   }
-
-
 
   async handleUpdateUserProfile() {
     const token = localStorage.getItem("token-contare");

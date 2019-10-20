@@ -4,7 +4,7 @@ import openSocket from 'socket.io-client';
 //Connecting To socket.io
 var socket = openSocket(API_URL);
 
-export const initializeConnection = function () {
+export function initializeConnection () {
 
     socket.emit("token", localStorage.getItem("token-contare"));
 
