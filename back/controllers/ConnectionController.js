@@ -28,12 +28,14 @@ module.exports = {
                     if (connectedClients[userId] == null) {
                         connectedClients[userId] = []
                     }
-                    connectedClients[userId].push({
-                        socket: socket,
-                        sid: socket.id,
-                        token: token
-                    });
-                    connectedSockets[socket.id] = userId;
+                    if (connectedSockets[socket.id] == null) {
+                        connectedClients[userId].push({
+                            socket: socket,
+                            sid: socket.id,
+                            token: token
+                        });
+                        connectedSockets[socket.id] = userId;
+                    }
                 }
 
                 console.log("List of connected clients: ", connectedClients);
@@ -64,15 +66,20 @@ module.exports = {
     emitUserProfileUpdate(userId, user) {
         let userSockets = connectedClients[userId];
         if (userSockets !== "undefined" && user !== "undefined") {
-            // let user = findUserById(userId);
-            console.log("Firing profile update messages to user ", user);
             userSockets.forEach(userConn => {
                 userConn.socket.emit("updateprofile", user);
-                console.log("Just sent a signal to user " + user.name +
-                            " at socket " + userConn.socket.id);
             });
         } else {
             console.error("Tentando atualizar user sem sockets vinculados...");
+        }
+    },
+
+    emitIncomeUpdate(userId) {
+        let userSockets = connectedClients[userId];
+        if (userSockets) {
+            userSockets.forEach(userConn => {
+                userConn.socket.emit("updateincome");
+            });
         }
     }
 

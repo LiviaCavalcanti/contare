@@ -4,9 +4,17 @@ import {getIncomes} from '../../services/income'
 import Income from './Income'
 import {daysDiff, weeksDiff, monthsDiff, yearsDiff} from '../../utils/date'
 
+import { initializeConnection } from 'services/ConnectionService';
+
 export default function ListIncomes(props) {
     const [incomes, setIncomes] = useState([])
     const [incomeModals, setIncomeModals] = useState([])
+
+    var socket = initializeConnection();
+
+    socket.on("updateincome", function () {
+        props.setUpdate(true);
+    }.bind(this))
 
     useEffect(() => {
         if (props.update) {
