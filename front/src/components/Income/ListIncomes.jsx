@@ -1,8 +1,10 @@
-import {StatsCard} from "components/StatsCard/StatsCard.jsx"
+import {StatsCard} from 'components/StatsCard/StatsCard.jsx'
+import {Grid, Col} from 'react-bootstrap'
 import React, {useState, useEffect} from 'react'
 import {getIncomes} from '../../services/income'
 import Income from './Income'
 import {daysDiff, weeksDiff, monthsDiff, yearsDiff} from '../../utils/date'
+import '../../assets/css/custom.css'
 
 import { initializeConnection } from 'services/ConnectionService';
 
@@ -54,15 +56,19 @@ export default function ListIncomes(props) {
         setIncomeModals(incModals)
     }
 
-    return incomes.map((income, i) =>
-        <div key={income._id}>
-            <StatsCard bigIcon={<i className="pe-7s-server text-warning" />}
-                statsText={income.title}
-                statsValue={"R$ " + income.value}
-                statsIcon={<i className="fa fa-edit" onClick={() => showModal(i)} />}
-                statsIconText={<span onClick={() => showModal(i)}>Editar renda</span>}
-            />
-            <Income income={income} i={i} incomeModals={incomeModals} setIncomeModals={setIncomeModals} setUpdate={props.setUpdate} />
-        </div>
+    return (
+        <Grid fluid>
+            {incomes.map((income, i) =>
+                <Col lg={4} sm={6} key={income._id}>
+                    <StatsCard bigIcon={<i className="pe-7s-server text-warning" />}
+                        statsText={income.title}
+                        statsValue={"R$ " + income.value}
+                        statsIcon={<i className="fa fa-edit clickable" onClick={() => showModal(i)} />}
+                        statsIconText={<span className="clickable" onClick={() => showModal(i)}>Editar renda</span>}
+                    />
+                    <Income income={income} i={i} incomeModals={incomeModals} setIncomeModals={setIncomeModals} setUpdate={props.setUpdate} />
+                </Col>
+            )}
+        </Grid>
     )
 }
