@@ -109,7 +109,7 @@ export default function CreateIncome(props) {
                 </div>
                 <div className={showFailureAlert ? '' : 'hidden'}>
                     <p style={{color: 'red'}}>
-                        Não foi possível criar o gastoi
+                        Não foi possível criar o gasto
                         <Button className='pull-right' style={{color: 'red', borderColor: 'red'}} onClick={() => setShowFailureAlert(false)}>Ok</Button>
                     </p>
                 </div>
