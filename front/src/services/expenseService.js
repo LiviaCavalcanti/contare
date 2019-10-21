@@ -11,7 +11,7 @@ export const getExpenses = async (token) => {
          return response.data;
         },
         (error) => {
-            console.log("erro  ", error);
+            console.log("erro ao solicitar gastos: ", error);
             return error;
        }
      )
