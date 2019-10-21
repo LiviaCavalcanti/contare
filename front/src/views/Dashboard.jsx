@@ -23,6 +23,7 @@ import {getExpenses} from '../services/expenseService'
 import { Card } from "components/Card/Card.jsx";
 import { StatsCard } from "components/StatsCard/StatsCard.jsx";
 import { Tasks } from "components/Tasks/Tasks.jsx";
+import {getIncomes} from '../services/income'
 import {
   dataPie,
   legendPie,
@@ -45,9 +46,11 @@ class Dashboard extends Component {
     this.calculateYearExpenses = this.calculateYearExpenses.bind(this)
     this.calculateMonthExpenses = this.calculateMonthExpenses.bind(this)
     this.createDataBarPlot = this.createDataBarPlot.bind(this)
+    this.calculateUserRent = this.calculateUserRent.bind(this)
     this.state = {
       user: {},
       userExpenses: [],
+      userCurrentRent: 0,
       token: localStorage.getItem("token-contare"),
       yearTotal: 0
     }
@@ -66,6 +69,7 @@ class Dashboard extends Component {
   componentWillMount() {
     this.getUserFromToken()
     this.getExpensesFromToken()
+    this.calculateUserRent()
   }
 
   calculateYearExpenses = () => {
@@ -158,10 +162,6 @@ class Dashboard extends Component {
     return data
   }
 
-
-
-
-
   getUserFromToken = async () => {
 
     if(this.state.token == null || this.state.token == undefined) {
@@ -177,6 +177,23 @@ class Dashboard extends Component {
     const expenses =  await getExpenses(this.state.token);
 
     this.setState({userExpenses: expenses})
+  }
+
+  calculateUserRent = async () => {
+    const incomes = await getIncomes()
+    const currentDate = new Date()
+    let totalIncome = 0
+
+    incomes.map(income => {
+      if(income.periodicity === "MONTHLY") {
+        const incomeDueDate = new Date(income.receivedOn)
+        if(incomeDueDate > currentDate) {
+          totalIncome += income.value
+        }
+      }
+    })
+  
+    this.setState({userCurrentRent: totalIncome})
 
   }
 
@@ -190,7 +207,7 @@ class Dashboard extends Component {
               <StatsCard
                 bigIcon={<i className="pe-7s-server text-warning" />}
                 statsText="Renda Mensal"
-                statsValue={"R$ " + this.state.user.rent}
+                statsValue={"R$ " + this.state.userCurrentRent}
                 statsIcon={<i className="fa fa-refresh" />}
                 statsIconText="Atualizado há pouco"
               />
