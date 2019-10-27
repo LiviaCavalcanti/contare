@@ -63,7 +63,19 @@ const UserSchema = new mongoose.Schema({
             ref: 'User'
         },
         required:false
-    }]
+    }],
+    image: {
+        id:{
+            type: mongoose.Schema.Types.ObjectId,
+            required: true
+        },
+        url:{
+            type: String,
+            required: true,
+            default: "NONE"
+        },
+        required: false
+    }
 });
 // encriptando a senha do usuario
 UserSchema.pre("save",async function(next){

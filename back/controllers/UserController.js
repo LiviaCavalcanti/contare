@@ -138,5 +138,19 @@ module.exports = {
         var friends = await User.find({friends:{$elemMatch:{_id:user.id}}},"name + email");
 
         return res.status(200).send(friends);
+    },
+
+    async addImage(req,res){
+        const user = await findUser(req.userId,res);
+        if(!user) return res;
+
+        console.log(req.file) // to see what is returned to you
+        const image = {};
+        image.url = req.body.file;
+        image.id = req.body.public_id;
+
+        user.image = image;
+        
+        return res.status(200).send(await User.findByIdAndUpdate(user.id,user,{new:true}));
     }
 }

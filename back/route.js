@@ -6,6 +6,7 @@ const authController = require("./controllers/authController")
 const InvitationController = require("./controllers/InvitationController")
 const incomeController = require("./controllers/incomeController")
 const authMiddleware = require("./middleware/auth")
+const parser = require("./cloudinary.config")
 
 router.use(authMiddleware);
 
@@ -13,7 +14,7 @@ router.use(authMiddleware);
 router.get("/user", UserController.show);
 router.post("/user/edit", UserController.update);
 router.get("/user/getAll",UserController.listEmails) // retorna todos os emails do sistema exceto o email do usuário corrente
-
+router.post("/user/image",parser.single("image"),UserController.addImage);
 //---------
 
 // DESPESAS
