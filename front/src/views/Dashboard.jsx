@@ -17,7 +17,7 @@
 */
 import React, { Component } from "react";
 import ChartistGraph from "react-chartist";
-import { Grid, Row, Col } from "react-bootstrap";
+import { Grid, Row, Col, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import {getUser} from '../services/userService'
 import {getExpenses} from '../services/expenseService'
 import { Card } from "components/Card/Card.jsx";
@@ -45,14 +45,15 @@ class Dashboard extends Component {
     this.getExpensesFromToken = this.getExpensesFromToken.bind(this)
     this.calculateYearExpenses = this.calculateYearExpenses.bind(this)
     this.calculateMonthExpenses = this.calculateMonthExpenses.bind(this)
-    this.createDataBarPlot = this.createDataBarPlot.bind(this)
+   // this.createDataBarPlot = this.createDataBarPlot.bind(this)
     this.calculateUserRent = this.calculateUserRent.bind(this)
     this.state = {
       user: {},
       userExpenses: [],
       userCurrentRent: 0,
       token: localStorage.getItem("token-contare"),
-      yearTotal: 0
+      yearTotal: 0,
+      lastMonthsNumber: 3
     }
   }
   createLegend(json) {
@@ -108,33 +109,32 @@ class Dashboard extends Component {
     return total
   }
 
-  createDataBarPlot = () => {
-    let expenses = this.state.userExpenses
-    const months = dataBar.labels
-    const series = new Array(12).fill(0);
-    const currentDate = new Date()
-    expenses.map(expense => {
-      const expenseDueDate = new Date(expense.dueDate)
-      if(expenseDueDate.getFullYear() === currentDate.getFullYear()) {
-        series[expenseDueDate.getMonth()] += expense.totalValue
-      }
-    })
+  // createDataBarPlot = () => {
+  //   let expenses = this.state.userExpenses
+  //   const months = dataBar.labels
+  //   const series = new Array(12).fill(0);
+  //   const currentDate = new Date()
+  //   expenses.map(expense => {
+  //     const expenseDueDate = new Date(expense.dueDate)
+  //     if(expenseDueDate.getFullYear() === currentDate.getFullYear()) {
+  //       series[expenseDueDate.getMonth()] += expense.totalValue
+  //     }
+  //   })
 
-    const data = {
-      labels: months,
-      series:[series]
-    }
-    return data
+  //   const data = {
+  //     labels: months,
+  //     series:[series]
+  //   }
+  //   return data
   
-  }
+  // }
 
-  createDataPointPlot = () => {
+  createDataPointPlot = (N_MONTHS = this.state.lastMonthsNumber) => {
     let expenses = this.state.userExpenses
     const months = dataBar.labels
     const series = new Array(12).fill(0);
     const currentDate = new Date()
     const currentMonth = currentDate.getMonth()
-    let N_MONTHS = 6
     expenses.map(expense => {
       const expenseDueDate = new Date(expense.dueDate)
       if(expenseDueDate.getFullYear() === currentDate.getFullYear()) {
@@ -175,7 +175,7 @@ class Dashboard extends Component {
 
   getExpensesFromToken = async() => {
     const expenses =  await getExpenses(this.state.token);
-
+  
     this.setState({userExpenses: expenses})
   }
 
@@ -195,6 +195,10 @@ class Dashboard extends Component {
   
     this.setState({userCurrentRent: totalIncome})
 
+  }
+
+  setNLastMonths = (e) => {
+    this.setState({lastMonthsNumber:e.target.value})
   }
 
 
@@ -242,16 +246,27 @@ class Dashboard extends Component {
           </Row>
           <Row>
             <Col md={6}>
+
+            <FormGroup controlId="formControlsSelect">
+      <ControlLabel>Selecione para visualizar</ControlLabel>
+      <FormControl onChange={(e) => this.setNLastMonths(e)} componentClass="select" placeholder="select">
+        <option value="3">Últimos 3 meses</option>
+        <option value="6">Últimos 6 meses</option>
+        <option value="12">Último ano</option>
+      </FormControl>
+      </FormGroup>
+
+
               <Card
                 statsIcon="fa fa-history"
                 id="chartHours"
                 title="Histórico de Gastos"
-                category="Últimos 6 meses"
+                category={"Últimos " + this.state.lastMonthsNumber + " meses"}
                 stats="Atualizado ontem"
                 content={
                   <div className="ct-chart">
                     <ChartistGraph
-                      data={this.createDataPointPlot()}
+                      data={this.createDataPointPlot(this.state.lastMonthsNumber)}
                       type="Line"
                       responsiveOptions={responsiveSales}
                     />
@@ -279,7 +294,7 @@ class Dashboard extends Component {
               />
             </Col> */}
 
-            <Col md={6}>
+            {/* <Col md={6}>
               <Card
                 id="chartActivity"
                 title="Total de gastos por mês do último ano"
@@ -298,7 +313,7 @@ class Dashboard extends Component {
                 }
 
               />
-            </Col>
+            </Col> */}
 
             {/* <Col md={6}>
               <Card
