@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { deletedExpenses, updateExpenses } from 'services/expenseService';
+import { deleteExpense, updateExpenses } from 'services/expenseService';
 import {getUser} from 'services/userService'
 
 import {  Table, Button } from 'react-bootstrap';
@@ -78,7 +78,7 @@ class DetalharExpenseComponent extends Component {
   }
 
   async deletedExpense() {
-    await deletedExpenses(localStorage.getItem("token-contare"), this.props.expense._id);
+    await deleteExpense(localStorage.getItem("token-contare"), this.props.expense._id);
     this.hideModalAction();
     this.props.updateCard();
   }

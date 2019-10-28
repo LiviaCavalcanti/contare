@@ -10,19 +10,24 @@ const ExpenseSchema = new mongoose.Schema({
         type: String,
         required: false,
     },
+    createdAt:{
+      type: Date,
+      default: Date.now,
+      required:false,
+    },
     dueDate:{
       type: Date,
       required: false,
+    },
+    endDate: {
+      type: Date,
+      default: Date.now,
+      required:false,
     },
     owner:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
-    },
-    createdAt:{
-      type: Date,
-      default: Date.now,
-      required:false,
     },
     participants: [{
         userId: {

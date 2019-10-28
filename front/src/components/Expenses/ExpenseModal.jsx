@@ -1,36 +1,39 @@
 import React, {useState} from 'react'
 import {Modal, Button, Form, FormGroup, FormControl, ControlLabel} from 'react-bootstrap'
-import {updateExpenses, deletedExpenses} from '../../services/expenseService'
+import {updateExpenses, deleteExpense} from '../../services/expenseService'
 
-export default function Expense(props) {
-    const [title, setTitle] = useState(props.Expense.title)
-    const [description, setDescription] = useState(props.Expense.description)
-    const [value, setValue] = useState(props.Expense.value)
-    //const [date, setDate] = useState((new Date(props.Expense.date)).toISOString().slice(0, 10))
-    const [date, setDate] = useState(new Date())
-    const [periodicity, setPeriodicity] = useState(props.Expense.periodicity)
-    //const [canceledDate, setCanceledDate] = useState(props.Expense.canceledOn ? (new Date(props.Expense.canceledOn)).toISOString().slice(0, 10) : '')
+var token = localStorage.getItem("token-contare")
 
+export default function ExpenseModal(props) {
+    const [title, setTitle] = useState(props.expense.title)
+    const [category, setCategory] = useState(props.expense.category)
+    const [description, setDescription] = useState(props.expense.description)
+    const [totalValue, setTotalValue] = useState(props.expense.totalValue)
+    const [dueDate, setDueDate] = useState((new Date(props.expense.dueDate)).toISOString().slice(0, 10))
+    const [endDate, setEndDate] = useState(props.expense.endDate ? (new Date(props.expense.endDate)).toISOString().slice(0, 10) : '')
+    const [createdAt, setCreatedAt] = useState(props.expense.createdAt ? (new Date(props.expense.createdAt)).toISOString().slice(0, 10) : '')
+    const [periodicity, setPeriodicity] = useState(props.expense.periodicity)
+    
     const [showTitleAlert, setShowTitleAlert] = useState(false)
     const [showValueAlert, setShowValueAlert] = useState(false)
-    const [showCanceledDateAlert, setShowCanceledDateAlert] = useState(false)
+    const [showEndDateAlert, setShowEndDateAlert] = useState(false)
 
     function onHide() {
         let ExpenseModals = props.ExpenseModals.slice()
         ExpenseModals[props.i] = false
         props.setExpenseModals(ExpenseModals)
 
-        setTitle(props.Expense.title)
-        setDescription(props.Expense.description)
-        setValue(props.Expense.value)
-        //setDate((new Date(props.Expense.receivedOn)).toISOString().slice(0, 10))
-        setDate(new Date())
-        setPeriodicity(props.Expense.periodicity)
-        //setCanceledDate(props.Expense.canceledOn ? (new Date(props.Expense.canceledOn)).toISOString().slice(0, 10) : '')
+        setTitle(props.expense.title)
+        setDescription(props.expense.description)
+        setTotalValue(props.expense.totalValue)
+        setCreatedAt(props.expense.createdAt ? (new Date(props.expense.createdAt)).toISOString().slice(0, 10) : (new Date()).toISOString().slice(0, 10))
+        setDueDate((new Date(props.expense.dueDate)).toISOString().slice(0, 10))
+        setEndDate(props.expense.endDate ? (new Date(props.expense.endDate)).toISOString().slice(0, 10) : '')
+        setPeriodicity(props.expense.periodicity)
 
         setShowTitleAlert(false)
         setShowValueAlert(false)
-        setShowCanceledDateAlert(false)
+        setShowEndDateAlert(false)
     }
 
     function validateTitle(title) {
@@ -43,8 +46,8 @@ export default function Expense(props) {
         }
     }
 
-    function validateValue(value) {
-        if (value > 0) {
+    function validateValue(totalValue) {
+        if (totalValue > 0) {
             setShowValueAlert(false)
             return true
         } else {
@@ -53,37 +56,41 @@ export default function Expense(props) {
         }
     }
 
-    function validateCanceledDate(canceledDate) {
-        if (date) {
-            let d1 = new Date(date)
-            let d2 = new Date(canceledDate)
+    function validateEndDate(endDate) {
+        if (dueDate) {
+            let d1 = new Date(dueDate)
+            let d2 = new Date(endDate)
             window.d1 = d1
             window.d2 = d2
             if (d1 > d2) {
-                setShowCanceledDateAlert(true)
+                setShowEndDateAlert(true)
                 return false
             }
         }
-        setShowCanceledDateAlert(false)
+        setShowEndDateAlert(false)
         return true
     }
 
-    function submit() {
+    async function submit() {
         let isValidTitle = validateTitle(title)
-        let isValidValue = validateValue(value)
-        //let isValidCanceledDate = validateCanceledDate(canceledDate)
-        //if (isValidTitle && isValidValue && isValidCanceledDate) {
-        if (isValidTitle && isValidValue) {
-            let expense = {
-                title: title,
-                description: description,
-                value: value,
-                date: date,
-                periodicity: periodicity,
-                //canceledDate: canceledDate
+        let isValidValue = validateValue(totalValue)
+        let isValidEndDate = validateEndDate(endDate)
+        if (isValidTitle && isValidValue && isValidEndDate) {
+            if (isValidTitle && isValidValue) {
+                let expense = {
+                    title: title,
+                    description: description,
+                    category: category,
+                    totalValue: totalValue,
+                    dueDate: dueDate,
+                    periodicity: periodicity,
+                    endDate: endDate,
+                    createdAt: createdAt
+                }
+
+                updateExpenses(localStorage.getItem("token-contare"), props.expense._id, expense)
+                props.setUpdate(true)
             }
-            updateExpenses(localStorage.getItem("token-contare"), props.Expense._id, expense)
-            props.setUpdate(true)
         }
     }
 
@@ -100,17 +107,21 @@ export default function Expense(props) {
                         {showTitleAlert && <span style={{color: 'red'}}>Título necessário</span>}
                     </FormGroup>
                     <FormGroup>
+                        <ControlLabel>Categoria</ControlLabel>
+                        <FormControl type="text" value={category} onChange={val => setCategory(val.target.value)}/>
+                    </FormGroup>
+                    <FormGroup>
                         <ControlLabel>Descrição</ControlLabel>
                         <FormControl type="text" value={description} onChange={val => setDescription(val.target.value)}/>
                     </FormGroup>
                     <FormGroup>
                         <ControlLabel>Valor</ControlLabel>
-                        <FormControl type="number" value={value} onChange={val => setValue(val.target.value) & validateValue(val.target.value)} style={showValueAlert ? {borderColor: 'red', color: 'red'} : {}}/>
+                        <FormControl type="number" value={totalValue} onChange={val => setTotalValue(val.target.value) & validateValue(val.target.value)} style={showValueAlert ? {borderColor: 'red', color: 'red'} : {}}/>
                         {showValueAlert && <span style={{color: 'red'}}>Valor acima de zero necessário</span>}
                     </FormGroup>
                     <FormGroup>
                         <ControlLabel>Data de gasto</ControlLabel>
-                        <FormControl type="date" value={date} onChange={val => setDate(val.target.value)}/>
+                        <FormControl type="date" value={dueDate} onChange={val => setDueDate(val.target.value)}/>
                     </FormGroup>
                     <FormGroup>
                         <ControlLabel>Tipo de recorrencia</ControlLabel>
@@ -124,13 +135,13 @@ export default function Expense(props) {
                     </FormGroup>
                     <FormGroup className={periodicity != 'NONE' ? '' : 'hidden'}>
                         <ControlLabel>Até quando gasto ainda foi realizado (deixar sem data caso gasto ainda ocorre)</ControlLabel>
-                        {/* <FormControl type="date" value={canceledDate} onChange={val => setCanceledDate(val.target.value) & validateCanceledDate(val.target.value)} style={showCanceledDateAlert ? {borderColor: 'red', color: 'red'} : {}}/>
-                        {showCanceledDateAlert && <span style={{color: 'red'}}>Não pode ser antes da data de gasto</span>} */}
+                        <FormControl type="date" value={endDate} onChange={val => setEndDate(val.target.value) & validateEndDate(val.target.value)} style={showEndDateAlert ? {borderColor: 'red', color: 'red'} : {}}/>
+                        {showEndDateAlert && <span style={{color: 'red'}}>Não pode ser antes da data de gasto</span>}
                     </FormGroup>
                 </Form>
             </Modal.Body>
             <Modal.Footer>
-                <Button bsStyle="danger" onClick={() => deletedExpenses(props.Expense._id) & props.setUpdate(true)}>
+                <Button bsStyle="danger" onClick={() => deleteExpense(token, props.expense._id) & props.setUpdate(true)}>
                     Deletar
                 </Button>
                 <Button bsStyle="primary" onClick={submit}>

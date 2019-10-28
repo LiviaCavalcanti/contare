@@ -21,6 +21,7 @@ export default function CreateExpense(props) {
         setTitle('')
         setDescription('')
         setValue('')
+        setCategory('')
         setDate((new Date()).toISOString().slice(0, 10))
         setPeriodicity('NONE')
 
@@ -29,7 +30,8 @@ export default function CreateExpense(props) {
     }
 
     function addExpensesResp(resp) {
-        if (resp.ok) {
+        console.log("resp: %o", resp)
+        if (resp.statusText === "OK" || resp.status === 200) {
             clearForm()
             props.created(true)
             setShowSuccessAlert(true)
@@ -61,11 +63,9 @@ export default function CreateExpense(props) {
     }
 
     async function submit() {
-        console.log("submit pressed!")
         let isValidTitle = validateTitle(title)
         let isValidValue = validateValue(value)
         let user = await getUser(localStorage.getItem("token-contare"));
-        console.log("got user back: ", user)
         if (isValidTitle && isValidValue) {
             let expenseBody = {
                 title: title,
@@ -77,10 +77,7 @@ export default function CreateExpense(props) {
                 periodicity: periodicity
             };
             let resp = await addExpenses(localStorage.getItem("token-contare"), expenseBody);
-            console.log("sent expense: %o", expenseBody)
-            console.log("received this back: %o", resp)
-        } else {
-            console.log("invalid fields... nothing sent.")
+            addExpensesResp(resp)
         }
     }
 

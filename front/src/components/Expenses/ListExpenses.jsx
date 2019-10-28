@@ -2,8 +2,11 @@ import {StatsCard} from 'components/StatsCard/StatsCard.jsx'
 import {Grid, Col, FormGroup, FormControl, ControlLabel, Row} from 'react-bootstrap'
 import React, {useState, useEffect} from 'react'
 import {getExpenses} from '../../services/expenseService'
-import Expense from './Expense'
+import {daysDiff, weeksDiff, monthsDiff, yearsDiff} from '../../utils/date'
+import ExpenseModal from './ExpenseModal'
 import '../../assets/css/custom.css'
+
+var token = localStorage.getItem("token-contare")
 
 export default function ListExpenses(props) {
     const [Expenses, setExpenses] = useState([])
@@ -14,10 +17,29 @@ export default function ListExpenses(props) {
     useEffect(() => {
         if (props.update) {
             props.setUpdate(false)
+            let totalExpense = 0
 
-            getExpenses(localStorage.getItem("token-contare")).then(resp => {
+            getExpenses(token).then(resp => {
                 setCachedExpenses(resp)
-                console.log("RESP: ", resp)
+                
+                setExpenseModals(resp.map(expense => {
+                    let dueDate = new Date(expense.dueDate)
+                    let endDate = new Date(expense.endDate)
+
+                    if (expense.totalValue > 0 && dueDate <= endDate) {
+                        totalExpense += expense.totalValue
+                        if (expense.periodicity === 'DAILY') totalExpense += expense.totalValue * daysDiff(dueDate, endDate)
+                        else if (expense.periodicity === 'WEEKLY') totalExpense += expense.totalValue * weeksDiff(dueDate, endDate)
+                        else if (expense.periodicity === 'MONTHLY') totalExpense += expense.totalValue * monthsDiff(dueDate, endDate)
+                        else if (expense.periodicity === 'ANNUALLY') totalExpense += expense.totalValue * yearsDiff(dueDate, endDate)
+                    }
+
+                    return false
+                }))
+
+                props.setTotalExpense(totalExpense)
+            }).catch((error) => {
+                // console.log("Erro no update modal: %o", error)
             })
         }
     })
@@ -27,22 +49,21 @@ export default function ListExpenses(props) {
     }, [cachedExpenses, sorting])
 
     function sortExpenses() {
-        console.log(cachedExpenses)
         if (cachedExpenses) {
-            if (sorting == 'Data de Criação') setExpenses(cachedExpenses.slice())
-            else if (sorting == 'Título') setExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
+            if (sorting === 'Data de Criação') setExpenses(cachedExpenses.slice())
+            else if (sorting === 'Título') setExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
                 if (inc1.title.toLowerCase() < inc2.title.toLowerCase()) return -1
                 return 1
             }))
-            else if (sorting == 'Valor') setExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
+            else if (sorting === 'Valor') setExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
                 if (inc1.value > inc2.value) return -1
                 return 1
             }))
-            else if (sorting == 'Data de Recebimento') setExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
+            else if (sorting === 'Data de Recebimento') setExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
                 if (new Date(inc1.dueDate) > new Date(inc2.dueDate)) return -1
                 return 1
             }))
-            else if (sorting == 'Tipo de Recorrencia') setExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
+            else if (sorting === 'Tipo de Recorrencia') setExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
                 if (inc1.periodicity > inc2.periodicity) return -1
                 return 1
             }))
@@ -81,7 +102,7 @@ export default function ListExpenses(props) {
                         statsIcon={<i className="fa fa-edit clickable" onClick={() => showModal(i)} />}
                         statsIconText={<span className="clickable" onClick={() => showModal(i)}>Editar gasto</span>}
                     />
-                    <Expense Expense={expense} i={i} ExpenseModals={ExpenseModals} setExpenseModals={setExpenseModals} setUpdate={props.setUpdate} />
+                    <ExpenseModal expense={expense} i={i} ExpenseModals={ExpenseModals} setExpenseModals={setExpenseModals} setUpdate={props.setUpdate} />
                 </Col>
             )}
         </Grid>
