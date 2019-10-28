@@ -5,14 +5,27 @@ import {getExpenses} from '../../services/expenseService'
 import {daysDiff, weeksDiff, monthsDiff, yearsDiff} from '../../utils/date'
 import ExpenseModal from './ExpenseModal'
 import '../../assets/css/custom.css'
+import { initializeConnection } from 'services/ConnectionService'
 
 var token = localStorage.getItem("token-contare")
+var socket
 
 export default function ListExpenses(props) {
     const [Expenses, setExpenses] = useState([])
     const [ExpenseModals, setExpenseModals] = useState([])
     const [cachedExpenses, setCachedExpenses] = useState([])
     const [sorting, setSorting] = useState('Data de Criação')
+    const [initializing, setInitializing] = useState(true)
+
+    useEffect(() => {
+        if (initializing) {
+            socket = initializeConnection()
+            socket.on("updateexpense", () => {
+                props.setUpdate(true)
+            })
+            setInitializing(false)   
+        }
+    }, [initializing])
 
     useEffect(() => {
         if (props.update) {
@@ -38,8 +51,6 @@ export default function ListExpenses(props) {
                 }))
 
                 props.setTotalExpense(totalExpense)
-            }).catch((error) => {
-                // console.log("Erro no update modal: %o", error)
             })
         }
     })

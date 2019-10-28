@@ -4,12 +4,26 @@ const Invitation = mongoose.model("Invitation")
 const InvitationController = require("./InvitationController")
 const findUser = require("./UserController").findUser;
 
+const emitExpenseUpdate = require("./ConnectionController").emitExpenseUpdate;
+
 function findExpenseById(expenseId, res){
    return Expense.findById(expenseId,function(err,exp){
         if(err) return res.status(500).send("Houve um erro ao procurar a despesa");
         if(!exp) return res.status(404).send("Despesa não encontrada")
         return exp;
     })
+}
+
+function testAndEmitExpenseUpdate(expense) {
+    if (expense) {
+        if (expense.participants) {
+            expense.participants.forEach(participant => {
+                if (participant.participantStatus === "ACTIVE") {
+                    emitExpenseUpdate(participant._id);
+                }
+            });
+        }
+    }
 }
 
 module.exports = {
@@ -67,6 +81,7 @@ module.exports = {
                         return await InvitationController.invite(req,res,user,newExpense);
                     }
                 }
+                testAndEmitExpenseUpdate(newExpense);
                 return res.status(200).send(newExpense);
             }
         }
@@ -76,6 +91,7 @@ module.exports = {
         var expense = await findExpenseById(req.params.expID,res);
         if(!expense) return res; 
         else expense = await Expense.findByIdAndUpdate(expense.id, req.body, { new: true });
+        testAndEmitExpenseUpdate(expense)
         return res.status(200).send(expense);
     },
 
@@ -85,6 +101,7 @@ module.exports = {
         if(!expense) return res;
         else{
             const reportInvites = await Invitation.deleteMany({expense:expense.id});
+            testAndEmitExpenseUpdate(expense)
             return res.status(200).send({
                                  "Expense":await Expense.findByIdAndDelete(expense.id),
                                  "Deleted Invites":reportInvites
