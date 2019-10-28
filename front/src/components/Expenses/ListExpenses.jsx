@@ -2,8 +2,7 @@ import {StatsCard} from 'components/StatsCard/StatsCard.jsx'
 import {Grid, Col, FormGroup, FormControl, ControlLabel, Row} from 'react-bootstrap'
 import React, {useState, useEffect} from 'react'
 import {getExpenses} from '../../services/expenseService'
-import Expense from './Expenses'
-import {daysDiff, weeksDiff, monthsDiff, yearsDiff} from '../../utils/date'
+import Expense from './Expense'
 import '../../assets/css/custom.css'
 
 export default function ListExpenses(props) {
@@ -15,33 +14,10 @@ export default function ListExpenses(props) {
     useEffect(() => {
         if (props.update) {
             props.setUpdate(false)
-            let totalExpense = 0
 
             getExpenses(localStorage.getItem("token-contare")).then(resp => {
                 setCachedExpenses(resp)
                 console.log("RESP: ", resp)
-                if (resp) {
-                    setExpenseModals(resp.map(Expense => {
-                        let dueDate = new Date(Expense.dueDate)
-                        let tillDate = new Date()
-                        if (Expense.canceledOn && Expense.periodicity != 'NONE') {
-                            let canceledDate = new Date(Expense.canceledOn)
-                            if (canceledDate < tillDate) tillDate = canceledDate
-                        }
-    
-                        if (Expense.value > 0 && dueDate <= tillDate) {
-                            totalExpense += Expense.value
-                            if (Expense.periodicity == 'DAILY') totalExpense += Expense.value * daysDiff(dueDate, tillDate)
-                            else if (Expense.periodicity == 'WEEKLY') totalExpense += Expense.value * weeksDiff(dueDate, tillDate)
-                            else if (Expense.periodicity == 'MONTHLY') totalExpense += Expense.value * monthsDiff(dueDate, tillDate)
-                            else if (Expense.periodicity == 'ANNUALLY') totalExpense += Expense.value * yearsDiff(dueDate, tillDate)
-                        }
-    
-                        return false
-                    }))
-    
-                    props.setTotalExpense(totalExpense)
-                }
             })
         }
     })
@@ -88,22 +64,24 @@ export default function ListExpenses(props) {
                         <FormControl componentClass="select" value={sorting} onChange={val => setSorting(val.target.value)}>
                             <option>Data de Criação</option>
                             <option>Título</option>
+                            <option>Categoria</option>
+                            <option>Descrição</option>
                             <option>Valor</option>
-                            <option>Data de Recebimento</option>
+                            <option>Data de Gasto</option>
                             <option>Tipo de Recorrencia</option>
                         </FormControl>
                     </FormGroup>
                 </Col>
             </Row>
-            {Expenses.map((Expense, i) =>
-                <Col lg={4} sm={6} key={Expense._id}>
+            {Expenses.map((expense, i) =>
+                <Col lg={4} sm={6} key={expense._id}>
                     <StatsCard bigIcon={<i className="pe-7s-server text-warning" />}
-                        statsText={Expense.title}
-                        statsValue={"R$ " + Expense.value}
+                        statsText={expense.title}
+                        statsValue={"R$ " + expense.totalValue}
                         statsIcon={<i className="fa fa-edit clickable" onClick={() => showModal(i)} />}
-                        statsIconText={<span className="clickable" onClick={() => showModal(i)}>Editar renda</span>}
+                        statsIconText={<span className="clickable" onClick={() => showModal(i)}>Editar gasto</span>}
                     />
-                    <Expense Expense={Expense} i={i} ExpenseModals={ExpenseModals} setExpenseModals={setExpenseModals} setUpdate={props.setUpdate} />
+                    <Expense Expense={expense} i={i} ExpenseModals={ExpenseModals} setExpenseModals={setExpenseModals} setUpdate={props.setUpdate} />
                 </Col>
             )}
         </Grid>

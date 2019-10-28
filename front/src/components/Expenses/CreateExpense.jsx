@@ -1,11 +1,13 @@
 import React, {useState} from 'react'
 import {Modal, Button, Form, FormGroup, FormControl, ControlLabel} from 'react-bootstrap'
-import {createIncome} from '../../services/income'
+import {addExpenses} from '../../services/expenseService'
+import { getUser } from 'services/userService'
 
-export default function CreateIncome(props) {
+export default function CreateExpense(props) {
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
     const [value, setValue] = useState('')
+    const [category, setCategory] = useState('')
     const [date, setDate] = useState((new Date()).toISOString().slice(0, 10))
     const [periodicity, setPeriodicity] = useState('NONE')
 
@@ -26,7 +28,7 @@ export default function CreateIncome(props) {
         setShowValueAlert(false)
     }
 
-    function createIncomeResp(resp) {
+    function addExpensesResp(resp) {
         if (resp.ok) {
             clearForm()
             props.created(true)
@@ -58,11 +60,28 @@ export default function CreateIncome(props) {
         }
     }
 
-    function submit() {
+    async function submit() {
+        console.log("submit pressed!")
         let isValidTitle = validateTitle(title)
         let isValidValue = validateValue(value)
-        if (isValidTitle && isValidValue)
-            createIncome(title, description, value, date, periodicity, createIncomeResp)
+        let user = await getUser(localStorage.getItem("token-contare"));
+        console.log("got user back: ", user)
+        if (isValidTitle && isValidValue) {
+            let expenseBody = {
+                title: title,
+                description: description,
+                dueDate: date,
+                owner: user.id,
+                totalValue: value,
+                category: category,
+                periodicity: periodicity
+            };
+            let resp = await addExpenses(localStorage.getItem("token-contare"), expenseBody);
+            console.log("sent expense: %o", expenseBody)
+            console.log("received this back: %o", resp)
+        } else {
+            console.log("invalid fields... nothing sent.")
+        }
     }
 
     return (
@@ -76,6 +95,10 @@ export default function CreateIncome(props) {
                         <ControlLabel>Título</ControlLabel>
                         <FormControl type="text"  value={title} onChange={val => setTitle(val.target.value) & validateTitle(val.target.value)} style={showTitleAlert ? {borderColor: 'red', color: 'red'} : {}}/>
                         {showTitleAlert && <span style={{color: 'red'}}>Título necessário</span>}
+                    </FormGroup>
+                    <FormGroup>
+                        <ControlLabel>Categoria</ControlLabel>
+                        <FormControl type="text" value={category} onChange={val => setCategory(val.target.value)}/>
                     </FormGroup>
                     <FormGroup>
                         <ControlLabel>Descrição</ControlLabel>

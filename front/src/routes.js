@@ -18,7 +18,6 @@
 import Dashboard from "views/Dashboard.jsx";
 import UserProfile from "views/UserProfile.jsx";
 import Notifications from "views/Notifications.jsx";
-import Upgrade from "views/Upgrade.jsx";
 
 // New imports
 import Friends from "views/Friends";

@@ -2,13 +2,14 @@ import React, {useState} from 'react'
 import {Modal, Button, Form, FormGroup, FormControl, ControlLabel} from 'react-bootstrap'
 import {updateExpenses, deletedExpenses} from '../../services/expenseService'
 
-export default function Expenses(props) {
+export default function Expense(props) {
     const [title, setTitle] = useState(props.Expense.title)
     const [description, setDescription] = useState(props.Expense.description)
     const [value, setValue] = useState(props.Expense.value)
-    const [date, setDate] = useState((new Date(props.Expense.receivedOn)).toISOString().slice(0, 10))
+    //const [date, setDate] = useState((new Date(props.Expense.date)).toISOString().slice(0, 10))
+    const [date, setDate] = useState(new Date())
     const [periodicity, setPeriodicity] = useState(props.Expense.periodicity)
-    const [canceledDate, setCanceledDate] = useState(props.Expense.canceledOn ? (new Date(props.Expense.canceledOn)).toISOString().slice(0, 10) : '')
+    //const [canceledDate, setCanceledDate] = useState(props.Expense.canceledOn ? (new Date(props.Expense.canceledOn)).toISOString().slice(0, 10) : '')
 
     const [showTitleAlert, setShowTitleAlert] = useState(false)
     const [showValueAlert, setShowValueAlert] = useState(false)
@@ -22,9 +23,10 @@ export default function Expenses(props) {
         setTitle(props.Expense.title)
         setDescription(props.Expense.description)
         setValue(props.Expense.value)
-        setDate((new Date(props.Expense.receivedOn)).toISOString().slice(0, 10))
+        //setDate((new Date(props.Expense.receivedOn)).toISOString().slice(0, 10))
+        setDate(new Date())
         setPeriodicity(props.Expense.periodicity)
-        setCanceledDate(props.Expense.canceledOn ? (new Date(props.Expense.canceledOn)).toISOString().slice(0, 10) : '')
+        //setCanceledDate(props.Expense.canceledOn ? (new Date(props.Expense.canceledOn)).toISOString().slice(0, 10) : '')
 
         setShowTitleAlert(false)
         setShowValueAlert(false)
@@ -69,15 +71,16 @@ export default function Expenses(props) {
     function submit() {
         let isValidTitle = validateTitle(title)
         let isValidValue = validateValue(value)
-        let isValidCanceledDate = validateCanceledDate(canceledDate)
-        if (isValidTitle && isValidValue && isValidCanceledDate) {
+        //let isValidCanceledDate = validateCanceledDate(canceledDate)
+        //if (isValidTitle && isValidValue && isValidCanceledDate) {
+        if (isValidTitle && isValidValue) {
             let expense = {
                 title: title,
                 description: description,
                 value: value,
                 date: date,
                 periodicity: periodicity,
-                canceledDate: canceledDate
+                //canceledDate: canceledDate
             }
             updateExpenses(localStorage.getItem("token-contare"), props.Expense._id, expense)
             props.setUpdate(true)
@@ -121,8 +124,8 @@ export default function Expenses(props) {
                     </FormGroup>
                     <FormGroup className={periodicity != 'NONE' ? '' : 'hidden'}>
                         <ControlLabel>Até quando gasto ainda foi realizado (deixar sem data caso gasto ainda ocorre)</ControlLabel>
-                        <FormControl type="date" value={canceledDate} onChange={val => setCanceledDate(val.target.value) & validateCanceledDate(val.target.value)} style={showCanceledDateAlert ? {borderColor: 'red', color: 'red'} : {}}/>
-                        {showCanceledDateAlert && <span style={{color: 'red'}}>Não pode ser antes da data de gasto</span>}
+                        {/* <FormControl type="date" value={canceledDate} onChange={val => setCanceledDate(val.target.value) & validateCanceledDate(val.target.value)} style={showCanceledDateAlert ? {borderColor: 'red', color: 'red'} : {}}/>
+                        {showCanceledDateAlert && <span style={{color: 'red'}}>Não pode ser antes da data de gasto</span>} */}
                     </FormGroup>
                 </Form>
             </Modal.Body>

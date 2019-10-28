@@ -31,8 +31,8 @@ module.exports = {
             let temp = await Expense.find({owner:user.id, title:req.body.title});
             if(temp.length > 0) {
                 return res.status(400).
-                send("Tarefa ".concat(req.body.title).
-                    concat(" já existente na sua lista de tarefas.")
+                send("Gasto ".concat(req.body.title).
+                    concat(" já existente na sua lista de gastos.")
                 )}
             else{
                 var thisExpense = new Expense({
@@ -44,10 +44,17 @@ module.exports = {
                     category: req.body.category,
                     periodicity: req.body.periodicity
                 })
-                    
+                
+                let payValue = null;
+                if (req.body.listEmail) {
+                    payValue = req.body.listEmail[0].payValue;
+                } else {
+                    payValue = req.body.totalValue;
+                }
+                
                 thisExpense.participants.push({
                     _id: user.id,
-                    payValue:  req.body.listEmail[0].payValue,
+                    payValue: payValue,
                     name:user.name,
                     email:user.email,
                     status: false,
@@ -55,9 +62,10 @@ module.exports = {
                 })
                 thisExpense.participants.save;
                 let newExpense = await Expense.create(thisExpense);
-                
-                if(req.body.listEmail.length > 1){
-                    return await InvitationController.invite(req,res,user,newExpense);
+                if (req.body.listEmail) {
+                    if(req.body.listEmail.length > 1){
+                        return await InvitationController.invite(req,res,user,newExpense);
+                    }
                 }
                 return res.status(200).send(newExpense);
             }
