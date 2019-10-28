@@ -4,14 +4,14 @@ import {API_URL} from './index'
 
 
 export const getExpenses = async (token) => {
-    console.log("chamou getExpense ", token);
+    // console.log("chamou getExpense ", token);
     return await axios.get( `${API_URL}/contare/user/expenses`, {headers: {Authorization : "Bearer " + token}})
      .then((response) => {
-         console.log("response ------------ ", response);
+        //  console.log("response ------------ ", response);
          return response.data;
         },
         (error) => {
-            console.log("erro  ", error);
+            // console.log("erro ao solicitar gastos: ", error);
             return error;
        }
      )
@@ -30,7 +30,7 @@ export const addExpenses = async (token, body) => {
      )
 }
 
-export const deletedExpenses = async (token, id) => {
+export const deleteExpense = async (token, id) => {
     return await axios.delete( `${API_URL}/contare/user/expenses/${id}`, {headers: {Authorization : "Bearer " + token}})
      .then((response) => {
             notifySucess("Despesa deletada com sucesso!")
@@ -55,10 +55,6 @@ export const updateExpenses = async (token, id, body) => {
         }
      )
 }
-
-
-
-
 
 export const getExpense = async (id, callback) => {
     return await axios.get( `${API_URL}/contare/user/expenses/${id}`)

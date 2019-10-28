@@ -1,34 +1,45 @@
 import React, {useState} from 'react'
 import {Modal, Button, Form, FormGroup, FormControl, ControlLabel} from 'react-bootstrap'
-import {updateIncome, deleteIncome} from '../../services/income'
+import {addExpenses} from '../../services/expenseService'
+import { getUser } from 'services/userService'
 
-export default function Income(props) {
-    const [title, setTitle] = useState(props.income.title)
-    const [description, setDescription] = useState(props.income.description)
-    const [value, setValue] = useState(props.income.value)
-    const [date, setDate] = useState((new Date(props.income.receivedOn)).toISOString().slice(0, 10))
-    const [periodicity, setPeriodicity] = useState(props.income.periodicity)
-    const [canceledDate, setCanceledDate] = useState(props.income.canceledOn ? (new Date(props.income.canceledOn)).toISOString().slice(0, 10) : '')
+export default function CreateExpense(props) {
+    const [title, setTitle] = useState('')
+    const [description, setDescription] = useState('')
+    const [value, setValue] = useState('')
+    const [category, setCategory] = useState('')
+    const [date, setDate] = useState((new Date()).toISOString().slice(0, 10))
+    const [periodicity, setPeriodicity] = useState('NONE')
+
+    const [showSuccessAlert, setShowSuccessAlert] = useState(false)
+    const [showFailureAlert, setShowFailureAlert] = useState(false)
 
     const [showTitleAlert, setShowTitleAlert] = useState(false)
     const [showValueAlert, setShowValueAlert] = useState(false)
-    const [showCanceledDateAlert, setShowCanceledDateAlert] = useState(false)
 
-    function onHide() {
-        let incomeModals = props.incomeModals.slice()
-        incomeModals[props.i] = false
-        props.setIncomeModals(incomeModals)
-
-        setTitle(props.income.title)
-        setDescription(props.income.description)
-        setValue(props.income.value)
-        setDate((new Date(props.income.receivedOn)).toISOString().slice(0, 10))
-        setPeriodicity(props.income.periodicity)
-        setCanceledDate(props.income.canceledOn ? (new Date(props.income.canceledOn)).toISOString().slice(0, 10) : '')
+    function clearForm() {
+        setTitle('')
+        setDescription('')
+        setValue('')
+        setCategory('')
+        setDate((new Date()).toISOString().slice(0, 10))
+        setPeriodicity('NONE')
 
         setShowTitleAlert(false)
         setShowValueAlert(false)
-        setShowCanceledDateAlert(false)
+    }
+
+    function addExpensesResp(resp) {
+        console.log("resp: %o", resp)
+        if (resp.statusText === "OK" || resp.status === 200) {
+            clearForm()
+            props.created(true)
+            setShowSuccessAlert(true)
+            setShowFailureAlert(false)
+        } else {
+            setShowSuccessAlert(false)
+            setShowFailureAlert(true)
+        }
     }
 
     function validateTitle(title) {
@@ -51,35 +62,29 @@ export default function Income(props) {
         }
     }
 
-    function validateCanceledDate(canceledDate) {
-        if (date) {
-            let d1 = new Date(date)
-            let d2 = new Date(canceledDate)
-            window.d1 = d1
-            window.d2 = d2
-            if (d1 > d2) {
-                setShowCanceledDateAlert(true)
-                return false
-            }
-        }
-        setShowCanceledDateAlert(false)
-        return true
-    }
-
-    function submit() {
+    async function submit() {
         let isValidTitle = validateTitle(title)
         let isValidValue = validateValue(value)
-        let isValidCanceledDate = validateCanceledDate(canceledDate)
-        if (isValidTitle && isValidValue && isValidCanceledDate) {
-            updateIncome(props.income._id, title, description, value, date, periodicity, canceledDate)
-            props.setUpdate(true)
+        let user = await getUser(localStorage.getItem("token-contare"));
+        if (isValidTitle && isValidValue) {
+            let expenseBody = {
+                title: title,
+                description: description,
+                dueDate: date,
+                owner: user.id,
+                totalValue: value,
+                category: category,
+                periodicity: periodicity
+            };
+            let resp = await addExpenses(localStorage.getItem("token-contare"), expenseBody);
+            addExpensesResp(resp)
         }
     }
 
     return (
-        <Modal show={props.incomeModals[props.i]} onHide={onHide}>
+        <Modal show={props.show} onHide={() => props.setShow(false) & clearForm() & setShowSuccessAlert(false) & setShowFailureAlert(false)}>
             <Modal.Header closeButton>
-                <Modal.Title>Atualizar informações de renda</Modal.Title>
+                <Modal.Title>Criar novo gasto</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form>
@@ -87,6 +92,10 @@ export default function Income(props) {
                         <ControlLabel>Título</ControlLabel>
                         <FormControl type="text"  value={title} onChange={val => setTitle(val.target.value) & validateTitle(val.target.value)} style={showTitleAlert ? {borderColor: 'red', color: 'red'} : {}}/>
                         {showTitleAlert && <span style={{color: 'red'}}>Título necessário</span>}
+                    </FormGroup>
+                    <FormGroup>
+                        <ControlLabel>Categoria</ControlLabel>
+                        <FormControl type="text" value={category} onChange={val => setCategory(val.target.value)}/>
                     </FormGroup>
                     <FormGroup>
                         <ControlLabel>Descrição</ControlLabel>
@@ -98,7 +107,7 @@ export default function Income(props) {
                         {showValueAlert && <span style={{color: 'red'}}>Valor acima de zero necessário</span>}
                     </FormGroup>
                     <FormGroup>
-                        <ControlLabel>Data de recebimento</ControlLabel>
+                        <ControlLabel>Data de gasto</ControlLabel>
                         <FormControl type="date" value={date} onChange={val => setDate(val.target.value)}/>
                     </FormGroup>
                     <FormGroup>
@@ -111,19 +120,23 @@ export default function Income(props) {
                             <option value='ANNUALLY'>Anual</option>
                         </FormControl>
                     </FormGroup>
-                    <FormGroup className={periodicity !== 'NONE' ? '' : 'hidden'}>
-                        <ControlLabel>Até quando renda ainda foi recebida (deixar sem data caso renda ainda é recebida)</ControlLabel>
-                        <FormControl type="date" value={canceledDate} onChange={val => setCanceledDate(val.target.value) & validateCanceledDate(val.target.value)} style={showCanceledDateAlert ? {borderColor: 'red', color: 'red'} : {}}/>
-                        {showCanceledDateAlert && <span style={{color: 'red'}}>Não pode ser antes da data de recebimento</span>}
-                    </FormGroup>
                 </Form>
+                <div className={showSuccessAlert ? '' : 'hidden'}>
+                    <p style={{color: 'green'}}>
+                        Gasto criado com sucesso
+                        <Button className='pull-right' style={{color: 'green', borderColor: 'green'}} onClick={() => setShowSuccessAlert(false)}>Ok</Button>
+                    </p>
+                </div>
+                <div className={showFailureAlert ? '' : 'hidden'}>
+                    <p style={{color: 'red'}}>
+                        Não foi possível criar o gasto
+                        <Button className='pull-right' style={{color: 'red', borderColor: 'red'}} onClick={() => setShowFailureAlert(false)}>Ok</Button>
+                    </p>
+                </div>
             </Modal.Body>
             <Modal.Footer>
-                <Button bsStyle="danger" onClick={() => deleteIncome(props.income._id) & props.setUpdate(true)}>
-                    Deletar
-                </Button>
                 <Button bsStyle="primary" onClick={submit}>
-                    Atualizar
+                    Criar
                 </Button>
             </Modal.Footer>
         </Modal>
