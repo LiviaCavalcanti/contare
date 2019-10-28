@@ -5,6 +5,8 @@ import {getIncomes} from '../../services/income'
 import Income from './Income'
 import {daysDiff, weeksDiff, monthsDiff, yearsDiff} from '../../utils/date'
 import '../../assets/css/custom.css'
+import { initializeConnection } from 'services/ConnectionService'
+var socket
 
 export default function ListIncomes(props) {
     const [incomes, setIncomes] = useState([])
@@ -15,6 +17,17 @@ export default function ListIncomes(props) {
     const [pageIncomes, setPageIncomes] = useState([])
 
     const elemsPerPage = 12
+    const [initializing, setInitializing] = useState(true)
+
+    useEffect(() => {
+        if (initializing) {
+            socket = initializeConnection()
+            socket.on("updateincome", () => {
+                props.setUpdate(true)
+            })
+            setInitializing(false)   
+        }
+    }, [initializing])
 
     useEffect(() => {
         if (props.update) {
