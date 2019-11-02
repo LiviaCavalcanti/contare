@@ -5,6 +5,8 @@ import {getIncomes} from '../../services/income'
 import Income from './Income'
 import {daysDiff, weeksDiff, monthsDiff, yearsDiff} from '../../utils/date'
 import '../../assets/css/custom.css'
+import { initializeConnection } from 'services/ConnectionService'
+var socket
 
 export default function ListIncomes(props) {
     const [incomes, setIncomes] = useState([])
@@ -15,6 +17,17 @@ export default function ListIncomes(props) {
     const [pageIncomes, setPageIncomes] = useState([])
 
     const elemsPerPage = 12
+    const [initializing, setInitializing] = useState(true)
+
+    useEffect(() => {
+        if (initializing) {
+            socket = initializeConnection()
+            socket.on("updateincome", () => {
+                props.setUpdate(true)
+            })
+            setInitializing(false)   
+        }
+    }, [initializing])
 
     useEffect(() => {
         if (props.update) {
@@ -30,17 +43,17 @@ export default function ListIncomes(props) {
                 setIncomeModals(resp.map(income => {
                     let receivedDate = new Date(income.receivedOn)
                     let tillDate = new Date()
-                    if (income.canceledOn && income.periodicity != 'NONE') {
+                    if (income.canceledOn && income.periodicity !== 'NONE') {
                         let canceledDate = new Date(income.canceledOn)
                         if (canceledDate < tillDate) tillDate = canceledDate
                     }
 
                     if (income.value > 0 && receivedDate <= tillDate) {
                         totalIncome += income.value
-                        if (income.periodicity == 'DAILY') totalIncome += income.value * daysDiff(receivedDate, tillDate)
-                        else if (income.periodicity == 'WEEKLY') totalIncome += income.value * weeksDiff(receivedDate, tillDate)
-                        else if (income.periodicity == 'MONTHLY') totalIncome += income.value * monthsDiff(receivedDate, tillDate)
-                        else if (income.periodicity == 'ANNUALLY') totalIncome += income.value * yearsDiff(receivedDate, tillDate)
+                        if (income.periodicity === 'DAILY') totalIncome += income.value * daysDiff(receivedDate, tillDate)
+                        else if (income.periodicity === 'WEEKLY') totalIncome += income.value * weeksDiff(receivedDate, tillDate)
+                        else if (income.periodicity === 'MONTHLY') totalIncome += income.value * monthsDiff(receivedDate, tillDate)
+                        else if (income.periodicity === 'ANNUALLY') totalIncome += income.value * yearsDiff(receivedDate, tillDate)
                     }
 
                     return false
@@ -60,20 +73,20 @@ export default function ListIncomes(props) {
     }, [incomes])
 
     function sortIncomes() {
-        if (sorting == 'Data de Criação') setIncomes(cachedIncomes.slice().reverse())
-        else if (sorting == 'Título') setIncomes(cachedIncomes.slice().sort((inc1, inc2) => {
+        if (sorting === 'Data de Criação') setIncomes(cachedIncomes.slice())
+        else if (sorting === 'Título') setIncomes(cachedIncomes.slice().sort((inc1, inc2) => {
             if (inc1.title.toLowerCase() < inc2.title.toLowerCase()) return -1
             return 1
         }))
-        else if (sorting == 'Valor') setIncomes(cachedIncomes.slice().sort((inc1, inc2) => {
+        else if (sorting === 'Valor') setIncomes(cachedIncomes.slice().sort((inc1, inc2) => {
             if (inc1.value > inc2.value) return -1
             return 1
         }))
-        else if (sorting == 'Data de Recebimento') setIncomes(cachedIncomes.slice().sort((inc1, inc2) => {
+        else if (sorting === 'Data de Recebimento') setIncomes(cachedIncomes.slice().sort((inc1, inc2) => {
             if (new Date(inc1.receivedOn) > new Date(inc2.receivedOn)) return -1
             return 1
         }))
-        else if (sorting == 'Tipo de Recorrencia') setIncomes(cachedIncomes.slice().sort((inc1, inc2) => {
+        else if (sorting === 'Tipo de Recorrencia') setIncomes(cachedIncomes.slice().sort((inc1, inc2) => {
             if (inc1.periodicity > inc2.periodicity) return -1
             return 1
         }))

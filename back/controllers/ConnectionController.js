@@ -15,12 +15,14 @@ module.exports = {
         socketio = io;
 
         io.on("connection", (socket) => {
-            console.log("Someone connected here...");
+            console.log("Someone connected...");
         
             socket.on("token", (token) => {
-                console.log("Received this token: ", token);
                 let userId = jwt.decode(token, authConfig.secret).id;
                 let user = User.findById(userId, {password: 0}, function (err, user) {
+                    if (user) {
+                        console.log("New confirmed connection from %s.", user.email)
+                    }
                     return user;
                 })
 
@@ -37,12 +39,10 @@ module.exports = {
                         connectedSockets[socket.id] = userId;
                     }
                 }
-
-                console.log("List of connected clients: ", connectedClients);
             });
         
             socket.on("disconnect", (msg) => {
-                console.log(msg);
+                console.log("Someone disconnected... (%s)", msg)
                 let uid = connectedSockets[socket.id];
                 let cConns = connectedClients[uid];
                 if (cConns) {
@@ -79,6 +79,15 @@ module.exports = {
         if (userSockets) {
             userSockets.forEach(userConn => {
                 userConn.socket.emit("updateincome");
+            });
+        }
+    },
+
+    emitExpenseUpdate(userId) {
+        let userSockets = connectedClients[userId];
+        if (userSockets) {
+            userSockets.forEach(userConn => {
+                userConn.socket.emit("updateexpense");
             });
         }
     }

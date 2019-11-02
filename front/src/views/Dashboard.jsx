@@ -36,6 +36,7 @@ import {
   responsiveBar,
   legendBar
 } from "variables/Variables.jsx";
+import { initializeConnection } from 'services/ConnectionService'
 
 class Dashboard extends Component {
 
@@ -55,7 +56,18 @@ class Dashboard extends Component {
       yearTotal: 0,
       lastMonthsNumber: 3
     }
+    this.socket = initializeConnection();
   }
+
+  componentDidMount() {
+    this.socket.on("updateincome", function (user) {
+      this.updateDashboard();
+    }.bind(this));
+    this.socket.on("updateexpense", function (user) {
+      this.updateDashboard();
+    }.bind(this));
+  }
+
   createLegend(json) {
     var legend = [];
     for (var i = 0; i < json["names"].length; i++) {
@@ -68,9 +80,14 @@ class Dashboard extends Component {
   }
 
   componentWillMount() {
+    this.updateDashboard()
+  }
+
+  updateDashboard() {
     this.getUserFromToken()
     this.getExpensesFromToken()
     this.calculateUserRent()
+    this.render()
   }
 
   calculateYearExpenses = () => {

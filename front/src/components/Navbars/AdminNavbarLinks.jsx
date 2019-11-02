@@ -42,8 +42,11 @@ class AdminNavbarLinks extends Component {
       window.location.href = "/register"
     } else {
       const user = await getUser(this.state.token)
-      this.setState({user})
-
+        if (user) { 
+          this.state.user = user
+        } else {
+          window.location.href = "/register"
+        }
       }
   }
 
