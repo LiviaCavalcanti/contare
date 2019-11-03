@@ -26,6 +26,7 @@ import Expenses from "views/Expenses";
 import Report from "views/Report";
 import LoginScreen from "components/loginComponent/loginComponent";
 import RegisterScreen from "components/registerComponent/registerComponent";
+import Homepage from "components/Homepage/Homepage";
 
 //Imports contare antigo
 import dashboardComponent from "views/dasboardComponent/dashboardComponent";
@@ -109,10 +110,19 @@ const registerRoute = [{
   layout: ""
 }];
 
+const homepageRoute = [{
+  path: "/",
+  name: "Homepage",
+  icon: "pe-7s-user",
+  component: Homepage,
+  layout: ""
+}];
+
 export {
   dashboardRoutes,
   loginRoute,
-  registerRoute
+  registerRoute,
+  homepageRoute
 };
 
 

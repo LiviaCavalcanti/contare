@@ -31,6 +31,7 @@ import AdminLayout from "layouts/Admin.jsx";
 // import Register from "views/Register/Register.jsx";
 import LoginScreen from "components/loginComponent/loginComponent"
 import RegisterScreen from "components/registerComponent/registerComponent"
+import Homepage from "components/Homepage/Homepage";
 import {ToastContainer} from 'react-toastify'
 
 ReactDOM.render(
@@ -39,7 +40,8 @@ ReactDOM.render(
       <Route path="/admin" render={props => <AdminLayout {...props} />} />
       <Route path="/register" component={() => <RegisterScreen/>}/>
       <Route path="/login" component={() => <LoginScreen/>}/>
-      <Redirect from="/" to="/admin/dashboard" />
+      <Route path="/" exact component={() => <Homepage/>}/>
+      <Redirect from="/dashboard" to="/admin/dashboard" />
     </Switch>
     <ToastContainer />
   </BrowserRouter>,
