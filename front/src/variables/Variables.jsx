@@ -582,11 +582,7 @@ var dataBar = {
   ]
 };
 var optionsBar = {
-  seriesBarDistance: 10,
-  axisX: {
-    showGrid: false
-  },
-  height: "245px"
+  low: 0,
 };
 var responsiveBar = [
   [
