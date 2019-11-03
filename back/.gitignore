@@ -1,3 +1,4 @@
 /node_modules
 *.orig
 .env
+package-lock.json

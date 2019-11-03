@@ -1,33 +1,118 @@
-import React, { Component } from 'react';
-import { Route, Switch, BrowserRouter } from 'react-router-dom';
+/*!
 
-import App from './App';
-import RegisterScreen from './components/registerComponent/registerComponent'
-import NavbarComponent from './components/navbarComponent/navbarComponent'
-import Page404Component from './components/page404Component/page404Component';
-import DescriptionProject from './components/descriptionProjectComponent/descriptionProjectComponent';
-import LoginScreen from './components/loginComponent/loginComponent';
-import DashboardComponent from './components/dasboardComponent/dashboardComponent';
-import InviteComponent from './components/inviteComponent/inviteComponent'
-import { ToastContainer } from 'react-toastify';
+=========================================================
+* Light Bootstrap Dashboard React - v1.3.0
+=========================================================
 
-export class Routes extends Component {
-    render() {
-        return (
-            <BrowserRouter>
-            
-            <NavbarComponent/>
+* Product Page: https://www.creative-tim.com/product/light-bootstrap-dashboard-react
+* Copyright 2019 Creative Tim (https://www.creative-tim.com)
+* Licensed under MIT (https://github.com/creativetimofficial/light-bootstrap-dashboard-react/blob/master/LICENSE.md)
 
-                <Switch>
-                    <Route path="/" exact={true} component={() => <App component={DescriptionProject}/>} />
-                    <Route path="/register" component={() => <App component={RegisterScreen}/>}/>
-                    <Route path="/login" component={() => <App component={LoginScreen}/>}/>
-                    <Route path="/dashboard" component={() => <DashboardComponent/>}/>
-                    <Route path="/invite" component={() => <InviteComponent/>}/>
-                    <Route path="*" component={Page404Component} />
-                </Switch>
-                <ToastContainer />
-            </ BrowserRouter>
-        )
-    }
+* Coded by Creative Tim
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+*/
+import Dashboard from "views/Dashboard.jsx";
+import UserProfile from "views/UserProfile.jsx";
+import Notifications from "views/Notifications.jsx";
+
+// New imports
+import Friends from "views/Friends";
+import Income from "views/Income";
+import Expenses from "views/Expenses";
+import Report from "views/Report";
+import LoginScreen from "components/loginComponent/loginComponent";
+import RegisterScreen from "components/registerComponent/registerComponent";
+
+//Imports contare antigo
+import dashboardComponent from "views/dasboardComponent/dashboardComponent";
+
+const dashboardRoutes = [
+  {
+    path: "/dashboard",
+    name: "Dashboard",
+    icon: "pe-7s-graph",
+    component: Dashboard,
+    layout: "/admin"
+  },
+  {
+    path: "/user",
+    name: "Perfil",
+    icon: "pe-7s-user",
+    component: UserProfile,
+    layout: "/admin"
+  },
+  {
+    path: "/friends",
+    name: "Amigos",
+    icon: "pe-7s-users",
+    component: Friends,
+    layout: "/admin"
+  },
+  {
+    path: "/income",
+    name: "Renda",
+    icon: "pe-7s-cash",
+    component: Income,
+    layout: "/admin"
+  },
+  {
+    path: "/expenses",
+    name: "Gastos",
+    icon: "pe-7s-wallet",
+    component: Expenses,
+    layout: "/admin"
+  },
+  {
+    path: "/table",
+    name: "Relatório",
+    icon: "pe-7s-note2",
+    component: Report,
+    layout: "/admin"
+  },
+  {
+    path: "/notifications",
+    name: "Notificações",
+    icon: "pe-7s-bell",
+    component: Notifications,
+    layout: "/admin"
+  },
+
+// Contare Antigo
+
+  {
+    path: "/dashboardContareAntigo",
+    name: "Dashboard Contare Antigo",
+    icon: "pe-7s-graph",
+    component: dashboardComponent,
+    layout: "/admin"
+  },
+  
+];
+
+const loginRoute = [{
+  path: "/login",
+  name: "Login",
+  icon: "pe-7s-user",
+  component: LoginScreen,
+  layout: ""
+}];
+
+const registerRoute = [{
+  path: "/register",
+  name: "Register",
+  icon: "pe-7s-user",
+  component: RegisterScreen,
+  layout: ""
+}];
+
+export {
+  dashboardRoutes,
+  loginRoute,
+  registerRoute
 };
+
+
