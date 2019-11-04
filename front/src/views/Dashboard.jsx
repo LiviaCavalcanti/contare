@@ -140,7 +140,7 @@ class Dashboard extends Component {
 
   createLegendBarPlot = () => {
     const legendBarPlot = {
-      names: ["Linha de Gastos", "Linha de Ganhos"],
+      names: ["Linha de Ganhos", "Linha de Gastos"],
       types: ["danger", "info"]
     }
 
