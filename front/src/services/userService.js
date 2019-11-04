@@ -96,3 +96,12 @@ export const getUserFromID = async (id, token, callback) => {
        }
      )
 }
+
+export const addImage = async (token, imagePath, callback)=>{
+    return axios.post(`${API_URL}/contare/user/image`,imagePath,{headers: {Authorization : "Bearer " + token}})
+    .then((response) =>{
+        callback(response.data)
+    },
+    (error)=>{
+    })
+}

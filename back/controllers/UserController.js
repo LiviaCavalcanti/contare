@@ -146,8 +146,8 @@ module.exports = {
 
         console.log(req.file) // to see what is returned to you
         const image = {};
-        image.url = req.body.file;
-        image.id = req.body.public_id;
+        image.url = req.file.url;
+        image.id = req.file.public_id;
 
         user.image = image;
         
