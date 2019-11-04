@@ -73,7 +73,7 @@ export default function ListIncomes(props) {
     }, [incomes])
 
     function sortIncomes() {
-        if (sorting === 'Data de Criação') setIncomes(cachedIncomes.slice())
+        if (sorting === 'Data de Criação') setIncomes(cachedIncomes.slice().reverse())
         else if (sorting === 'Título') setIncomes(cachedIncomes.slice().sort((inc1, inc2) => {
             if (inc1.title.toLowerCase() < inc2.title.toLowerCase()) return -1
             return 1
