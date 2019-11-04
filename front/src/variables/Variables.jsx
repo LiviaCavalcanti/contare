@@ -283,6 +283,9 @@ function createRandomFriends() {
     newPerson.push("R$ " + String(Number.parseFloat(Math.random() * 5000).toFixed(2)))
     data.push(newPerson);
   }
+
+  console.log('---------')
+  console.log(data)
   return data;
 }
 

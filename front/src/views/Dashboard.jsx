@@ -335,6 +335,15 @@ class Dashboard extends Component {
             </Col>
 
             <Col md={6}>
+
+            <FormGroup controlId="formControlsSelect">
+      <ControlLabel>Selecione para visualizar</ControlLabel>
+      <FormControl  componentClass="select" placeholder="select">
+        <option value="3">#TODO SELECT OP</option>
+
+      </FormControl>
+      </FormGroup>
+
               <Card
                 statsIcon="fa fa-clock-o"
                 title="Distribuição de Gastos"
