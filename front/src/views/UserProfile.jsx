@@ -43,7 +43,11 @@ class UserProfile extends Component {
     super(props);
     this.handleUpdateUserProfile = this.handleUpdateUserProfile.bind(this)
     this.state = {
-      user: null
+      user: null,
+      bgImage: defaultBgImg,
+      name: "",
+      userName: "",
+      description: ""
     }
     this.socket = initializeConnection();
   }
@@ -71,6 +75,19 @@ class UserProfile extends Component {
         }
       }
     });
+
+    // UserCard fields (including picture)
+    this.setState(function(oldState) {
+      console.log(user.image)
+      let img = user.image.url == "NONE" ? avatar : user.image.url;
+      return {
+        bgImage: defaultBgImg,
+        avatar: img,
+        name: this.concatFullName(user),
+        userName: user.username,
+        description: user.bio
+    }}.bind(this))
+    
   }
 
   async handleUpdateUserProfile() {
@@ -90,6 +107,17 @@ class UserProfile extends Component {
           alert("Perfil alterado com sucesso!")
       }.bind(this))
     }
+  }
+
+  concatFullName(user) {
+    if (user) {
+      let fullName = user.name
+      if (user.lastName) {
+        fullName += " " + user.lastName
+      }
+      return fullName
+    }
+    return ""
   }
 
   render() {
@@ -229,12 +257,13 @@ class UserProfile extends Component {
             </Col>
             <Col md={4}>
               <UserCard
-                bgImage={defaultBgImg}
-                avatar={avatar}
-                name=""
-                userName=""
+                bgImage={this.state.bgImage}
+                avatar={this.state.avatar}
+                name={this.state.name}
+                userName={this.state.userName}
                 description={
                   <span>
+                    {this.state.description}
                   </span>
                 }
                 socials={
@@ -251,6 +280,7 @@ class UserProfile extends Component {
                   </div>
                 }
                 id={"usercard"}
+                ref={this.userCard}
               />
             </Col>
           </Row>

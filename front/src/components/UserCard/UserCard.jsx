@@ -20,13 +20,13 @@ import React, { Component } from "react";
 export class UserCard extends Component {
   render() {
     return (
-      <div className="card card-user">
+      <div className="card card-user" id={this.props.id}>
         <div className="image">
           <img src={this.props.bgImage} alt="..." />
         </div>
         <div className="content">
           <div className="author">
-            <a href="#username">
+            <a href={`/${this.props.userName}`}>
               <img
                 className="avatar border-gray"
                 src={this.props.avatar}
