@@ -1,31 +1,191 @@
-.homepage-bg {
-    background: url('../../assets/img/loginbg2.jpg');
-    background-size: cover;
+@import url('https://fonts.googleapis.com/css?family=Nunito&display=swap');
+
+.homepage-container {
+  font-family: 'Nunito', sans-serif;
+  display: flex;
+  flex-flow: column;
 }
 
-.homepage-div {
-    width: 100%;
-    height: 100vh;
+.homepage-lead {
+  flex: 1 0 100vh;
+  display: flex;
+  flex-flow: column;
+  background-image: url('../../assets/img/loginbg2.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
-.homepage-presentation {
-    text-align: center;
-    color: white;
-    position: absolute;
-    font-size: 1vmin;
-    width: 70%;
-    top: 50%;
-    left: 50%;
-    -ms-transform: translateX(-50%) translateY(-50%);
-    -webkit-transform: translate(-50%,-50%);
-    transform: translate(-50%,-50%);
-    margin: 10px;
-    padding: 10px;
-    -webkit-box-shadow: -1px 4px 26px 11px rgba(0,0,0,0.75);
-    -moz-box-shadow: -1px 4px 26px 11px rgba(0,0,0,0.75);
-    box-shadow: -1px 4px 26px 11px rgba(0,0,0,0.75);
-    word-wrap: break-word;
-    font-weight: bolder;
-    font-family: 'Roboto', sans-serif;
-    border-radius: 10px 10px 10px 10px;
+.homepage-lead-navbar {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.homepage-lead-navbar-content {
+  width: 80vw;
+  display: flex;
+  border-bottom: 1px solid white;
+}
+
+@media only screen and (max-width: 350px) {
+  .homepage-lead-navbar-content {
+    flex-flow: column;
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  .homepage-lead-navbar-content {
+    width: 100vw;
+  }
+}
+
+.homepage-lead-navbar-content-nav {
+  flex: 1 0 auto;
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media only screen and (max-width: 350px) {
+  .homepage-lead-navbar-content-nav {
+    flex-flow: column;
+  }
+}
+
+.homepage-lead-navbar-content span {
+  color: white;
+  font-size: 1.5em;
+  padding: 0.5em 0.5em;
+  margin: 0px;
+}
+
+.homepage-container a {
+  text-decoration: none;
+  color: white;
+}
+
+.homepage-lead-navbar a:hover {
+  color: tomato;
+}
+
+@media (hover: none) {
+  .homepage-lead-navbar a:hover {
+      color: white;
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
+      -webkit-tap-highlight-color: transparent;
+  }
+  .homepage-lead-navbar a:active {
+    color: tomato;
+  }
+}
+
+.homepage-lead-content {
+  flex: 1 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.homepage-lead-content-centered {
+  color: white;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10vh 5px;
+}
+
+.homepage-lead-content-centered h1 {
+  text-align: center;
+}
+
+.homepage-lead-content-centered hr {
+  width: 50%;
+  border-color: tomato;
+}
+
+.homepage-lead-content-centered a {
+  background-color: tomato;
+  border-radius: 10px;
+  border: 0px;
+  padding: 10px 50px;
+  color: white;
+}
+
+.homepage-lead-content-centered a h3 {
+  margin: 0px;
+}
+
+.homepage-lead-content-centered a:hover {
+  filter: brightness(85%);
+}
+
+@media (hover: none) {
+  .homepage-lead-content-centered a:hover {
+    filter: brightness(100%);
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .homepage-lead-content-centered a:active {
+    filter: brightness(85%);
+  }
+}
+
+.homepage-secondary {
+  flex: 1 0 auto;
+  background-color: tomato;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  padding-bottom: 10vh;
+}
+
+.homepage-secondary-title {
+  flex: 0 0 100%;
+  text-align: center;
+  color: white;
+  padding-top: 10vh;
+}
+
+.homepage-secondary-box {
+  flex: 0 1 20%;
+  padding: 10px 5px;
+  color: white;
+  text-align: center;
+  padding: 10vh 2.5% 0px;
+}
+
+@media only screen and (max-width: 800px) {
+  .homepage-secondary-box {
+    flex: 0 1 80%;
+    padding: 10vh 10% 0px;
+  }
+}
+
+@media only screen and (min-width: 800px) and (max-width: 1100px) {
+  .homepage-secondary-box {
+    flex: 0 1 40%;
+    padding: 10vh 5% 0px;
+  }
+}
+
+@media only screen and (min-width: 1100px) and (max-width: 1300px) {
+    .homepage-secondary-box {
+      flex: 0 1 25%;
+      padding: 10vh 5% 0px;
+    }
+  }
+
+.homepage-secondary-title hr {
+  width: 10%;
+  border-color: white;
+}
+
+.homepage-secondary-box h3 {
+  filter: brightness(80%);
+}
+
+.homepage-footer {
+  color: black;
+  background-color: white;
+  text-align: center;
 }

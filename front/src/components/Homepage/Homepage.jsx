@@ -14,45 +14,52 @@ function Homepage(props) {
     }
 
     return (
-        <div className="homepage-div homepage-bg">
-            <Navbar inverse>
-                <Navbar.Header>
-                    <Navbar.Brand>
-                        <a href="/" onClick={e => redirect(e, '/')}>Contare</a>
-                    </Navbar.Brand>
-                </Navbar.Header>
-                <Clearfix visibleMdBlock visibleLgBlock>
-                    <Nav pullRight>
-                        <NavItem eventKey={1} href="/register" onClick={e => redirect(e, '/register')}>
-                            Registrar
-                        </NavItem>
-                        <NavItem eventKey={2} href="/login" onClick={e => redirect(e, '/login')}>
-                            Logar
-                        </NavItem>
-                    </Nav>
-                </Clearfix>
-                <Clearfix visibleXsBlock visibleSmBlock>
-                    <Nav>
-                        <NavItem eventKey={1} href="/register" onClick={e => redirect(e, '/register')}>
-                            Registrar
-                        </NavItem>
-                        <NavItem eventKey={2} href="/login" onClick={e => redirect(e, '/login')}>
-                            Logar
-                        </NavItem>
-                    </Nav>
-                </Clearfix>
-            </Navbar>
-            <div className="homepage-presentation">
-                <h1>Sobre o Contare</h1>
-                <hr />
-                <h4>
-                    Contare é um web site de uso gratuito construido com intuito de ajudar as pessoas a controlar seus gastos.
-                     Aqui, você pode manusear todas suas despesas, podendo compartilha-las com outros usuários.
-                     Nosso maior objetivo é manter você sempre alerta de quanto está gastando mediante quanto você recebe,
-                     e para isso, diversos alertas e mensagens personalizadas irão surgir para melhor orientá-lo.
-                </h4>
+      <div class="homepage-container">
+
+        <div class="homepage-lead">
+          <div class="homepage-lead-navbar">
+            <div class="homepage-lead-navbar-content">
+              <span><a href="/" onClick={e => redirect(e, '/')}>Contare</a></span>
+              <div class="homepage-lead-navbar-content-nav">
+                <span><a href="/register" onClick={e => redirect(e, '/register')}>Registrar</a></span>
+                <span><a href="/login" onClick={e => redirect(e, '/login')}>Login</a></span>
+              </div>
             </div>
+          </div>
+          <div class="homepage-lead-content">
+            <div class="homepage-lead-content-centered">
+              <h1>Welcome to the best app ever made, <br /> Contare is an application that gives you the control</h1>
+              <hr />
+              <h3>Here, you organize your money like a pro, give it a try</h3>
+                <a href="/register" onClick={e => redirect(e, '/register')}><h3>Register now</h3></a>
+            </div>
+          </div>
         </div>
+    
+        <div class="homepage-secondary">
+          <div class="homepage-secondary-title">
+            <h1>Some of our greatest features</h1>
+            <hr />
+          </div>
+          <div class="homepage-secondary-box">
+            <h2>Here, you organize your money like a pro, give it a try</h2>
+            <h3>Welcome to the best app ever made, <br /> Contare is an application that gives you the control</h3>
+          </div>
+          <div class="homepage-secondary-box">
+            <h2>Here, you organize your money like a pro, give it a try</h2>
+            <h3>Welcome to the best app ever made, <br /> Contare is an application that gives you the control</h3>
+          </div>
+          <div class="homepage-secondary-box">
+            <h2>Here, you organize your money like a pro, give it a try</h2>
+            <h3>Welcome to the best app ever made, <br /> Contare is an application that gives you the control</h3>
+          </div>
+        </div>
+    
+        <div class="homepage-footer">
+          <h6>All rights reserved. Team Contare 2019.</h6>
+        </div>
+    
+      </div>
     )
 }
 
