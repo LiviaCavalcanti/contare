@@ -1,0 +1,13 @@
+.pdfImage {
+    width: 30px;
+    float: center;
+    margin-right: 10px;
+}
+
+#clickDownload{
+    color:rgb(83, 83, 233);
+}
+#clickDownload:hover{
+    cursor: pointer;
+    color:blue;
+}
