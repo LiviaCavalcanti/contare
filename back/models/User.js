@@ -67,11 +67,11 @@ const UserSchema = new mongoose.Schema({
     image: {
         id:{
             type: mongoose.Schema.Types.ObjectId,
-            required: true
+            required: false
         },
         url:{
             type: String,
-            required: true,
+            required: false,
             default: "NONE"
         },
         required: false
