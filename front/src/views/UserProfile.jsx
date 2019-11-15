@@ -36,6 +36,7 @@ import avatar from "assets/img/faces/face-1.jpg";
 // New imports for communicating with backend
 import { updateUser, getUser } from 'services/userService';
 import { initializeConnection } from 'services/ConnectionService';
+import { notifyFailure, notifySucess } from "services/notifyService";
 
 class UserProfile extends Component {
 
@@ -79,7 +80,7 @@ class UserProfile extends Component {
     // UserCard fields (including picture)
     this.setState(function(oldState) {
       console.log(user.image)
-      let img = user.image.url == "NONE" ? avatar : user.image.url;
+      let img = (user.image == null || user.image.url == "NONE") ? avatar : user.image.url;
       return {
         bgImage: defaultBgImg,
         avatar: img,
@@ -99,12 +100,12 @@ class UserProfile extends Component {
     })
 
     if(newFields["name"] == "" || newFields["email"] == "" || newFields["password"] == "") {
-      alert("Preencher pelo menos os campos de nome, email e senha com alguma coisa.")
+      notifyFailure("Preencher pelo menos os campos de nome, email e senha com alguma coisa.")
     } else {
         const token = localStorage.getItem('token-contare')
         updateUser(token, newFields, function(response) {
           this.updateUserFields(newFields);
-          alert("Perfil alterado com sucesso!")
+          notifySucess("Perfil alterado com sucesso!")
       }.bind(this))
     }
   }
