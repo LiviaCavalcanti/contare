@@ -283,6 +283,9 @@ function createRandomFriends() {
     newPerson.push("R$ " + String(Number.parseFloat(Math.random() * 5000).toFixed(2)))
     data.push(newPerson);
   }
+
+  console.log('---------')
+  console.log(data)
   return data;
 }
 
@@ -582,11 +585,7 @@ var dataBar = {
   ]
 };
 var optionsBar = {
-  seriesBarDistance: 10,
-  axisX: {
-    showGrid: false
-  },
-  height: "245px"
+  low: 0,
 };
 var responsiveBar = [
   [
