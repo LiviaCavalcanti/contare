@@ -1,6 +1,7 @@
 import axios from 'axios'
 import {notifyFailure, notifySucess} from './notifyService'
 import {API_URL} from './index'
+import { Hash } from 'crypto'
 
 
 export const registerUser = async (name, email, pass, callback) => {
@@ -43,20 +44,19 @@ export const verifyUser = async (token, callback) => {
          callback(response.data)
        },
        (error) => {
-            //window.location.href = "/"
+            window.location.href = "/register"
        }
      )
 }
 
 export const getUser = async (token) => {
-    // console.log("Inside getUser function. Received this token: ", token);
     return axios.get( `${API_URL}/contare/user`, {headers: {Authorization : "Bearer " + token}})
      .then((response) => {
          return (response.data)
        },
        (error) => {
-            alert("Trouble with user retrieval! " + error);
-            // window.location.href = "/register"
+            alert("Problema com o login!");
+            window.location.href = "/register"
        }
      )
 }
@@ -95,4 +95,17 @@ export const getUserFromID = async (id, token, callback) => {
        (error) => {
        }
      )
+}
+
+export const addImage = async (token, imagePath, callback)=>{
+    let image = {
+        url: imagePath,
+    }
+    axios.post(`${API_URL}/contare/user/image`, image, {headers: {Authorization : "Bearer " + token}})
+    .then((response) =>{
+        callback(response.data)
+        return response.data;
+    }).catch((error) => {
+        return error;
+    });
 }

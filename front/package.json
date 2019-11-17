@@ -8,6 +8,7 @@
     "bootstrap": "3.3.7",
     "chai": "^4.2.0",
     "chartist": "0.10.1",
+    "cloudinary-react": "^1.2.1",
     "date-fns": "^2.0.0-alpha.27",
     "engine.io": "^3.4.0",
     "html2canvas": "^1.0.0-rc.5",

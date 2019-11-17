@@ -36,6 +36,7 @@ import avatar from "assets/img/faces/face-1.jpg";
 // New imports for communicating with backend
 import { updateUser, getUser } from 'services/userService';
 import { initializeConnection } from 'services/ConnectionService';
+import { notifyFailure, notifySucess } from "services/notifyService";
 
 class UserProfile extends Component {
 
@@ -43,7 +44,11 @@ class UserProfile extends Component {
     super(props);
     this.handleUpdateUserProfile = this.handleUpdateUserProfile.bind(this)
     this.state = {
-      user: null
+      user: null,
+      bgImage: defaultBgImg,
+      name: "",
+      userName: "",
+      description: ""
     }
     this.socket = initializeConnection();
   }
@@ -71,6 +76,19 @@ class UserProfile extends Component {
         }
       }
     });
+
+    // UserCard fields (including picture)
+    this.setState(function(oldState) {
+      console.log(user.image)
+      let img = (user.image == null || user.image.url == "NONE") ? avatar : user.image.url;
+      return {
+        bgImage: defaultBgImg,
+        avatar: img,
+        name: this.concatFullName(user),
+        userName: user.username,
+        description: user.bio
+    }}.bind(this))
+    
   }
 
   async handleUpdateUserProfile() {
@@ -82,14 +100,25 @@ class UserProfile extends Component {
     })
 
     if(newFields["name"] == "" || newFields["email"] == "" || newFields["password"] == "") {
-      alert("Preencher pelo menos os campos de nome, email e senha com alguma coisa.")
+      notifyFailure("Preencher pelo menos os campos de nome, email e senha com alguma coisa.")
     } else {
         const token = localStorage.getItem('token-contare')
         updateUser(token, newFields, function(response) {
           this.updateUserFields(newFields);
-          alert("Perfil alterado com sucesso!")
+          notifySucess("Perfil alterado com sucesso!")
       }.bind(this))
     }
+  }
+
+  concatFullName(user) {
+    if (user) {
+      let fullName = user.name
+      if (user.lastName) {
+        fullName += " " + user.lastName
+      }
+      return fullName
+    }
+    return ""
   }
 
   render() {
@@ -229,12 +258,13 @@ class UserProfile extends Component {
             </Col>
             <Col md={4}>
               <UserCard
-                bgImage={defaultBgImg}
-                avatar={avatar}
-                name=""
-                userName=""
+                bgImage={this.state.bgImage}
+                avatar={this.state.avatar}
+                name={this.state.name}
+                userName={this.state.userName}
                 description={
                   <span>
+                    {this.state.description}
                   </span>
                 }
                 socials={
@@ -251,6 +281,7 @@ class UserProfile extends Component {
                   </div>
                 }
                 id={"usercard"}
+                ref={this.userCard}
               />
             </Col>
           </Row>
