@@ -143,14 +143,8 @@ module.exports = {
     async addImage(req,res){
         const user = await findUser(req.userId,res);
         if(!user) return res;
-
-        console.log(req.file) // to see what is returned to you
-        const image = {};
-        image.url = req.file.url;
-        image.id = req.file.public_id;
-
+        let image = req.body;
         user.image = image;
-        
         return res.status(200).send(await User.findByIdAndUpdate(user.id,user,{new:true}));
     }
 }
