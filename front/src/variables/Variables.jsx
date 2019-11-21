@@ -1,3 +1,4 @@
+
 /*!
 
 =========================================================
@@ -20,6 +21,8 @@
 // // // For notifications
 // //
 //
+
+
 var defaultWidth =
   window.screen.width > 768
     ? (window.screen.width * 1) / 3
@@ -605,6 +608,11 @@ var legendBar = {
   types: ["info", "danger"]
 };
 
+
+var optionsPizza = {
+  plugins:[]
+}
+
 module.exports = {
   style, // For notifications (App container and Notifications view)
   thArray,
@@ -619,5 +627,6 @@ module.exports = {
   dataBar,
   optionsBar,
   responsiveBar,
-  legendBar // For charts (Dashboard view)
+  legendBar,
+  optionsPizza // For charts (Dashboard view)
 };
