@@ -28,30 +28,30 @@ function Homepage(props) {
           </div>
           <div class="homepage-lead-content">
             <div class="homepage-lead-content-centered">
-              <h1>Welcome to the best app ever made, <br /> Contare is an application that gives you the control</h1>
+              <h1>Bem-vindo(a) ao Contare! <br /> Uma aplicação que melhora sua organização financeira.</h1>
               <hr />
-              <h3>Here, you organize your money like a pro, give it a try</h3>
-                <a href="/register" onClick={e => redirect(e, '/register')}><h3>Register now</h3></a>
+              <h3>Aqui, você consegue organizar seu dinheiro como nunca!</h3>
+                <a href="/register" onClick={e => redirect(e, '/register')}><h3>Cadastre-se agora</h3></a>
             </div>
           </div>
         </div>
     
         <div class="homepage-secondary">
           <div class="homepage-secondary-title">
-            <h1>Some of our greatest features</h1>
+            <h1>Algumas de nossas funcionalidades</h1>
             <hr />
           </div>
           <div class="homepage-secondary-box">
-            <h2>Here, you organize your money like a pro, give it a try</h2>
-            <h3>Welcome to the best app ever made, <br /> Contare is an application that gives you the control</h3>
+            <h2>Gráficos Intuitivos</h2>
+            <h3>Visualize graficamente quanto você gasta por categorias personalizadas, como Comida, Viagem, Alguel etc. Selecione períodos para visualizar seu histórico de rendas e gastos ao longo do tempo.</h3>
           </div>
           <div class="homepage-secondary-box">
-            <h2>Here, you organize your money like a pro, give it a try</h2>
-            <h3>Welcome to the best app ever made, <br /> Contare is an application that gives you the control</h3>
+            <h2>Compartilhe gastos</h2>
+            <h3>Aqui, você pode adicionar amigos e dividir despesas em comum facilmente. Os cálculos de quanto cada um deve é feito automaticamente de acordo com os critérios escolhidos.</h3>
           </div>
           <div class="homepage-secondary-box">
-            <h2>Here, you organize your money like a pro, give it a try</h2>
-            <h3>Welcome to the best app ever made, <br /> Contare is an application that gives you the control</h3>
+            <h2>Exporte seus dados financeiros para PDF</h2>
+            <h3>Você também tem a opção de gerar um relatório detalhado para o formato PDF de forma a poder imprimir e visualizá-lo onde quiser.</h3>
           </div>
         </div>
     
