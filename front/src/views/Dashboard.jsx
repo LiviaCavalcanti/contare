@@ -242,8 +242,11 @@ class Dashboard extends Component {
 
     incomes.map(income => {
       if(income.periodicity === "MONTHLY") {
-        const incomeDueDate = new Date(income.receivedOn)
-        if(incomeDueDate > currentDate) {
+        let canceledDate = new Date(income.canceledOn ? new Date(income.canceledOn) : currentDate)
+        if(currentDate.getFullYear() < canceledDate.getFullYear() ||
+          (currentDate.getFullYear() === canceledDate.getFullYear() && currentDate.getMonth() < canceledDate.getMonth()) ||
+          (currentDate.getFullYear() === canceledDate.getFullYear() && currentDate.getMonth() === canceledDate.getMonth() &&
+            currentDate.getDate() <= canceledDate.getDate())) {
           totalIncome += income.value
         }
       }
@@ -268,8 +271,6 @@ class Dashboard extends Component {
                 bigIcon={<i className="pe-7s-server text-warning" />}
                 statsText="Renda Mensal"
                 statsValue={"R$ " + this.state.userCurrentRent}
-                statsIcon={<i className="fa fa-refresh" />}
-                statsIconText="Atualizado há pouco"
               />
             </Col>
             <Col lg={4} sm={6}>
@@ -277,8 +278,6 @@ class Dashboard extends Component {
                 bigIcon={<i className="pe-7s-wallet text-success" />}
                 statsText="Gastos deste mês"
                 statsValue={"R$ " + this.calculateMonthExpenses()}
-                statsIcon={<i className="fa fa-calendar-o" />}
-                statsIconText="Atualizado ontem"
               />
             </Col>
             <Col lg={4} sm={6}>
@@ -286,17 +285,6 @@ class Dashboard extends Component {
                 bigIcon={<i className="pe-7s-graph1 text-danger" />}
                 statsText="Gastos deste ano"
                 statsValue={"R$ " + this.calculateYearExpenses()}
-                statsIcon={<i className="fa fa-clock-o" />}
-                statsIconText="Atualizado ontem"
-              />
-            </Col>
-            <Col lg={4} sm={6}>
-              <StatsCard
-                bigIcon={<i className="fa fa-twitter text-info" />}
-                statsText="Amigos"
-                statsValue="#TODO"
-                statsIcon={<i className="fa fa-refresh" />}
-                statsIconText="Atualizado há 13 dias"
               />
             </Col>
           </Row>
@@ -345,13 +333,11 @@ class Dashboard extends Component {
       </FormGroup>
 
               <Card
-                statsIcon="fa fa-clock-o"
                 title="Distribuição de Gastos"
-                stats="Atualizado ontem"
                 content={
                   <div
                     id="chartPreferences"
-                    className="ct-chart ct-perfect-fourth"
+                    className="ct-chart"
                   >
                     <ChartistGraph data={this.createDataPizzaPlot()} type="Pie" />
                   </div>

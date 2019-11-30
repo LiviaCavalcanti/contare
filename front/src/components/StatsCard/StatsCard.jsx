@@ -20,6 +20,18 @@ import { Row, Col } from "react-bootstrap";
 
 export class StatsCard extends Component {
   render() {
+    let footer
+    if (this.props.statsIcon || this.props.statsIconText) {
+      footer = (
+        <div className="footer">
+          <hr />
+          <div className="stats">
+            {this.props.statsIcon} {this.props.statsIconText}
+          </div>
+        </div>
+      )
+    }
+
     return (
       <div className="card card-stats">
         <div className="content">
@@ -36,12 +48,7 @@ export class StatsCard extends Component {
               </div>
             </Col>
           </Row>
-          <div className="footer">
-            <hr />
-            <div className="stats">
-              {this.props.statsIcon} {this.props.statsIconText}
-            </div>
-          </div>
+          {footer}
         </div>
       </div>
     );
