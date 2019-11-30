@@ -73,25 +73,7 @@ const dashboardRoutes = [
     icon: "pe-7s-note2",
     component: Report,
     layout: "/admin"
-  },
-  {
-    path: "/notifications",
-    name: "Notificações",
-    icon: "pe-7s-bell",
-    component: Notifications,
-    layout: "/admin"
-  },
-
-// Contare Antigo
-
-  {
-    path: "/dashboardContareAntigo",
-    name: "Dashboard Contare Antigo",
-    icon: "pe-7s-graph",
-    component: dashboardComponent,
-    layout: "/admin"
-  },
-  
+  }
 ];
 
 const loginRoute = [{
