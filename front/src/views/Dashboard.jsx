@@ -263,7 +263,7 @@ class Dashboard extends Component {
 
   render() {
     return (
-      <div className="content">
+      <div className="content admin-flex-container-content">
         <Grid fluid>
           <Row>
             <Col lg={4} sm={6}>

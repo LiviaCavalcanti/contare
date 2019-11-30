@@ -104,7 +104,7 @@ class Friends extends Component {
   render() {
     return (
 
-      <div className="content">
+      <div className="content admin-flex-container-content">
         <Grid fluid>
           <Row>
             <Col id="divtoprint"  md={12}>

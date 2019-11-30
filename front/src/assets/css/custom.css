@@ -1,3 +1,13 @@
 .clickable:hover {
     cursor: pointer;
 }
+
+.admin-flex-container {
+    display: flex;
+    flex-flow: column;
+    min-height: 100vh;
+}
+
+.admin-flex-container-content {
+    flex: 1 1 auto;
+}

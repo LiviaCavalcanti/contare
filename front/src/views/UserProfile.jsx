@@ -123,7 +123,7 @@ class UserProfile extends Component {
 
   render() {
     return (
-      <div className="content">
+      <div className="content admin-flex-container-content">
         <Grid fluid>
           <Row>
             <Col md={8}>

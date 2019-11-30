@@ -30,6 +30,8 @@ import {dashboardRoutes} from "routes.js";
 
 import image from "assets/img/sidebar-3.jpg";
 
+import '../assets/css/custom.css'
+
 class AdminLayout extends Component {
   constructor(props) {
     super(props);
@@ -110,23 +112,13 @@ class AdminLayout extends Component {
         <Sidebar {...this.props} routes={dashboardRoutes} image={this.state.image}
         color={this.state.color}
         hasImage={this.state.hasImage}/>
-        <div id="main-panel" className="main-panel" ref="mainPanel">
+        <div id="main-panel" className="main-panel admin-flex-container" ref="mainPanel">
           <AdminNavbar
             {...this.props}
             brandText={this.getBrandText(this.props.location.pathname)}
           />
           <Switch>{this.getRoutes(dashboardRoutes)}</Switch>
           <Footer />
-          <FixedPlugin
-            handleImageClick={this.handleImageClick}
-            handleColorClick={this.handleColorClick}
-            handleHasImage={this.handleHasImage}
-            bgColor={this.state["color"]}
-            bgImage={this.state["image"]}
-            mini={this.state["mini"]}
-            handleFixedClick={this.handleFixedClick}
-            fixedClasses={this.state.fixedClasses}
-          />
         </div>
       </div>
     );

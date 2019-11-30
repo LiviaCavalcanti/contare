@@ -9,7 +9,7 @@ export default function() {
     const [totalIncome, setTotalIncome] = useState(0)
 
     return (
-        <div className="content">
+        <div className="content admin-flex-container-content">
             <CreateIncome show={showModal} setShow={setShowModal} created={setUpdateList} />
             <Grid fluid>
                 <Row>
