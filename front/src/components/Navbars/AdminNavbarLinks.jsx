@@ -16,6 +16,7 @@
 
 */
 import React, { Component } from "react";
+import {withRouter} from 'react-router'
 import { NavItem, Nav, NavDropdown, MenuItem } from "react-bootstrap";
 import {Img} from "react";
 import {getUser} from '../../services/userService'
@@ -52,7 +53,7 @@ class AdminNavbarLinks extends Component {
 
   logOut = () => {
     localStorage.removeItem("token-contare")
-    window.location.href = "/login"
+    this.props.history.push('/login')
   }
 
   render() {
@@ -67,7 +68,8 @@ class AdminNavbarLinks extends Component {
     return (
       <div>
         <Nav pullRight>
-          <NavItem eventKey={1}>
+          <NavItem eventKey={1} href="/admin/user" onClick={e => e.preventDefault() &
+            this.props.history.push('/admin/user')}>
             {this.state.user.name}
           </NavItem>
           {/* <NavDropdown
@@ -83,7 +85,7 @@ class AdminNavbarLinks extends Component {
             <MenuItem divider />
             <MenuItem eventKey={2.5}>Separated link</MenuItem>
           </NavDropdown> */}
-          <NavItem onClick={() => this.logOut()} eventKey={3} href="#">
+          <NavItem eventKey={3} href="/login" onClick={e => e.preventDefault() & this.logOut()}>
             Log out
           </NavItem>
         </Nav>
@@ -92,4 +94,4 @@ class AdminNavbarLinks extends Component {
   }
 }
 
-export default AdminNavbarLinks;
+export default withRouter(AdminNavbarLinks);
