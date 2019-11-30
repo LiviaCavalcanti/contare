@@ -275,14 +275,14 @@ class Dashboard extends Component {
             </Col>
             <Col lg={4} sm={6}>
               <StatsCard
-                bigIcon={<i className="pe-7s-wallet text-success" />}
+                bigIcon={<i className="pe-7s-wallet text-danger" />}
                 statsText="Gastos deste mês"
                 statsValue={"R$ " + this.calculateMonthExpenses()}
               />
             </Col>
             <Col lg={4} sm={6}>
               <StatsCard
-                bigIcon={<i className="pe-7s-graph1 text-danger" />}
+                bigIcon={<i className="pe-7s-graph1 text-primary" />}
                 statsText="Gastos deste ano"
                 statsValue={"R$ " + this.calculateYearExpenses()}
               />

@@ -107,7 +107,7 @@ export default function ListExpenses(props) {
             </Row>
             {Expenses.map((expense, i) =>
                 <Col lg={4} sm={6} key={expense._id}>
-                    <StatsCard bigIcon={<i className="pe-7s-server text-warning" />}
+                    <StatsCard bigIcon={<i className="pe-7s-wallet text-danger" />}
                         statsText={expense.title}
                         statsValue={"R$ " + expense.totalValue}
                         statsIcon={<i className="fa fa-edit clickable" onClick={() => showModal(i)} />}
