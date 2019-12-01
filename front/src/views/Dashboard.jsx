@@ -333,14 +333,12 @@ class Dashboard extends Component {
       </FormGroup> */}
 
               <Card
-                statsIcon="fa fa-clock-o"
                 title="Distribuição de Gastos"
-                stats="Atualizado ontem"
                 category="Seus gastos agrupados por categoria"
                 content={
                   <div
                     id="chartPreferences"
-                    className="ct-chart ct-perfect-fourth"
+                    className="ct-chart"
                   >
                     <ChartistGraph options={{distributeSeries:true}} data={this.createDataPizzaPlot()} type="Bar"/>
                   </div>
