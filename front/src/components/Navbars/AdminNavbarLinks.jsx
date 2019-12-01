@@ -70,7 +70,7 @@ class AdminNavbarLinks extends Component {
         <Nav pullRight>
           <NavItem eventKey={1} href="/admin/user" onClick={e => e.preventDefault() &
             this.props.history.push('/admin/user')}>
-            {this.state.user.name}
+            Bem-vindo, {this.state.user.name}
           </NavItem>
           {/* <NavDropdown
             eventKey={2}
@@ -86,7 +86,7 @@ class AdminNavbarLinks extends Component {
             <MenuItem eventKey={2.5}>Separated link</MenuItem>
           </NavDropdown> */}
           <NavItem eventKey={3} href="/login" onClick={e => e.preventDefault() & this.logOut()}>
-            Log out
+            Sair
           </NavItem>
         </Nav>
       </div>

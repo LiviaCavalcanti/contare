@@ -37,6 +37,7 @@ import {
   legendBar
 } from "variables/Variables.jsx";
 import { initializeConnection } from 'services/ConnectionService'
+import './Dashboard.css'
 
 class Dashboard extends Component {
 
@@ -49,7 +50,7 @@ class Dashboard extends Component {
     this.createDataBarPlot = this.createDataBarPlot.bind(this)
     this.calculateUserRent = this.calculateUserRent.bind(this)
     this.getIncomes = this.getIncomes.bind(this)
-    this.createDataPizzaPlot = this.createDataPizzaPlot.bind(this)
+    //this.createDataPizzaPlot = this.createDataPizzaPlot.bind(this)
     this.state = {
       user: {},
       userExpenses: [],
@@ -289,17 +290,17 @@ class Dashboard extends Component {
             </Col>
           </Row>
           <Row>
-        
-            <Col md={6}>
 
-            <FormGroup controlId="formControlsSelect">
+
+          <FormGroup controlId="formControlsSelect">
       <ControlLabel>Selecione para visualizar</ControlLabel>
-      <FormControl onChange={(e) => this.setNLastMonths(e)} componentClass="select" placeholder="select">
-        <option value="3">Últimos 3 meses</option>
+      <FormControl className="inputMonth" onChange={(e) => this.setNLastMonths(e)} componentClass="select" placeholder="select">        <option value="3">Últimos 3 meses</option>
         <option value="6">Últimos 6 meses</option>
         <option value="12">Último ano</option>
       </FormControl>
       </FormGroup>
+        
+            <Col md={6}>
       
               <Card
                 id="chartActivity"
@@ -324,22 +325,24 @@ class Dashboard extends Component {
 
             <Col md={6}>
 
-            <FormGroup controlId="formControlsSelect">
+            {/* <FormGroup controlId="formControlsSelect">
       <ControlLabel>Selecione para visualizar</ControlLabel>
       <FormControl  componentClass="select" placeholder="select">
         <option value="3">#TODO SELECT OP</option>
-
       </FormControl>
-      </FormGroup>
+      </FormGroup> */}
 
               <Card
+                statsIcon="fa fa-clock-o"
                 title="Distribuição de Gastos"
+                stats="Atualizado ontem"
+                category="Seus gastos agrupados por categoria"
                 content={
                   <div
                     id="chartPreferences"
-                    className="ct-chart"
+                    className="ct-chart ct-perfect-fourth"
                   >
-                    <ChartistGraph data={this.createDataPizzaPlot()} type="Pie" />
+                    <ChartistGraph options={{distributeSeries:true}} data={this.createDataPizzaPlot()} type="Bar"/>
                   </div>
                 }
               />

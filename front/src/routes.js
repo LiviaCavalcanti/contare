@@ -47,13 +47,6 @@ const dashboardRoutes = [
     layout: "/admin"
   },
   {
-    path: "/friends",
-    name: "Amigos",
-    icon: "pe-7s-users",
-    component: Friends,
-    layout: "/admin"
-  },
-  {
     path: "/income",
     name: "Renda",
     icon: "pe-7s-cash",
