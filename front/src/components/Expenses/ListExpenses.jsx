@@ -14,7 +14,7 @@ export default function ListExpenses(props) {
     const [Expenses, setExpenses] = useState([])
     const [ExpenseModals, setExpenseModals] = useState([])
     const [cachedExpenses, setCachedExpenses] = useState([])
-    const [sorting, setSorting] = useState('Data de Criação')
+    const [sorting, setSorting] = useState('Data do Gasto')
     const [initializing, setInitializing] = useState(true)
 
     useEffect(() => {
@@ -61,21 +61,28 @@ export default function ListExpenses(props) {
 
     function sortExpenses() {
         if (cachedExpenses) {
-            if (sorting === 'Data de Criação') setExpenses(cachedExpenses.slice())
-            else if (sorting === 'Título') setExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
+            if (sorting === 'Título') setExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
                 if (inc1.title.toLowerCase() < inc2.title.toLowerCase()) return -1
                 return 1
             }))
             else if (sorting === 'Valor') setExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
-                if (inc1.value > inc2.value) return -1
+                if (inc1.totalValue > inc2.totalValue) return -1
                 return 1
             }))
-            else if (sorting === 'Data de Recebimento') setExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
+            else if (sorting === 'Data do Gasto') setExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
                 if (new Date(inc1.dueDate) > new Date(inc2.dueDate)) return -1
                 return 1
             }))
             else if (sorting === 'Tipo de Recorrencia') setExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
                 if (inc1.periodicity > inc2.periodicity) return -1
+                return 1
+            }))
+            else if (sorting === 'Categoria') setExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
+                if (inc1.category > inc2.category) return -1
+                return 1
+            }))
+            else if (sorting === 'Descrição') setExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
+                if (inc1.description > inc2.description) return -1
                 return 1
             }))
         }
@@ -92,14 +99,13 @@ export default function ListExpenses(props) {
             <Row>
                 <Col lg={3} sm={4} xs={6}>
                     <FormGroup>
-                        <ControlLabel>Ordenar as rendas por</ControlLabel>
+                        <ControlLabel>Ordenar os gastos por</ControlLabel>
                         <FormControl componentClass="select" value={sorting} onChange={val => setSorting(val.target.value)}>
-                            <option>Data de Criação</option>
                             <option>Título</option>
                             <option>Categoria</option>
                             <option>Descrição</option>
                             <option>Valor</option>
-                            <option>Data de Gasto</option>
+                            <option>Data do Gasto</option>
                             <option>Tipo de Recorrencia</option>
                         </FormControl>
                     </FormGroup>
