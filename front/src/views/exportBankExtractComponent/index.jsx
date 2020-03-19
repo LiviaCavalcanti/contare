@@ -15,6 +15,7 @@ export default class BankExtractModal extends React.Component {
       this.createExpenseAndIncomesForBB = this.createExpenseAndIncomesForBB.bind(this)
       this.readCSVBancoDoBrasil = this.readCSVBancoDoBrasil.bind(this)
       this.readCSVCaixa = this.readCSVCaixa.bind(this)
+      this.formatData = this.formatData.bind(this)
   
       this.state = {
         show: false,
@@ -27,6 +28,14 @@ export default class BankExtractModal extends React.Component {
           id_transacao: 4,
           valor: 5,
           not_named: 6
+        },
+        caixaColumnsValues: {
+          conta: 0,
+          data: 1, 
+          nr_doc: 2, 
+          historico: 3, 
+          valor: 4, 
+          deb_Cred: 5
         }
       };
     }
@@ -45,9 +54,8 @@ export default class BankExtractModal extends React.Component {
             objValues = this.createExpenseAndIncomesForBB(lines)
             break
           case "caixa":
-            // TODO
             lines = this.readCSVCaixa()
-            // create and call function createExpenseAndIncomesForCaixa ...
+            objValues = this.createExpenseAndIncomesForCaixa(lines)
             break
         }
 
@@ -57,9 +65,23 @@ export default class BankExtractModal extends React.Component {
     }
 
     readCSVCaixa = () => {
-      // TODO
-      notifyFailure("Opção ainda não disponível")
-      return []
+      const allTextLines = this.state.file.split(/\r\n|\n/);
+      var headers = allTextLines[0].split(';');
+      var lines = [];
+  
+      for (var i=1; i<allTextLines.length; i++) {
+          var data = allTextLines[i].split(';');
+          if (data.length == headers.length) {
+              var tarr = [];
+              for (var j=0; j<headers.length; j++) {
+                  const payload = data[j].substring(1, data[j].length-1)
+                  tarr.push(payload)
+              }
+              lines.push(tarr);
+          }
+      }
+      console.log(lines)
+      return lines
     }
 
     readCSVBancoDoBrasil = () => {
@@ -118,6 +140,49 @@ export default class BankExtractModal extends React.Component {
       }
        return {createdExpenses, createdIncomes}
     }
+
+    createExpenseAndIncomesForCaixa  = (bankData) => {
+      let createdExpenses = 0
+      let createdIncomes = 0
+
+      for(let i = 0; i < bankData.length; i++) {
+        console.log(bankData[i])
+        if(bankData[i][this.state.caixaColumnsValues["valor"]] != "0.00") {
+          const objTitle = bankData[i][this.state.caixaColumnsValues["conta"]]
+          const objDate  = this.formatData(bankData[i][this.state.caixaColumnsValues["data"]])
+          const description = "Criado na CAIXA na conta: " +
+                              bankData[i][this.state.caixaColumnsValues["conta"]]
+          const value = parseFloat(bankData[i][this.state.caixaColumnsValues["valor"]])
+          const op_type = bankData[i][this.state.caixaColumnsValues["deb_Cred"]]
+          console.log(op_type)
+          // positive value indicate that is a income. negative is a expense.
+          if(op_type === "C") {
+            createIncome(objTitle, description, value, objDate, "NONE", function(){})
+            createdIncomes += 1
+          } else {
+            const token = localStorage.getItem("token-contare")
+            const expenseObj = {
+              category: "extrato",
+              title: objTitle,
+              description: description,
+              dueDate: objDate,
+              periodicity: "NONE",
+              totalValue: value
+            }
+
+            addExpenses(token, expenseObj, false)
+            createdExpenses += 1
+            
+          }
+        }
+      }
+       return {createdExpenses, createdIncomes}
+    }
+
+    formatData = (data) => {
+      const str = "/";
+      return data.slice(0, 4) + str + data.slice(4, 6) + str + data.slice(6, 8);
+    } 
 
     handleFiles = e => {
         let reader = new FileReader();
