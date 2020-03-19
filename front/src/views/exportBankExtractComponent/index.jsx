@@ -1,6 +1,8 @@
 import React from "react"
 import {Modal, Button, Form, FormGroup, ControlLabel, FormControl, Alert} from "react-bootstrap"
-import ReactFileReader from "react-file-reader"
+import {notifyFailure, notifySucess} from "../../services/notifyService"
+import {createIncome} from "../../services/income"
+import {addExpenses} from "../../services/expenseService"
 
 export default class BankExtractModal extends React.Component {
     constructor(props, context) {
@@ -10,15 +12,111 @@ export default class BankExtractModal extends React.Component {
       this.handleClose = this.handleClose.bind(this);
       this.handleFiles = this.handleFiles.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
+      this.createExpenseAndIncomesForBB = this.createExpenseAndIncomesForBB.bind(this)
+      this.readCSVBancoDoBrasil = this.readCSVBancoDoBrasil.bind(this)
+      this.readCSVCaixa = this.readCSVCaixa.bind(this)
   
       this.state = {
         show: false,
-        file: null
+        file: null,
+        bancoDoBrasilColumnsValues: {
+          data: 0,
+          origem: 1,
+          title: 2,
+          data_balancete: 3,
+          id_transacao: 4,
+          valor: 5,
+          not_named: 6
+        }
       };
     }
   
     handleSubmit = () => {
-        console.log(this.state.file)
+      if (this.state.file == null) {
+        notifyFailure("É necessário selecionar um arquivo para exportar!")
+      } else {
+        let bankOption = document.getElementById('bankSelect')
+        bankOption = bankOption.options[bankOption.selectedIndex].value
+        let lines = []
+        let objValues = {}
+        switch(bankOption) {
+          case "bb":
+            lines = this.readCSVBancoDoBrasil()
+            objValues = this.createExpenseAndIncomesForBB(lines)
+            break
+          case "caixa":
+            // TODO
+            lines = this.readCSVCaixa()
+            // create and call function createExpenseAndIncomesForCaixa ...
+            break
+        }
+
+        notifySucess("Foram criadas " + objValues["createdExpenses"] + " despesas e " + objValues["createdIncomes"]+ " rendas!")
+        this.handleClose()
+      }
+    }
+
+    readCSVCaixa = () => {
+      // TODO
+      notifyFailure("Opção ainda não disponível")
+      return []
+    }
+
+    readCSVBancoDoBrasil = () => {
+      const allTextLines = this.state.file.split(/\r\n|\n/);
+      var headers = allTextLines[0].split(',');
+      var lines = [];
+  
+      for (var i=1; i<allTextLines.length; i++) {
+          var data = allTextLines[i].split(',');
+          if (data.length == headers.length) {
+              var tarr = [];
+              for (var j=0; j<headers.length; j++) {
+                  const payload = data[j].substring(1, data[j].length-1)
+                  tarr.push(payload)
+              }
+              lines.push(tarr);
+          }
+      }
+      return lines
+    }
+
+    createExpenseAndIncomesForBB  = (bankData) => {
+      let createdExpenses = 0
+      let createdIncomes = 0
+
+      for(let i = 0; i < bankData.length; i++) {
+        if(bankData[i][this.state.bancoDoBrasilColumnsValues["origem"]] != "") {
+          const objTitle = bankData[i][this.state.bancoDoBrasilColumnsValues["title"]]
+          const objDate  = bankData[i][this.state.bancoDoBrasilColumnsValues["data"]]
+          const description = "Criado na conta: " +
+                              bankData[i][this.state.bancoDoBrasilColumnsValues["origem"]] +
+                              " Com o ID de transação: " +
+                              bankData[i][this.state.bancoDoBrasilColumnsValues["id_transacao"]]
+          const value = parseFloat(bankData[i][this.state.bancoDoBrasilColumnsValues["valor"]])
+
+          // positive value indicate that is a income. negative is a expense.
+          if(value > 0) {
+            createIncome(objTitle, description, value, objDate, "NONE", function(){})
+            createdIncomes += 1
+          } else {
+            const token = localStorage.getItem("token-contare")
+            const expenseObj = {
+              category: "extrato",
+              title: objTitle,
+              description: description,
+              dueDate: objDate,
+              periodicity: "NONE",
+              totalValue: (value * -1)
+            }
+
+            addExpenses(token, expenseObj, false)
+            createdExpenses += 1
+            
+          }
+        }
+      }
+       return {createdExpenses, createdIncomes}
     }
 
     handleFiles = e => {
@@ -30,10 +128,12 @@ export default class BankExtractModal extends React.Component {
     }
 
     handleClose() {
+      this.setState({file:null})
       this.setState({ show: false });
     }
   
     handleShow() {
+      this.setState({file:null})
       this.setState({ show: true });
     }
   
@@ -57,7 +157,7 @@ export default class BankExtractModal extends React.Component {
             <Form>
                 <FormGroup>
                     <ControlLabel>Selecione seu banco</ControlLabel>
-                        <FormControl componentClass="select" placeholder="Bancos">
+                        <FormControl id="bankSelect" componentClass="select" placeholder="Bancos">
                             <option value="bb">Banco do Brasil</option>
                             <option value="caixa">Caixa Econômica Federal</option>
                         </FormControl>

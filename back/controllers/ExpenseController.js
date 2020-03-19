@@ -42,7 +42,8 @@ module.exports = {
         const user = await findUser(req.userId,res);
         if(!user) return res;
         else {
-            let temp = await Expense.find({owner:user.id, title:req.body.title});
+            // TODO: mudar essa pesquisa talvez?
+            let temp = await Expense.find({owner:user.id, title:null});
             if(temp.length > 0) {
                 return res.status(400).
                 send("Gasto ".concat(req.body.title).

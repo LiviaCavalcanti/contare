@@ -76,7 +76,7 @@ export default function CreateExpense(props) {
                 category: category,
                 periodicity: periodicity
             };
-            let resp = await addExpenses(localStorage.getItem("token-contare"), expenseBody);
+            let resp = await addExpenses(localStorage.getItem("token-contare"), expenseBody, true);
             addExpensesResp(resp)
         }
     }

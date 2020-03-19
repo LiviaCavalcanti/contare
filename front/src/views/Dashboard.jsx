@@ -285,7 +285,7 @@ class Dashboard extends Component {
               <StatsCard
                 bigIcon={<i className="pe-7s-graph1 text-primary" />}
                 statsText="Gastos deste ano"
-                statsValue={"R$ " + this.calculateYearExpenses()}
+                statsValue={"R$ " + this.calculateYearExpenses().toFixed(2)}
               />
             </Col>
           </Row>
