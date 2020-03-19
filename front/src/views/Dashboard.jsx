@@ -99,7 +99,6 @@ class Dashboard extends Component {
 
   getIncomes = async () => {
     const incomes = await getIncomes()
-    
     this.setState({userIncomes:incomes})
   }
 
@@ -242,14 +241,17 @@ class Dashboard extends Component {
     let totalIncome = 0
 
     incomes.map(income => {
-      if(income.periodicity === "MONTHLY") {
+      let currentIncomeDate = new Date(income.receivedOn)
+
+      if(income.periodicity === "MONTHLY" || currentIncomeDate.getMonth() == currentDate.getMonth()) {
         let canceledDate = new Date(income.canceledOn ? new Date(income.canceledOn) : currentDate)
+        
         if(currentDate.getFullYear() < canceledDate.getFullYear() ||
           (currentDate.getFullYear() === canceledDate.getFullYear() && currentDate.getMonth() < canceledDate.getMonth()) ||
           (currentDate.getFullYear() === canceledDate.getFullYear() && currentDate.getMonth() === canceledDate.getMonth() &&
             currentDate.getDate() <= canceledDate.getDate())) {
           totalIncome += income.value
-        }
+        }    
       }
     })
   
