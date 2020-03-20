@@ -9,13 +9,13 @@ export const acceptInviteReq = async (inviteID, token) => {
     }
 
     return axios.put( `${API_URL}/contare/user/invitations`, inviteObj , {headers: {Authorization : "Bearer " + token}})
-     .then((response) => {
+    .then((response) => {
         notifySucess(response.data)
-       },
-       (error) => {
+    },
+    (error) => {
         notifyFailure('Erro ao aceitar convite, tente novamente mais tarde!')
-       }
-     )
+    }
+    )
 }
 
 export const rejectInviteReq = async (inviteID, token) => {
@@ -25,13 +25,13 @@ export const rejectInviteReq = async (inviteID, token) => {
     }
 
     return axios.post(`${API_URL}/contare/user/invitations`, inviteObj , {headers: {Authorization : "Bearer " + token}})
-     .then((response) => {
+    .then((response) => {
         notifySucess(response.data)
-       },
-       (error) => {
+    },
+    (error) => {
         notifyFailure('Erro ao rejeitar convite, tente novamente mais tarde!')
-       }
-     )
+    }
+    )
 }
 
 export const getAllInvitations = async (token, callback) => {
@@ -42,5 +42,5 @@ export const getAllInvitations = async (token, callback) => {
     (error) => {
         callback(error)
         }
-     )
+    )
 }

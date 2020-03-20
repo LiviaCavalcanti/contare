@@ -78,12 +78,21 @@ module.exports = {
     },
     
     async getObjUSER(req, res) {
+        /** 
+         * Observação feita por Rafael:
+         * No arquivo de rotas, temos esta chamada:
+         * router.get("/user/:userID",UserController.getObjUSER)
+         * Mas aqui, não se usa o userID da URL.
+         * Algo errado não está certo. :S
+        */
         const user = await findUser(req.userId,res);
         if (!user) return res;
         else return res.status(200).send(user);
     },
 
     async addNewFriendship(req,res){
+        console.log("Request in addNewFriend: %o", req.body);
+        console.log("req.userId in addNewFriend: %o", req.userId);
         const user = await findUser(req.userId,res);
         if(!user) return res;
 

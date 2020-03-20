@@ -1,79 +1,69 @@
 import React, { useState } from 'react'
 import {Modal, Button, Form, FormGroup, FormControl, ControlLabel} from 'react-bootstrap'
-import { getUserFromID } from 'services/userService'
+import { sendFriendRequest } from 'services/userService'
+import { notifySucess, notifyFailure } from 'services/notifyService'
 
 export default function AddFriend(props) {
-    const [friendId, setFriendId] = useState('')
+
+    // State variables
+    const [friendIdInput, setFriendIdInput] = useState('')
     const [userFound, setUserFound] = useState(null)
 
-    const [showSuccessAlert, setShowSuccessAlert] = useState(false)
-    const [showFailureAlert, setShowFailureAlert] = useState(false)
-
+    // User Feedback
     const [showFriendIdAlert, setShowFriendIdAlert] = useState(false)
 
     function clearForm() {
-        setFriendId('')
+        setFriendIdInput('')
         setShowFriendIdAlert(false)
     }
 
     function addFriendResp(resp) {
-        console.log("resp: %o", resp)
-        if (resp.statusText === "OK" || resp.status === 200) {
+        if (resp && resp.statusText === "OK" || resp.status === 200) {
             clearForm()
             props.friendAdded(true)
-            setShowSuccessAlert(true)
-            setShowFailureAlert(false)
+            notifySucess("Amigo(a) adicionado(a)!");
         } else {
-            setShowSuccessAlert(false)
-            setShowFailureAlert(true)
+            notifyFailure("Usuário inválido!");
         }
     }
 
     async function validateFriendId(friendId) {
-        if (friendId.length > 0) {
+        if (friendId != null && friendId.length > 2) {
             setShowFriendIdAlert(false)
-            let friend = await getUserFromID(friendId, localStorage.getItem("token-contare"))
-            setUserFound(friend)
-            return friend
-        } else {
-            setShowFriendIdAlert(true)
-            return null
+            return true;
         }
+        return false;
     }
 
     async function submit() {
-        let friendFound = validateFriendId(friendId)
-        if (friendFound != null) {
-            let resp = await addFriendResp(friendFound);
-            addFriendResp(resp)
+        if (validateFriendId(friendIdInput)) {
+            sendFriendRequest(friendIdInput, localStorage.getItem("token-contare"))
+            .then((response) => {
+                notifySucess(`Usuário ${response.data} adicionado!`);
+            })
+            .catch((error) => {
+                setFriendIdInput("");
+                notifyFailure(error.response.data);
+            })
+        } else {
+            setFriendIdInput("");
+            notifyFailure("Problema ao adicionar amigo(a)!");
         }
     }
 
     return (
-        <Modal show={props.show} onHide={() => props.setShow(false) & clearForm() & setShowSuccessAlert(false) & setShowFailureAlert(false)}>
+        <Modal show={props.show} onHide={() => props.setShow(false) & clearForm()}>
             <Modal.Header closeButton>
-                <Modal.Title>Criar novo gasto</Modal.Title>
+                <Modal.Title>Adicionar Amigo</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form>
                     <FormGroup>
-                        <ControlLabel>Nome de usuário a ser adicionado(a)</ControlLabel>
-                        <FormControl type="text"  value={friendId} onChange={val => setFriendId(val.target.value) & validateFriendId(val.target.value)} style={showFriendIdAlert ? {borderColor: 'red', color: 'red'} : {}}/>
+                        <ControlLabel>Nome de usuário (e-email) a ser adicionado(a)</ControlLabel>
+                        <FormControl type="text"  value={friendIdInput} onChange={val => setFriendIdInput(val.target.value) & validateFriendId(val.target.value)} style={showFriendIdAlert ? {borderColor: 'red', color: 'red'} : {}}/>
                         {showFriendIdAlert && <span style={{color: 'red'}}>Campo necessário para prosseguir</span>}
                     </FormGroup>
                 </Form>
-                <div className={showSuccessAlert ? '' : 'hidden'}>
-                    <p style={{color: 'green'}}>
-                        Solicitação de amizade enviada com sucesso!
-                        <Button className='pull-right' style={{color: 'green', borderColor: 'green'}} onClick={() => setShowSuccessAlert(false)}>Ok</Button>
-                    </p>
-                </div>
-                <div className={showFailureAlert ? '' : 'hidden'}>
-                    <p style={{color: 'red'}}>
-                        Não foi possível encontrar esse usuário.
-                        <Button className='pull-right' style={{color: 'red', borderColor: 'red'}} onClick={() => setShowFailureAlert(false)}>Ok</Button>
-                    </p>
-                </div>
             </Modal.Body>
             <Modal.Footer>
                 <Button bsStyle="primary" onClick={submit}>
