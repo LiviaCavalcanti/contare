@@ -118,3 +118,8 @@ export const sendFriendRequest = async (friendId, token) => {
     let request = { friend: friendId }
     return axios.post(`${API_URL}/contare/user/friends`, request, {headers: {Authorization : "Bearer " + token}});
 }
+
+export const getFriends = async (token) => {
+    if (token == null) { token = localStorage.getItem('token-contare') }
+    return axios.get(`${API_URL}/contare/user/friends`, {headers: {Authorization : "Bearer " + token}});
+}

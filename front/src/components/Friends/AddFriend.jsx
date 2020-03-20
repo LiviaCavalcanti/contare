@@ -39,16 +39,15 @@ export default function AddFriend(props) {
         if (validateFriendId(friendIdInput)) {
             sendFriendRequest(friendIdInput, localStorage.getItem("token-contare"))
             .then((response) => {
-                notifySucess(`Usuário ${response.data} adicionado!`);
+                notifySucess(`Usuário ${friendIdInput} adicionado!`);
             })
             .catch((error) => {
-                setFriendIdInput("");
                 notifyFailure(error.response.data);
             })
         } else {
-            setFriendIdInput("");
             notifyFailure("Problema ao adicionar amigo(a)!");
         }
+        setFriendIdInput("");
     }
 
     return (

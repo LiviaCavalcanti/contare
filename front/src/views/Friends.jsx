@@ -1,92 +1,76 @@
-import React, {useState} from "react"
+import React, {useState, useEffect} from "react";
 import { Grid, Row, Col, Table, Button } from "react-bootstrap";
 
 import AddFriend from "components/Friends/AddFriend.jsx";
-import Card from "components/Card/Card.jsx";
-import { thArray, tdArray } from "variables/Variables.jsx";
 import StatsCard from "components/StatsCard/StatsCard";
 
-export default function() {
+import { getFriends } from "services/userService";
+import { initializeConnection } from 'services/ConnectionService';
 
-  const [showModal, setShowModal] = useState(false)
+var token = localStorage.getItem("token-contare");
+var socket = null;
+
+export default function(props) {
+
+  const [showAddFriendModal, setShowAddFriendModal] = useState(false)
   const [updateList, setUpdateList] = useState(true)
+  const [friends, setFriends] = useState([])
+  const [cachedFriends, setCachedFriends] = useState([])
+  const [sorting, setSorting] = useState('Data do Gasto')
+  const [initializing, setInitializing] = useState(true)
+
+  useEffect(() => {
+    if (initializing) {
+        socket = initializeConnection()
+        socket.on("updateexpense", () => {
+            props.setUpdate(true)
+        })
+        setInitializing(false)   
+    }
+  }, [initializing])
+
+  useEffect(() => {
+    if (updateList) {
+        setUpdateList(false)
+        getFriends(token).then(resp => {
+          setCachedFriends(resp.data)
+        }).catch(err => console.err("Erro!! ", err))
+    }
+  }, [updateList])
+
+  useEffect(() => {
+    sortFriends()
+}, [cachedFriends, sorting])
+
+function sortFriends() {
+  if (cachedFriends) {
+    setFriends(cachedFriends.slice().sort((inc1, inc2) => {
+        if (inc1.name.toLowerCase() < inc2.name.toLowerCase()) return -1
+        return 1
+    }))
+  }
+}
 
   return (
     <div className="content admin-flex-container-content">
-      <AddFriend show={showModal} setShow={setShowModal} created={setUpdateList} />
+      <AddFriend show={showAddFriendModal} setShow={setShowAddFriendModal} created={setUpdateList} />
       <Grid fluid>
         <Row>
-          <Button variant={"primary"} className={"text-center"} onClick={() => setShowModal(true)}>
-                  Adicionar Amigo
-              </Button>
+            <Button variant={"primary"} className={"text-center"} onClick={() => setShowAddFriendModal(true)}>
+              Adicionar Amigo
+            </Button>
           </Row>
           <br/>
-          <Row>
-              {/* <ListExpenses update={updateList} setUpdate={setUpdateList} setTotalExpense={setTotalExpense} /> */}
-          </Row>
         <Row>
-          <Col md={12}>
-            <Card
-              title="Lista de Amigos"
-              // category="(Dados gerados aleatoriamente, por enquanto, by Rafael)"
-              ctTableFullWidth
-              ctTableResponsive
-              content={
-                <Table striped hover>
-                  <thead>
-                    <tr>
-                      {thArray.map((prop, key) => {
-                        return <th key={key}>{prop}</th>;
-                      })}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {tdArray.map((prop, key) => {
-                      return (
-                        <tr key={key}>
-                          {prop.map((prop, key) => {
-                            return <td key={key}>{prop}</td>;
-                          })}
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </Table>
-              }
-            />
-          </Col>
-
-          <Col md={12}>
-            <StatsCard
-              plain
-              title="Striped Table with Hover"
-              category="Here is a subtitle for this table"
-              ctTableFullWidth
-              ctTableResponsive
-              content={
-                <Table hover>
-                  <thead>
-                    <tr>
-                      {thArray.map((prop, key) => {
-                        return <th key={key}>{prop}</th>;
-                      })}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {tdArray.map((prop, key) => {
-                      return (
-                        <tr key={key}>
-                          {prop.map((prop, key) => {
-                            return <td key={key}>{prop}</td>;
-                          })}
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </Table>
-              }
-            />
-          </Col>
+        {friends.map((friend, i) =>
+              <Col lg={4} sm={6} key={friend._id}>
+                  <StatsCard bigIcon={<i className="pe-7s-users text-info" />}
+                      statsText={friend.name}
+                      statsValue={friend.email}
+                      statsIconText={<span className="clickable" onClick={() => alert("TODO: deletar amigo " + i)}>Deletar</span>}
+                  />
+              </Col>
+            )}
         </Row>
       </Grid>
     </div>
