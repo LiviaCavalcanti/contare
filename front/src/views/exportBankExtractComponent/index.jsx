@@ -13,8 +13,7 @@ export default class BankExtractModal extends React.Component {
       this.handleFiles = this.handleFiles.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
       this.createExpenseAndIncomesForBB = this.createExpenseAndIncomesForBB.bind(this)
-      this.readCSVBancoDoBrasil = this.readCSVBancoDoBrasil.bind(this)
-      this.readCSVCaixa = this.readCSVCaixa.bind(this)
+      this.readBankCSV = this.readBankCSV.bind(this)
       this.formatData = this.formatData.bind(this)
   
       this.state = {
@@ -50,11 +49,11 @@ export default class BankExtractModal extends React.Component {
         let objValues = {}
         switch(bankOption) {
           case "bb":
-            lines = this.readCSVBancoDoBrasil()
+            lines = this.readBankCSV(',')
             objValues = this.createExpenseAndIncomesForBB(lines)
             break
           case "caixa":
-            lines = this.readCSVCaixa()
+            lines = this.readBankCSV(';')
             objValues = this.createExpenseAndIncomesForCaixa(lines)
             break
         }
@@ -64,33 +63,13 @@ export default class BankExtractModal extends React.Component {
       }
     }
 
-    readCSVCaixa = () => {
+    readBankCSV = (delimiter) => {
       const allTextLines = this.state.file.split(/\r\n|\n/);
-      var headers = allTextLines[0].split(';');
+      var headers = allTextLines[0].split(delimiter);
       var lines = [];
   
       for (var i=1; i<allTextLines.length; i++) {
-          var data = allTextLines[i].split(';');
-          if (data.length == headers.length) {
-              var tarr = [];
-              for (var j=0; j<headers.length; j++) {
-                  const payload = data[j].substring(1, data[j].length-1)
-                  tarr.push(payload)
-              }
-              lines.push(tarr);
-          }
-      }
-      console.log(lines)
-      return lines
-    }
-
-    readCSVBancoDoBrasil = () => {
-      const allTextLines = this.state.file.split(/\r\n|\n/);
-      var headers = allTextLines[0].split(',');
-      var lines = [];
-  
-      for (var i=1; i<allTextLines.length; i++) {
-          var data = allTextLines[i].split(',');
+          var data = allTextLines[i].split(delimiter);
           if (data.length == headers.length) {
               var tarr = [];
               for (var j=0; j<headers.length; j++) {
@@ -115,7 +94,7 @@ export default class BankExtractModal extends React.Component {
                               bankData[i][this.state.bancoDoBrasilColumnsValues["origem"]] +
                               " Com o ID de transação: " +
                               bankData[i][this.state.bancoDoBrasilColumnsValues["id_transacao"]]
-          const value = parseFloat(bankData[i][this.state.bancoDoBrasilColumnsValues["valor"]])
+          const value = parseFloat(bankData[i][this.state.bancoDoBrasilColumnsValues["valor"]]).toFixed(2)
 
           // positive value indicate that is a income. negative is a expense.
           if(value > 0) {
@@ -146,15 +125,13 @@ export default class BankExtractModal extends React.Component {
       let createdIncomes = 0
 
       for(let i = 0; i < bankData.length; i++) {
-        console.log(bankData[i])
         if(bankData[i][this.state.caixaColumnsValues["valor"]] != "0.00") {
           const objTitle = bankData[i][this.state.caixaColumnsValues["conta"]]
           const objDate  = this.formatData(bankData[i][this.state.caixaColumnsValues["data"]])
           const description = "Criado na CAIXA na conta: " +
                               bankData[i][this.state.caixaColumnsValues["conta"]]
-          const value = parseFloat(bankData[i][this.state.caixaColumnsValues["valor"]])
+          const value = parseFloat(bankData[i][this.state.caixaColumnsValues["valor"]]).toFixed(2)
           const op_type = bankData[i][this.state.caixaColumnsValues["deb_Cred"]]
-          console.log(op_type)
           // positive value indicate that is a income. negative is a expense.
           if(op_type === "C") {
             createIncome(objTitle, description, value, objDate, "NONE", function(){})
