@@ -1,7 +1,6 @@
 import React from 'react'
 import {redirectLoggedUser} from '../../services/userService'
 import {withRouter} from 'react-router'
-import {Navbar, NavItem, Nav, Clearfix, Jumbotron, Button} from "react-bootstrap"
 import './Homepage.css'
 
 function Homepage(props) {
@@ -19,7 +18,7 @@ function Homepage(props) {
         <div class="homepage-lead">
           <div class="homepage-lead-navbar">
             <div class="homepage-lead-navbar-content">
-              <span><a href="/" onClick={e => redirect(e, '/')}>Contare</a></span>
+              <span><b href="/" onClick={e => redirect(e, '/')}>Contare</b></span>
               <div class="homepage-lead-navbar-content-nav">
                 <span><a href="/register" onClick={e => redirect(e, '/register')}>Registrar</a></span>
                 <span><a href="/login" onClick={e => redirect(e, '/login')}>Login</a></span>
@@ -27,31 +26,32 @@ function Homepage(props) {
             </div>
           </div>
           <div class="homepage-lead-content">
+          <img></img>
             <div class="homepage-lead-content-centered">
-              <h1>Bem-vindo(a) ao Contare! <br /> Uma aplicação que melhora sua organização financeira.</h1>
-              <hr />
-              <h3>Aqui, você consegue organizar seu dinheiro como nunca!</h3>
-                <a href="/register" onClick={e => redirect(e, '/register')}><h3>Cadastre-se agora</h3></a>
+            
+            <h2>Aqui você melhora sua organização financeira e organiza seu dinheiro como nunca!</h2>
+              
+                <a href="/register" onClick={e => redirect(e, '/register')}>Cadastre-se</a>
             </div>
           </div>
         </div>
     
         <div class="homepage-secondary">
-          <div class="homepage-secondary-title">
-            <h1>Algumas de nossas funcionalidades</h1>
+          {/* <div class="homepage-secondary-title">
+            <h3>Algumas de nossas funcionalidades</h3>
             <hr />
+          </div> */}
+          <div class="homepage-secondary-box">
+            <h3>Gráficos Intuitivos</h3>
+            <p>Visualize graficamente quanto você gasta por categorias personalizadas, como Comida, Viagem, Alguel etc. Selecione períodos para visualizar seu histórico de rendas e gastos ao longo do tempo.</p>
           </div>
           <div class="homepage-secondary-box">
-            <h2>Gráficos Intuitivos</h2>
-            <h3>Visualize graficamente quanto você gasta por categorias personalizadas, como Comida, Viagem, Alguel etc. Selecione períodos para visualizar seu histórico de rendas e gastos ao longo do tempo.</h3>
+            <h3>Compartilhe gastos</h3>
+            <p>Aqui, você pode adicionar amigos e dividir despesas em comum facilmente. Os cálculos de quanto cada um deve é feito automaticamente de acordo com os critérios escolhidos.</p>
           </div>
           <div class="homepage-secondary-box">
-            <h2>Compartilhe gastos</h2>
-            <h3>Aqui, você pode adicionar amigos e dividir despesas em comum facilmente. Os cálculos de quanto cada um deve é feito automaticamente de acordo com os critérios escolhidos.</h3>
-          </div>
-          <div class="homepage-secondary-box">
-            <h2>Exporte seus dados financeiros para PDF</h2>
-            <h3>Você também tem a opção de gerar um relatório detalhado para o formato PDF de forma a poder imprimir e visualizá-lo onde quiser.</h3>
+            <h3>Exporte seus dados</h3>
+            <p>Você também tem a opção de gerar um relatório detalhado para o formato PDF de forma a poder imprimir e visualizá-lo onde quiser.</p>
           </div>
         </div>
     

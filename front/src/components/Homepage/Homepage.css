@@ -2,29 +2,37 @@
 
 .homepage-container {
   font-family: 'Nunito', sans-serif;
-  display: flex;
+  
+  /* height:80%; */
   flex-flow: column;
 }
 
 .homepage-lead {
   flex: 1 0 100vh;
   display: flex;
+  
   flex-flow: column;
-  background-image: url('../../assets/img/loginbg2.jpg');
+  background-image: url('../../images/welcomeImageBlur.jpg');
+  background-size: 100%;
   background-size: cover;
   background-repeat: no-repeat;
 }
+
 
 .homepage-lead-navbar {
   flex: 0 0 auto;
   display: flex;
   justify-content: center;
+  padding: 0.8% 0%;
+  
+
 }
 
 .homepage-lead-navbar-content {
   width: 80vw;
   display: flex;
-  border-bottom: 1px solid white;
+  
+  border-bottom: 2px solid white;
 }
 
 @media only screen and (max-width: 350px) {
@@ -54,7 +62,7 @@
 .homepage-lead-navbar-content span {
   color: white;
   font-size: 1.5em;
-  padding: 0.5em 0.5em;
+  padding: 0.5em 1em;
   margin: 0px;
 }
 
@@ -64,7 +72,7 @@
 }
 
 .homepage-lead-navbar a:hover {
-  color: tomato;
+  color: #363535;
 }
 
 @media (hover: none) {
@@ -74,7 +82,7 @@
       -webkit-tap-highlight-color: transparent;
   }
   .homepage-lead-navbar a:active {
-    color: tomato;
+    color: #363535;
   }
 }
 
@@ -83,6 +91,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 0% 10% 2%;
 }
 
 .homepage-lead-content-centered {
@@ -91,23 +100,26 @@
   flex-flow: column;
   justify-content: center;
   align-items: center;
-  padding: 10vh 5px;
+  padding: 11vh 15px 10px ;
 }
 
-.homepage-lead-content-centered h1 {
+.homepage-lead-content-centered h2 {
   text-align: center;
+  padding: 0% 0% 15%;
+  color:#d4d4d4;
 }
 
 .homepage-lead-content-centered hr {
   width: 50%;
-  border-color: tomato;
+  border-color: #363535;
 }
 
 .homepage-lead-content-centered a {
-  background-color: tomato;
+  background-color: #363535;
   border-radius: 10px;
-  border: 0px;
-  padding: 10px 50px;
+  border: 5px;
+  padding: 1.5% 4%;
+  font-size: 22px;
   color: white;
 }
 
@@ -132,26 +144,26 @@
 
 .homepage-secondary {
   flex: 1 0 auto;
-  background-color: tomato;
+  background-color: #363535;
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
-  padding-bottom: 10vh;
+  padding-bottom: 5vh;
 }
 
 .homepage-secondary-title {
   flex: 0 0 100%;
   text-align: center;
   color: white;
-  padding-top: 10vh;
+  padding-top: 2vh;
 }
 
 .homepage-secondary-box {
-  flex: 0 1 20%;
-  padding: 10px 5px;
+  flex: 3 1 20%;
+  padding: 0px 5px;
   color: white;
   text-align: center;
-  padding: 10vh 2.5% 0px;
+  padding: 2vh 5% 20px;
 }
 
 @media only screen and (max-width: 800px) {
@@ -171,7 +183,7 @@
 @media only screen and (min-width: 1100px) and (max-width: 1300px) {
     .homepage-secondary-box {
       flex: 0 1 25%;
-      padding: 10vh 5% 0px;
+      padding: 5vh 5% 0px;
     }
   }
 
