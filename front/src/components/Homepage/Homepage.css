@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css?family=Nunito&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap');
 
 .homepage-container {
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Playfair Display', serif;
   
   /* height:80%; */
   flex-flow: column;
@@ -12,7 +12,7 @@
   display: flex;
   
   flex-flow: column;
-  background-image: url('../../images/welcomeImageBlur.jpg');
+  background-image: url('../../images/homeBlur.jpg');
   background-size: 100%;
   background-size: cover;
   background-repeat: no-repeat;
@@ -23,16 +23,15 @@
   flex: 0 0 auto;
   display: flex;
   justify-content: center;
-  padding: 0.8% 0%;
   
-
 }
 
 .homepage-lead-navbar-content {
-  width: 80vw;
+  width: 100vw;
   display: flex;
-  
-  border-bottom: 2px solid white;
+  background-color: rgba(255, 255, 255, 0.287);
+  border-bottom: 2px solid #005935e1;
+  padding: 0.2% 1%;
 }
 
 @media only screen and (max-width: 350px) {
@@ -51,6 +50,7 @@
   flex: 1 0 auto;
   display: flex;
   justify-content: flex-end;
+  padding: .3%;
 }
 
 @media only screen and (max-width: 350px) {
@@ -60,19 +60,33 @@
 }
 
 .homepage-lead-navbar-content span {
-  color: white;
-  font-size: 1.5em;
-  padding: 0.5em 1em;
-  margin: 0px;
+  color: #363535;
+  font-size: .1vw;
+  padding: 1vw 0vw;
+  margin-left: 4px;
+  width: 10%;
+}
+
+.homepage-lead-navbar-content img{
+  height: 70%;
+  width: 5%;
+  padding-top: 1.2%;
+}
+
+.homepage-lead-navbar-content b {
+  color: #001f12ce;
+  font-size: 1.7vw;
 }
 
 .homepage-container a {
   text-decoration: none;
-  color: white;
+  color: #363535;
+  font-size: 1.1vw;
+  padding-right: 1%;
 }
 
 .homepage-lead-navbar a:hover {
-  color: #363535;
+  color: #005935e1;
 }
 
 @media (hover: none) {
@@ -82,7 +96,7 @@
       -webkit-tap-highlight-color: transparent;
   }
   .homepage-lead-navbar a:active {
-    color: #363535;
+    color: white;
   }
 }
 
@@ -91,7 +105,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0% 10% 2%;
+  padding: 12% 10% 18%;
 }
 
 .homepage-lead-content-centered {
@@ -100,13 +114,16 @@
   flex-flow: column;
   justify-content: center;
   align-items: center;
-  padding: 11vh 15px 10px ;
+  /* padding: 5vw 15px ; */
 }
 
 .homepage-lead-content-centered h2 {
+  font-family: 'Playfair Display', serif;
   text-align: center;
-  padding: 0% 0% 15%;
-  color:#d4d4d4;
+  font-size: 3vw;
+  /* padding: 0% 40% 20% 0%; */
+  color:#363535;
+  font-weight: 100;
 }
 
 .homepage-lead-content-centered hr {
@@ -125,6 +142,7 @@
 
 .homepage-lead-content-centered a h3 {
   margin: 0px;
+  font-weight: unset;
 }
 
 .homepage-lead-content-centered a:hover {
@@ -194,6 +212,11 @@
 
 .homepage-secondary-box h3 {
   filter: brightness(80%);
+}
+
+.homepage-secondary p {
+  font-weight: 100;
+  font-size: 0.99vw;
 }
 
 .homepage-footer {

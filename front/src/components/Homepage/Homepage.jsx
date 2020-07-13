@@ -1,5 +1,7 @@
 import React from 'react'
 import {redirectLoggedUser} from '../../services/userService'
+import logo from "assets/img/contare_logo.png";
+
 import {withRouter} from 'react-router'
 import './Homepage.css'
 
@@ -18,6 +20,7 @@ function Homepage(props) {
         <div class="homepage-lead">
           <div class="homepage-lead-navbar">
             <div class="homepage-lead-navbar-content">
+            <img src={logo} alt="logo_image" />
               <span><b href="/" onClick={e => redirect(e, '/')}>Contare</b></span>
               <div class="homepage-lead-navbar-content-nav">
                 <span><a href="/register" onClick={e => redirect(e, '/register')}>Registrar</a></span>
@@ -26,21 +29,17 @@ function Homepage(props) {
             </div>
           </div>
           <div class="homepage-lead-content">
-          <img></img>
+          
             <div class="homepage-lead-content-centered">
             
             <h2>Aqui você melhora sua organização financeira e organiza seu dinheiro como nunca!</h2>
               
-                <a href="/register" onClick={e => redirect(e, '/register')}>Cadastre-se</a>
+                {/* <a href="/register" onClick={e => redirect(e, '/register')}>Cadastre-se</a> */}
             </div>
           </div>
         </div>
     
         <div class="homepage-secondary">
-          {/* <div class="homepage-secondary-title">
-            <h3>Algumas de nossas funcionalidades</h3>
-            <hr />
-          </div> */}
           <div class="homepage-secondary-box">
             <h3>Gráficos Intuitivos</h3>
             <p>Visualize graficamente quanto você gasta por categorias personalizadas, como Comida, Viagem, Alguel etc. Selecione períodos para visualizar seu histórico de rendas e gastos ao longo do tempo.</p>
