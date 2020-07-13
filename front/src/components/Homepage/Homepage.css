@@ -2,15 +2,12 @@
 
 .homepage-container {
   font-family: 'Playfair Display', serif;
-  
-  /* height:80%; */
   flex-flow: column;
 }
 
 .homepage-lead {
   flex: 1 0 100vh;
-  display: flex;
-  
+  display: flex; 
   flex-flow: column;
   background-image: url('../../images/homeBlur.jpg');
   background-size: 100%;
@@ -23,7 +20,6 @@
   flex: 0 0 auto;
   display: flex;
   justify-content: center;
-  
 }
 
 .homepage-lead-navbar-content {
