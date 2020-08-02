@@ -30,7 +30,7 @@
     flex: 1 0 auto;
     display: flex;
     justify-content: flex-end;
-    padding: .3%;
+    padding: 1%;
   }
   
   @media only screen and (max-width: 350px) {
@@ -39,32 +39,30 @@
     }
   }
   
-  .homepage-lead-navbar-content span {
-    color: #9a9a9a;
-    font-size: .3vw;
-    padding: 1vw 0vw;
+  .navbar-span {
+    color: #363535;
+    font-size: 2vh;
     margin-left: 4px;
     width: 10%;
+    
   }
   
   .homepage-lead-navbar-content img{
     height: 70%;
     width: 5%;
-    padding-top: 1.2%;
+    padding-top: 1%;
   }
   
-  .homepage-lead-navbar-content b {
+  .homepage-lead-navbar-content span {
+    padding-top: 1%;
+    padding-left: 1%;
+  }
+  .navbar-logo {
+    
     color: #282a29ce;
     font-size: 1.5vw;
     font-family: "Roboto","Helvetica Neue",Arial,sans-serif;
     font-weight: unset;
-  }
-  
-  .homepage-container a {
-    text-decoration: none;
-    color: #9a9a9a;
-    font-size: 1.2vw;
-    padding-right: 1%;
   }
   
   .homepage-lead-navbar a:hover {

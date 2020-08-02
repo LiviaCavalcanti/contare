@@ -17,10 +17,10 @@ class HomeNavbar extends Component {
         <div class="homepage-lead-navbar">
         <div class="homepage-lead-navbar-content">
             <img src={logo} alt="logo_image" />
-            <span><a href="/" onClick={() => this.redirect('/')}>CONTARE</a></span>
+            <span ><a class="navbar-logo" href="/" onClick={() => this.redirect('/')}>CONTARE</a></span>
             <div class="homepage-lead-navbar-content-nav">
-                <span><a href="/register" onClick={() => this.redirect('/register')}>Registrar</a></span>
-                <span><a href="/login" onClick={() => this.redirect('/login')}>Login</a></span>
+                <span ><a class="navbar-span" href="/register" onClick={() => this.redirect('/register')}>Registrar</a></span>
+                <span ><a class="navbar-span" href="/login" onClick={() => this.redirect('/login')}>Login</a></span>
             </div>
         </div>
     </div>
