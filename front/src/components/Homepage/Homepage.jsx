@@ -1,6 +1,7 @@
 import React from 'react'
 import {redirectLoggedUser} from '../../services/userService'
 import logo from "assets/img/contare_logo.png";
+import HomeNavbar from '../HomeNavbar/HomeNavbar.jsx'
 
 import {withRouter} from 'react-router'
 import './Homepage.css'
@@ -9,25 +10,11 @@ function Homepage(props) {
     if (localStorage.getItem('token-contare'))
         redirectLoggedUser(localStorage.getItem('token-contare'))
 
-    function redirect(e, path) {
-        e.preventDefault()
-        props.history.push(path)
-    }
-
     return (
       <div class="homepage-container">
 
         <div class="homepage-lead">
-          <div class="homepage-lead-navbar">
-            <div class="homepage-lead-navbar-content">
-            <img src={logo} alt="logo_image" />
-              <span><b href="/" onClick={e => redirect(e, '/')}>Contare</b></span>
-              <div class="homepage-lead-navbar-content-nav">
-                <span><a href="/register" onClick={e => redirect(e, '/register')}>Registrar</a></span>
-                <span><a href="/login" onClick={e => redirect(e, '/login')}>Login</a></span>
-              </div>
-            </div>
-          </div>
+          <HomeNavbar/>
           <div class="homepage-lead-content">
           
             <div class="homepage-lead-content-centered">
