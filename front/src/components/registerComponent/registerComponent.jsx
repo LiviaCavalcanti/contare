@@ -1,11 +1,12 @@
 import React, { Component } from "react"
-import { FormGroup, Button, ControlLabel, Checkbox, FormControl } from "react-bootstrap"
+import { FormGroup, Button, ControlLabel, FormControl } from "react-bootstrap"
 import './registerComponent.css'
 import { registerUser } from '../../services/userService'
 import {notifyFailure} from '../../services/notifyService'
 import 'react-toastify/dist/ReactToastify.min.css';
 import { withRouter } from 'react-router';
-
+// import '../HomeNavbar/HomeNavbar.css'
+import HomeNavbar from '../HomeNavbar/HomeNavbar'
 
 class RegisterScreen extends Component {
     constructor(props) {
@@ -58,6 +59,7 @@ class RegisterScreen extends Component {
     render() {
         return (
          <div className="full-div">
+             <HomeNavbar/>
             <div className="board"></div>
                 <div className="login-div" >
              <h1 className="login-title">REGISTRE-SE</h1>  
