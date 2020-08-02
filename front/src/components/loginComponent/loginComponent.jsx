@@ -4,6 +4,7 @@ import '../registerComponent/registerComponent.css'
 import { login } from '../../services/userService'
 import 'react-toastify/dist/ReactToastify.min.css';
 import { withRouter } from 'react-router';
+import HomeNavbar from '../HomeNavbar/HomeNavbar'
 
 class LoginScreen extends Component {
     constructor(props) {
@@ -13,12 +14,9 @@ class LoginScreen extends Component {
             validated: false
         }
     }
-
-
     redirect = (path) => {
         this.props.history.push(path)
     }
-
 
     handleSubmit(event) {
         const form = event.currentTarget;
@@ -36,9 +34,10 @@ class LoginScreen extends Component {
     render() {
         return (
             <div className="full-div">
+                <HomeNavbar/>
             <div className="board"></div>
             <div className="login-div" >
-            <h1 className="login-title">FAÇA SEU LOGIN</h1>  
+            <h1 className="login-title">LOGIN</h1>  
             <div className="form-div">
                 <form
                     onSubmit={e => this.handleSubmit(e)}>
