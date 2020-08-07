@@ -1,6 +1,5 @@
 import React from 'react'
 import {redirectLoggedUser} from '../../services/userService'
-import logo from "assets/img/contare_logo.png";
 import HomeNavbar from '../HomeNavbar/HomeNavbar.jsx'
 
 import {withRouter} from 'react-router'
