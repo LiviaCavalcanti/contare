@@ -5,7 +5,6 @@ import { registerUser } from '../../services/userService'
 import {notifyFailure} from '../../services/notifyService'
 import 'react-toastify/dist/ReactToastify.min.css';
 import { withRouter } from 'react-router';
-// import '../HomeNavbar/HomeNavbar.css'
 import HomeNavbar from '../HomeNavbar/HomeNavbar'
 
 class RegisterScreen extends Component {
