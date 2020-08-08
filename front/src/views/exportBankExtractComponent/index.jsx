@@ -1,8 +1,8 @@
-import React from "react"
+import React, {useState} from "react"
 import {Modal, Button, Form, FormGroup, ControlLabel, FormControl, Alert} from "react-bootstrap"
 import {notifyFailure, notifySucess} from "../../services/notifyService"
-import {createIncome} from "../../services/income"
-import {addExpenses} from "../../services/expenseService"
+import ListExtract from "./ListExtract"
+// import {addExpenses} from "../../services/expenseService"
 
 export default class BankExtractModal extends React.Component {
     constructor(props, context) {
@@ -10,6 +10,7 @@ export default class BankExtractModal extends React.Component {
   
       this.handleShow = this.handleShow.bind(this);
       this.handleClose = this.handleClose.bind(this);
+      this.handleCloseExtract = this.handleCloseExtract.bind(this);
       this.handleFiles = this.handleFiles.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
       this.createExpenseAndIncomesForBB = this.createExpenseAndIncomesForBB.bind(this)
@@ -17,7 +18,8 @@ export default class BankExtractModal extends React.Component {
       this.formatData = this.formatData.bind(this)
   
       this.state = {
-        show: false,
+        showFileModal: false,
+        showExtractModal: false,
         file: null,
         bancoDoBrasilColumnsValues: {
           data: 0,
@@ -35,7 +37,9 @@ export default class BankExtractModal extends React.Component {
           historico: 3, 
           valor: 4, 
           deb_Cred: 5
-        }
+        },
+        extractObjects:[],
+        
       };
     }
   
@@ -46,19 +50,22 @@ export default class BankExtractModal extends React.Component {
         let bankOption = document.getElementById('bankSelect')
         bankOption = bankOption.options[bankOption.selectedIndex].value
         let lines = []
-        let objValues = {}
+        let extractObjects = []
         switch(bankOption) {
           case "bb":
             lines = this.readBankCSV(',')
-            objValues = this.createExpenseAndIncomesForBB(lines)
+            extractObjects = this.createExpenseAndIncomesForBB(lines)
             break
           case "caixa":
             lines = this.readBankCSV(';')
-            objValues = this.createExpenseAndIncomesForCaixa(lines)
+            extractObjects = this.createExpenseAndIncomesForCaixa(lines)
             break
         }
-
-        notifySucess("Foram criadas " + objValues["createdExpenses"] + " despesas e " + objValues["createdIncomes"]+ " rendas!")
+        this.setState({extractObjects})
+        this.setState({showExtractModal:true})
+        console.log(this.state)
+        // listExtractObjects(objValues)
+        // notifySucess("Foram criadas " + objValues["createdExpenses"] + " despesas e " + objValues["createdIncomes"]+ " rendas!")
         this.handleClose()
       }
     }
@@ -83,8 +90,7 @@ export default class BankExtractModal extends React.Component {
     }
 
     createExpenseAndIncomesForBB  = (bankData) => {
-      let createdExpenses = 0
-      let createdIncomes = 0
+      var extractObjects = []
 
       for(let i = 0; i < bankData.length; i++) {
         if(bankData[i][this.state.bancoDoBrasilColumnsValues["origem"]] != "") {
@@ -98,31 +104,28 @@ export default class BankExtractModal extends React.Component {
 
           // positive value indicate that is a income. negative is a expense.
           if(value > 0) {
-            createIncome(objTitle, description, value, objDate, "NONE", function(){})
-            createdIncomes += 1
+            const extractObj = {title: objTitle, description: description, value: value, date:objDate, periodicity:"NONE", type: "Receita"}
+            extractObjects.push(extractObj)
+            
           } else {
-            const token = localStorage.getItem("token-contare")
-            const expenseObj = {
-              category: "extrato",
+            const extractObj = {
+              type: "Despesa",
               title: objTitle,
               description: description,
-              dueDate: objDate,
+              date: objDate,
               periodicity: "NONE",
-              totalValue: (value * -1)
+              value: (value * -1)
             }
 
-            addExpenses(token, expenseObj, false)
-            createdExpenses += 1
-            
+            extractObjects.push(extractObj) 
           }
         }
       }
-       return {createdExpenses, createdIncomes}
+       return {extractObjects}
     }
 
     createExpenseAndIncomesForCaixa  = (bankData) => {
-      let createdExpenses = 0
-      let createdIncomes = 0
+      var extractObjects = []
 
       for(let i = 0; i < bankData.length; i++) {
         if(bankData[i][this.state.caixaColumnsValues["valor"]] != "0.00") {
@@ -134,26 +137,25 @@ export default class BankExtractModal extends React.Component {
           const op_type = bankData[i][this.state.caixaColumnsValues["deb_Cred"]]
           // positive value indicate that is a income. negative is a expense.
           if(op_type === "C") {
-            createIncome(objTitle, description, value, objDate, "NONE", function(){})
-            createdIncomes += 1
+            const extractObj = {title: objTitle, description: description, value: value, date:objDate, periodicity:"NONE", type: "Receita"}
+            extractObjects.push(extractObj)
+            // createIncome(objTitle, description, value, objDate, "NONE", function(){})
+            // createdIncomes += 1
           } else {
-            const token = localStorage.getItem("token-contare")
-            const expenseObj = {
-              category: "extrato",
+            const extractObj = {
+              type: "Despesa",
               title: objTitle,
               description: description,
-              dueDate: objDate,
+              date: objDate,
               periodicity: "NONE",
-              totalValue: value
+              value: value
             }
 
-            addExpenses(token, expenseObj, false)
-            createdExpenses += 1
-            
+            extractObjects.push(extractObj)
           }
         }
       }
-       return {createdExpenses, createdIncomes}
+       return {extractObjects}
     }
 
     formatData = (data) => {
@@ -171,13 +173,20 @@ export default class BankExtractModal extends React.Component {
 
     handleClose() {
       this.setState({file:null})
-      this.setState({ show: false });
+      this.setState({ showFileModal: false });
+      this.setState({ showExtractModal: true });
     }
   
     handleShow() {
       this.setState({file:null})
-      this.setState({ show: true });
+      this.setState({ showFileModal: true });
     }
+
+    handleCloseExtract() {
+      this.setState({extractObjects: []})
+      this.setState({ showExtractModal: false });
+    }
+
   
     render() {  
       return (
@@ -185,8 +194,8 @@ export default class BankExtractModal extends React.Component {
           <Button style={{float:"left"}} variant={"primary"} className={"text-center"}  onClick={this.handleShow}>
             Importar Extrato
           </Button>
-  
-          <Modal show={this.state.show} onHide={this.handleClose}>
+          <ListExtract show={this.state.showExtractModal} onHide={this.handleCloseExtract} extractObjects={this.state.extractObjects}/>
+          <Modal show={this.state.showFileModal} onHide={this.handleClose}>
             <Modal.Header closeButton>
               <Modal.Title>Importe seu Extrato</Modal.Title>       
             </Modal.Header>
