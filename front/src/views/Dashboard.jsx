@@ -50,7 +50,6 @@ class Dashboard extends Component {
     this.createDataBarPlot = this.createDataBarPlot.bind(this)
     this.calculateUserRent = this.calculateUserRent.bind(this)
     this.getIncomes = this.getIncomes.bind(this)
-    //this.createDataPizzaPlot = this.createDataPizzaPlot.bind(this)
     this.state = {
       user: {},
       userExpenses: [],
