@@ -61,10 +61,8 @@ export default class BankExtractModal extends React.Component {
             extractObjects = this.createExpenseAndIncomesForCaixa(lines)
             break
         }
-        this.setState({extractObjects})
+        this.setState(extractObjects=extractObjects)
         this.setState({showExtractModal:true})
-        console.log(this.state)
-        // listExtractObjects(objValues)
         // notifySucess("Foram criadas " + objValues["createdExpenses"] + " despesas e " + objValues["createdIncomes"]+ " rendas!")
         this.handleClose()
       }
@@ -189,6 +187,7 @@ export default class BankExtractModal extends React.Component {
 
   
     render() {  
+      console.log(this.state.extractObjects)
       return (
         <div>  
           <Button style={{float:"left"}} variant={"primary"} className={"text-center"}  onClick={this.handleShow}>

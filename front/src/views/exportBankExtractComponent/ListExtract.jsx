@@ -1,23 +1,63 @@
-import React, {useState} from 'react'
+import React from 'react'
 import {Modal, Button} from 'react-bootstrap'
+import { Table } from 'react-bootstrap';
 
 export default class ListExtract extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            show: this.props.show
+          data: this.props.extractObjects
         }
     }
 
-    render() {return (
-        <Modal show={this.state.show}>
+    handleSubmit(){
+      // fechar o modal de baixo
+      // notifySucess("Foram criadas " + objValues["createdExpenses"] + " despesas e " + objValues["createdIncomes"]+ " rendas!")
+      this.handleClose()
+    }
+
+    handleClose() {
+
+    }
+
+    render() {
+      let partners = this.props && this.props.extractObjects.length > 0 ?
+      this.props.extractObjects.map( (obj, i)=>
+        <tr key={`objects-${i}`}>
+        <td >
+          {obj.title}
+        </td>
+        <td >
+          {obj.value}
+        </td>
+        <td>
+          {obj.type}
+        </td>
+        <td>
+          {obj.description}
+        </td>
+      </tr>
+      ) : <tr></tr>;
+      return (
+        <Modal show={this.props.show}>
             <Modal.Header closeButton>
                 <Modal.Title>Receitas e Despesas</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-            extractObjects
-            {/* {
+            
+            <Table striped bordered hover>
+            {/* <thead>
+              <tr>
+                <th style={{ width: "25%" }}>Nome</th>
+                <th style={{ width: "25%" }}>Email</th>
+                <th >Valor</th>
+                <th className="acao" style={{ width: "20%" }}>Status</th>
+                <th className="acao" style={{ width: "20%" }}>Status Convite</th>
+              </tr>
+            </thead> */}
+            <tbody>
+            {
                 this.props.extractObjects.map((obj, i) => {
                   return (
                     <tr key={`objects-${i}`}>
@@ -37,12 +77,13 @@ export default class ListExtract extends React.Component {
 
                   )
                 })
-              } */}
+              }
+            </tbody>
+            </Table>
             </Modal.Body>
             <Modal.Footer>
-                <Button bsStyle="primary" >
-                    Adicionar
-                </Button>
+            <Button onClick={this.handleClose}>Fechar</Button>
+              <Button onClick={this.handleSubmit}  bsStyle="primary">Exportar</Button>
             </Modal.Footer>
         </Modal>
     )}
