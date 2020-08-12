@@ -14,11 +14,7 @@ export default class ListExtract extends React.Component {
     handleSubmit(){
       // fechar o modal de baixo
       // notifySucess("Foram criadas " + objValues["createdExpenses"] + " despesas e " + objValues["createdIncomes"]+ " rendas!")
-      this.handleClose()
-    }
-
-    handleClose() {
-
+      this.props.handleClose()
     }
 
     render() {
@@ -82,7 +78,7 @@ export default class ListExtract extends React.Component {
             </Table>
             </Modal.Body>
             <Modal.Footer>
-            <Button onClick={this.handleClose}>Fechar</Button>
+            <Button onClick={this.props.handleClose}>Fechar</Button>
               <Button onClick={this.handleSubmit}  bsStyle="primary">Exportar</Button>
             </Modal.Footer>
         </Modal>

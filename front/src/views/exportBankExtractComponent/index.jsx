@@ -10,7 +10,6 @@ export default class BankExtractModal extends React.Component {
   
       this.handleShow = this.handleShow.bind(this);
       this.handleClose = this.handleClose.bind(this);
-      this.handleCloseExtract = this.handleCloseExtract.bind(this);
       this.handleFiles = this.handleFiles.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
       this.createExpenseAndIncomesForBB = this.createExpenseAndIncomesForBB.bind(this)
@@ -172,17 +171,13 @@ export default class BankExtractModal extends React.Component {
     handleClose() {
       this.setState({file:null})
       this.setState({ showFileModal: false });
-      this.setState({ showExtractModal: true });
+      this.setState({ showExtractModal: false });
+      this.setState({ extractObjects: [] });
     }
   
     handleShow() {
       this.setState({file:null})
       this.setState({ showFileModal: true });
-    }
-
-    handleCloseExtract() {
-      this.setState({extractObjects: []})
-      this.setState({ showExtractModal: false });
     }
 
   
@@ -193,7 +188,7 @@ export default class BankExtractModal extends React.Component {
           <Button style={{float:"left"}} variant={"primary"} className={"text-center"}  onClick={this.handleShow}>
             Importar Extrato
           </Button>
-          <ListExtract show={this.state.showExtractModal} onHide={this.handleCloseExtract} extractObjects={this.state.extractObjects}/>
+          <ListExtract show={this.state.showExtractModal} onHide={this.handleClose} extractObjects={this.state.extractObjects}/>
           <Modal show={this.state.showFileModal} onHide={this.handleClose}>
             <Modal.Header closeButton>
               <Modal.Title>Importe seu Extrato</Modal.Title>       
