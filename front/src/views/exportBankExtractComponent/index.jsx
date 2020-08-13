@@ -1,4 +1,4 @@
-import React, {useState} from "react"
+import React from "react"
 import {Modal, Button, Form, FormGroup, ControlLabel, FormControl, Alert} from "react-bootstrap"
 import {notifyFailure, notifySucess} from "../../services/notifyService"
 import ListExtract from "./ListExtract"
@@ -15,6 +15,7 @@ export default class BankExtractModal extends React.Component {
       this.createExpenseAndIncomesForBB = this.createExpenseAndIncomesForBB.bind(this)
       this.readBankCSV = this.readBankCSV.bind(this)
       this.formatData = this.formatData.bind(this)
+      this.handleList = this.handleList.bind(this)
   
       this.state = {
         showFileModal: false,
@@ -61,9 +62,7 @@ export default class BankExtractModal extends React.Component {
             break
         }
         this.setState(extractObjects=extractObjects)
-        this.setState({showExtractModal:true})
         // notifySucess("Foram criadas " + objValues["createdExpenses"] + " despesas e " + objValues["createdIncomes"]+ " rendas!")
-        this.handleClose()
       }
     }
 
@@ -180,9 +179,13 @@ export default class BankExtractModal extends React.Component {
       this.setState({ showFileModal: true });
     }
 
+    handleList() {
+      this.handleSubmit()
+      this.setState({ showFileModal: false })
+      this.setState({ showExtractModal: true })
+    }
   
     render() {  
-      console.log(this.state.extractObjects)
       return (
         <div>  
           <Button style={{float:"left"}} variant={"primary"} className={"text-center"}  onClick={this.handleShow}>
@@ -215,7 +218,7 @@ export default class BankExtractModal extends React.Component {
             </Modal.Body>
             <Modal.Footer>
               <Button onClick={this.handleClose}>Fechar</Button>
-              <Button onClick={this.handleSubmit}  bsStyle="primary">Exportar</Button>
+              <Button onClick={this.handleList}  bsStyle="primary">Exportar</Button>
             </Modal.Footer>
           </Modal>
         </div>
