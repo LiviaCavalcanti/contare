@@ -4,7 +4,7 @@ import { Grid, Row, Col, Table, Button } from "react-bootstrap";
 import AddFriend from "components/Friends/AddFriend.jsx";
 import StatsCard from "components/StatsCard/StatsCard";
 
-import { getFriends } from "services/userService";
+import { getFriends, deleteFriend } from "services/userService";
 import { initializeConnection } from 'services/ConnectionService';
 
 var token = localStorage.getItem("token-contare");
@@ -51,6 +51,11 @@ function sortFriends() {
   }
 }
 
+function sendDeleteFriendRequest(friendEmail) {
+  console.log(friendEmail, token)
+  deleteFriend(friendEmail, token)
+}
+
   return (
     <div className="content admin-flex-container-content">
       <AddFriend show={showAddFriendModal} setShow={setShowAddFriendModal} created={setUpdateList} />
@@ -67,7 +72,7 @@ function sortFriends() {
                   <StatsCard bigIcon={<i className="pe-7s-users text-info" />}
                       statsText={friend.name}
                       statsValue={friend.email}
-                      statsIconText={<span className="clickable" onClick={() => alert("TODO: deletar amigo " + i)}>Deletar</span>}
+                      statsIconText={<span className="clickable" onClick={() => sendDeleteFriendRequest(friend.email)}>Deletar</span>}
                   />
               </Col>
             )}

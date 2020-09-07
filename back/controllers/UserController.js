@@ -118,6 +118,7 @@ module.exports = {
     },
 
     async deleteFriendship(req,res){
+        console.log('deleting this friend: %o', req.userId)
         const user = await findUser(req.userId, res);
         if(!user) return res;
         else {

@@ -123,3 +123,10 @@ export const getFriends = async (token) => {
     if (token == null) { token = localStorage.getItem('token-contare') }
     return axios.get(`${API_URL}/contare/user/friends`, {headers: {Authorization : "Bearer " + token}});
 }
+
+export const deleteFriend = async (friendId, token) => {
+    if (token == null) { token = localStorage.getItem('token-contare') }
+    let request = { friend: friendId }
+    console.log('sending delete req with ', friendId)
+    return axios.delete(`${API_URL}/contare/user/friends`, request, {headers: {Authorization : "Bearer " + token}});
+}
