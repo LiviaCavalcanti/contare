@@ -103,18 +103,19 @@ export default class BankExtractModal extends React.Component {
             const extractObj = {title: objTitle, description: description, value: value, date:objDate, periodicity:"NONE", type: "Receita"}
             extractObjects.push(extractObj)
             
-          } else {
-            const extractObj = {
-              type: "Despesa",
-              title: objTitle,
-              description: description,
-              date: objDate,
-              periodicity: "NONE",
-              value: (value * -1)
-            }
-
-            extractObjects.push(extractObj) 
           }
+          //  else {
+          //   const extractObj = {
+          //     type: "Despesa",
+          //     title: objTitle,
+          //     description: description,
+          //     date: objDate,
+          //     periodicity: "NONE",
+          //     value: (value * -1)
+          //   }
+
+          //   extractObjects.push(extractObj) 
+          // }
         }
       }
        return {extractObjects}
@@ -137,18 +138,19 @@ export default class BankExtractModal extends React.Component {
             extractObjects.push(extractObj)
             // createIncome(objTitle, description, value, objDate, "NONE", function(){})
             // createdIncomes += 1
-          } else {
-            const extractObj = {
-              type: "Despesa",
-              title: objTitle,
-              description: description,
-              date: objDate,
-              periodicity: "NONE",
-              value: value
-            }
-
-            extractObjects.push(extractObj)
           }
+          //  else {   DON'T DISPLAY CREDITANDOS
+          //   const extractObj = {
+          //     type: "Despesa",
+          //     title: objTitle,
+          //     description: description,
+          //     date: objDate,
+          //     periodicity: "NONE",
+          //     value: value
+          //   }
+
+          //   extractObjects.push(extractObj)
+          // }
         }
       }
        return {extractObjects}
