@@ -127,6 +127,19 @@ export const getFriends = async (token) => {
 export const deleteFriend = async (friendId, token) => {
     if (token == null) { token = localStorage.getItem('token-contare') }
     let request = { friend: friendId }
-    console.log('sending delete req with ', friendId)
-    return axios.delete(`${API_URL}/contare/user/friends`, request, {headers: {Authorization : "Bearer " + token}});
+    console.log('sending delete req with %o and token %s', friendId, token)
+    let URL = `${API_URL}/contare/user/friends`
+    return await axios.delete(URL, {
+        headers: {
+          Authorization: "Bearer " + token
+        },
+        friend: friendId
+    })
+    .then((response) => {
+        notifySucess("Amizade deletada com sucesso!")
+        return response;
+    }, (error) => {
+        notifyFailure(error.response.data.error)
+        return false;
+    })
 }
