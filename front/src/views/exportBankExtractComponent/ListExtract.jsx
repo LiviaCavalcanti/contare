@@ -60,19 +60,8 @@ export default class ListExtract extends React.Component {
                 this.props.extractObjects.map((obj, i) => {
                   return (
                     <tr key={`objects-${i}`}  className="mb-3">
-                      
                       <td>
-                       
-                       <form>
-                       <FormGroup>
-    <InputGroup>
-      
-        <input type="checkbox" />
-      
-      
-    </InputGroup>
-  </FormGroup>
-
+                       <form><input onChange={(event)=>this.handleCheckbox(event, obj)} className="" type="checkbox" checked={this.state.selectedData.includes(obj)} type="checkbox" />
                        </form>
                       </td>
                       <td >
