@@ -116,11 +116,16 @@ class Dashboard extends Component {
     let monthEnd = new Date(date.getFullYear(), date.getMonth()+1, 0)
 
     incomes.map(income => {
+      // date definition in Brasilia timezone
       let receivedDate = new Date(income.receivedOn.slice(0, 12) + '3' + income.receivedOn.slice(13))
       let canceledDate = monthEnd
       if (income.canceledOn) {
         canceledDate = new Date(income.canceledOn.slice(0, 12) + '3' + income.canceledOn.slice(13))
       }
+
+      // startDate and endDate are the interval used in the calculation
+      // basically from wich day in the month start counting
+      // until which day
       let startDate = monthStart > receivedDate ? monthStart : receivedDate
       let endDate = monthEnd < canceledDate ? monthEnd : canceledDate
 
@@ -158,11 +163,16 @@ class Dashboard extends Component {
     let monthEnd = new Date(date.getFullYear(), date.getMonth()+1, 0)
 
     expenses.map(expense => {
+      // date definition in Brasilia timezone
       let dueDate = new Date(expense.dueDate.slice(0, 12) + '3' + expense.dueDate.slice(13))
       let canceledDate = monthEnd
       if (expense.endDate) {
         canceledDate = new Date(expense.endDate.slice(0, 12) + '3' + expense.endDate.slice(13))
       }
+
+      // startDate and endDate are the interval used in the calculation
+      // basically from wich day in the month start counting
+      // until which day
       let startDate = monthStart > dueDate ? monthStart : dueDate
       let endDate = monthEnd < canceledDate ? monthEnd : canceledDate
 
