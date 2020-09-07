@@ -50,7 +50,6 @@ class Dashboard extends Component {
     this.createDataBarPlot = this.createDataBarPlot.bind(this)
     this.calculateUserRent = this.calculateUserRent.bind(this)
     this.getIncomes = this.getIncomes.bind(this)
-    //this.createDataPizzaPlot = this.createDataPizzaPlot.bind(this)
     this.state = {
       user: {},
       userExpenses: [],
@@ -99,7 +98,6 @@ class Dashboard extends Component {
 
   getIncomes = async () => {
     const incomes = await getIncomes()
-    
     this.setState({userIncomes:incomes})
   }
 
@@ -242,14 +240,17 @@ class Dashboard extends Component {
     let totalIncome = 0
 
     incomes.map(income => {
-      if(income.periodicity === "MONTHLY") {
+      let currentIncomeDate = new Date(income.receivedOn)
+
+      if(income.periodicity === "MONTHLY" || currentIncomeDate.getMonth() == currentDate.getMonth()) {
         let canceledDate = new Date(income.canceledOn ? new Date(income.canceledOn) : currentDate)
+        
         if(currentDate.getFullYear() < canceledDate.getFullYear() ||
           (currentDate.getFullYear() === canceledDate.getFullYear() && currentDate.getMonth() < canceledDate.getMonth()) ||
           (currentDate.getFullYear() === canceledDate.getFullYear() && currentDate.getMonth() === canceledDate.getMonth() &&
             currentDate.getDate() <= canceledDate.getDate())) {
           totalIncome += income.value
-        }
+        }    
       }
     })
   
@@ -271,21 +272,21 @@ class Dashboard extends Component {
               <StatsCard
                 bigIcon={<i className="pe-7s-server text-warning" />}
                 statsText="Renda Mensal"
-                statsValue={"R$ " + this.state.userCurrentRent}
+                statsValue={"R$ " + this.state.userCurrentRent.toFixed(2)}
               />
             </Col>
             <Col lg={4} sm={6}>
               <StatsCard
                 bigIcon={<i className="pe-7s-wallet text-danger" />}
                 statsText="Gastos deste mês"
-                statsValue={"R$ " + this.calculateMonthExpenses()}
+                statsValue={"R$ " + this.calculateMonthExpenses().toFixed(2)}
               />
             </Col>
             <Col lg={4} sm={6}>
               <StatsCard
                 bigIcon={<i className="pe-7s-graph1 text-primary" />}
                 statsText="Gastos deste ano"
-                statsValue={"R$ " + this.calculateYearExpenses()}
+                statsValue={"R$ " + this.calculateYearExpenses().toFixed(2)}
               />
             </Col>
           </Row>

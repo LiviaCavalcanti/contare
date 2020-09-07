@@ -17,10 +17,12 @@ export const getExpenses = async (token) => {
      )
 }
 
-export const addExpenses = async (token, body) => {
+export const addExpenses = async (token, body, notify = false) => {
     return await axios.post( `${API_URL}/contare/user/expenses`, body ,{headers: {Authorization : "Bearer " + token}})
      .then((response) => {
-            notifySucess("Despesa adicionada com sucesso!")
+            if(notify) {
+                notifySucess("Despesa adicionada com sucesso!")
+            }
             return response;
        },
        (error) => {
