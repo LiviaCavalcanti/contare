@@ -135,7 +135,15 @@
 }
 
 .homepage-footer {
-  color: black;
-  background-color: white;
+  color: white;
+  background-color: #302f2f;
   text-align: center;
+  margin-top: -10px;
+  height: 30px;
+}
+
+.homepage-footer h6 {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
 }
