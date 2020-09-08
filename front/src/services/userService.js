@@ -133,7 +133,9 @@ export const deleteFriend = async (friendId, token) => {
         headers: {
           Authorization: "Bearer " + token
         },
-        friend: friendId
+        data: {
+            friend: friendId
+        }
     })
     .then((response) => {
         notifySucess("Amizade deletada com sucesso!")
