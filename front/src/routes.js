@@ -28,8 +28,6 @@ import LoginScreen from "components/loginComponent/loginComponent";
 import RegisterScreen from "components/registerComponent/registerComponent";
 import Homepage from "components/Homepage/Homepage";
 
-//Imports contare antigo
-import dashboardComponent from "views/dasboardComponent/dashboardComponent";
 
 const dashboardRoutes = [
   {

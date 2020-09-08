@@ -38,6 +38,7 @@ import {
 } from "variables/Variables.jsx";
 import { initializeConnection } from 'services/ConnectionService'
 import './Dashboard.css'
+import {daysDiff, weeksDiff, monthsDiff, yearsDiff} from '../utils/date'
 
 class Dashboard extends Component {
 
@@ -45,17 +46,16 @@ class Dashboard extends Component {
     super(props)
     this.getUserFromToken = this.getUserFromToken.bind(this)
     this.getExpensesFromToken = this.getExpensesFromToken.bind(this)
-    this.calculateYearExpenses = this.calculateYearExpenses.bind(this)
-    this.calculateMonthExpenses = this.calculateMonthExpenses.bind(this)
+    this.calculateCurrentMonthExpenses = this.calculateCurrentMonthExpenses.bind(this)
     this.createDataBarPlot = this.createDataBarPlot.bind(this)
-    this.calculateUserRent = this.calculateUserRent.bind(this)
+    this.calculateCurrentMonthIncomes = this.calculateCurrentMonthIncomes.bind(this)
     this.getIncomes = this.getIncomes.bind(this)
-    //this.createDataPizzaPlot = this.createDataPizzaPlot.bind(this)
     this.state = {
       user: {},
       userExpenses: [],
       userIncomes:[],
-      userCurrentRent: 0,
+      monthIncomes: 0,
+      monthExpenses: 0,
       token: localStorage.getItem("token-contare"),
       yearTotal: 0,
       lastMonthsNumber: 3
@@ -87,11 +87,17 @@ class Dashboard extends Component {
     this.updateDashboard()
   }
 
+  componentDidUpdate(_, prevState) {
+    if (prevState.userIncomes != this.state.userIncomes)
+      this.calculateCurrentMonthIncomes()
+    if (prevState.userExpenses != this.state.userExpenses)
+      this.calculateCurrentMonthExpenses()
+  }
+
   updateDashboard() {
     this.getUserFromToken()
     this.getExpensesFromToken()
     this.getIncomes()
-    this.calculateUserRent()
     this.render()
 
     //for testing
@@ -99,50 +105,114 @@ class Dashboard extends Component {
 
   getIncomes = async () => {
     const incomes = await getIncomes()
-    
     this.setState({userIncomes:incomes})
   }
 
-  calculateYearExpenses = () => {
+  calculateMonthIncomes(incomes, date) {
     let total = 0
-    let expenses = this.state.userExpenses
-    const currentDate = new Date()
+    let monthStart = new Date(date.getFullYear(), date.getMonth(), 1)
+    let monthEnd = new Date(date.getFullYear(), date.getMonth()+1, 0)
 
-
-    expenses.map(expense => {
-      const expenseDueDate = new Date(expense.dueDate)
-
-      if(expenseDueDate.getFullYear() === currentDate.getFullYear()) {
-        total += expense.totalValue
+    incomes.map(income => {
+      // date definition in Brasilia timezone
+      let receivedDate = new Date(income.receivedOn.slice(0, 12) + '3' + income.receivedOn.slice(13))
+      let canceledDate = monthEnd
+      if (income.canceledOn) {
+        canceledDate = new Date(income.canceledOn.slice(0, 12) + '3' + income.canceledOn.slice(13))
       }
-      
+
+      // startDate and endDate are the interval used in the calculation
+      // basically from wich day in the month start counting
+      // until which day
+      let startDate = monthStart > receivedDate ? monthStart : receivedDate
+      let endDate = monthEnd < canceledDate ? monthEnd : canceledDate
+
+      if (receivedDate > canceledDate) return
+      if (receivedDate > monthEnd || canceledDate < monthStart) return
+
+      if (income.periodicity == 'NONE' &&
+        date.getFullYear() == receivedDate.getFullYear() &&
+        date.getMonth() == receivedDate.getMonth()) {
+          total += income.value
+      } else if (income.periodicity == 'DAILY') {
+          total += income.value * (daysDiff(startDate, endDate) + 1)
+      } else if (income.periodicity == 'WEEKLY') {
+          total += income.value * (weeksDiff(startDate, endDate) + 1)
+      } else if (income.periodicity == 'MONTHLY' &&
+        startDate.getDate() <= receivedDate.getDate() &&
+        (endDate.getDate() >= receivedDate.getDate() ||
+        endDate.getDate() == monthEnd.getDate())) {
+          total += income.value
+      } else if (income.periodicity == 'ANNUALLY' &&
+        date.getMonth() == receivedDate.getMonth() &&
+        startDate.getDate() <= receivedDate.getDate() &&
+        (endDate.getDate() >= receivedDate.getDate() ||
+        endDate.getDate() == monthEnd.getDate())) {
+          total += income.value
+      }
     })
 
     return total
   }
 
-  calculateMonthExpenses = () => {
+  calculateMonthExpenses(expenses, date) {
     let total = 0
-    let expenses = this.state.userExpenses
-    const currentDate = new Date()
-
+    let monthStart = new Date(date.getFullYear(), date.getMonth(), 1)
+    let monthEnd = new Date(date.getFullYear(), date.getMonth()+1, 0)
 
     expenses.map(expense => {
-      const expenseDueDate = new Date(expense.dueDate)
-
-      if((expenseDueDate.getFullYear() === currentDate.getFullYear()) && expenseDueDate.getMonth() == currentDate.getMonth()) {
-        total += expense.totalValue
+      // date definition in Brasilia timezone
+      let dueDate = new Date(expense.dueDate.slice(0, 12) + '3' + expense.dueDate.slice(13))
+      let canceledDate = monthEnd
+      if (expense.endDate) {
+        canceledDate = new Date(expense.endDate.slice(0, 12) + '3' + expense.endDate.slice(13))
       }
-      
+
+      // startDate and endDate are the interval used in the calculation
+      // basically from wich day in the month start counting
+      // until which day
+      let startDate = monthStart > dueDate ? monthStart : dueDate
+      let endDate = monthEnd < canceledDate ? monthEnd : canceledDate
+
+      if (dueDate > canceledDate) return
+      if (dueDate > monthEnd || canceledDate < monthStart) return
+
+      if (expense.periodicity == 'NONE' &&
+        date.getFullYear() == dueDate.getFullYear() &&
+        date.getMonth() == dueDate.getMonth()) {
+          total += expense.totalValue
+      } else if (expense.periodicity == 'DAILY') {
+          total += expense.totalValue * (daysDiff(startDate, endDate) + 1)
+      } else if (expense.periodicity == 'WEEKLY') {
+          total += expense.totalValue * (weeksDiff(startDate, endDate) + 1)
+      } else if (expense.periodicity == 'MONTHLY' &&
+        startDate.getDate() <= dueDate.getDate() &&
+        (endDate.getDate() >= dueDate.getDate() ||
+        endDate.getDate() == monthEnd.getDate())) {
+          total += expense.totalValue
+      } else if (expense.periodicity == 'ANNUALLY' &&
+        date.getMonth() == dueDate.getMonth() &&
+        startDate.getDate() <= dueDate.getDate() &&
+        (endDate.getDate() >= dueDate.getDate() ||
+        endDate.getDate() == monthEnd.getDate())) {
+          total += expense.totalValue
+      }
     })
 
     return total
+  }
+
+  calculateCurrentMonthExpenses = async () => {
+    const currentDate = new Date()
+    let total = this.calculateMonthExpenses(this.state.userExpenses, currentDate)
+
+    this.setState({monthExpenses: total})
   }
 
   createLegendBarPlot = () => {
     const legendBarPlot = {
       names: ["Linha de Ganhos", "Linha de Gastos"],
-      types: ["danger", "info"]
+      types: ["info", "danger"]
     }
 
 
@@ -151,72 +221,66 @@ class Dashboard extends Component {
 
   }
 
-
-  createDataBarPlot = (N_MONTHS = this.state.lastMonthsNumber) => {
-    let expenses = this.state.userExpenses
+  createDataBarPlot(N_MONTHS = this.state.lastMonthsNumber) {
     const incomes = this.state.userIncomes
+    const expenses = this.state.userExpenses
     const months = dataBar.labels
-    const series = new Array(12).fill(0);
-    const seriesIncome = new Array(12).fill(0);
     const currentDate = new Date()
-    expenses.map(expense => {
-      const expenseDueDate = new Date(expense.dueDate)
-      if(expenseDueDate.getFullYear() === currentDate.getFullYear()) {
-        series[expenseDueDate.getMonth()] += expense.totalValue
-      }
-    })
+    const incomeDataPoints = []
+    const expenseDataPoints = []
+    const monthDataPoints = []
 
-    incomes.map(income =>{
-      const incomeReciveDate = new Date(income.receivedOn)
-      if(incomeReciveDate.getFullYear() === currentDate.getFullYear()) {
-        seriesIncome[incomeReciveDate.getMonth()] += income.value
-      }
-    })
-
-    let newMonths = []
-    let newSeries = []
-    let newSeriesIncomes = []
-    const currentMonth = currentDate.getMonth()
-    
-    for(let i = currentMonth  ; i >= 0; i--){
-      if(N_MONTHS === 0){
-        break;
-      }
-      newMonths.push(months[i])
-      newSeries.push(series[i])
-      newSeriesIncomes.push(seriesIncome[i])
-      N_MONTHS--;
+    for (let i = N_MONTHS - 1; i >= 0; i--) {
+      let date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i)
+      incomeDataPoints.push(
+        this.calculateMonthIncomes(incomes, date)
+      )
+      expenseDataPoints.push(
+        this.calculateMonthExpenses(expenses, date)
+      )
+      monthDataPoints.push(months[date.getMonth()])
     }
 
-    const data = {
-      labels: newMonths.reverse(),
-      series:[newSeries.reverse(), newSeriesIncomes.reverse()]
+    return {
+      labels: monthDataPoints,
+      series: [incomeDataPoints, expenseDataPoints]
     }
-    return data
-  
   }
 
-  createDataPizzaPlot = () => {
-    let expenses = this.state.userExpenses
-    let dataObj = {}
+  createDataPizzaPlot(N_MONTHS = this.state.lastMonthsNumber) {
+    const expenses = this.state.userExpenses
+    const currentDate = new Date()
+    const categories = {}
+    let dataPoints = {}
 
-    expenses.map(expense => {
-      const category = expense.category.toLowerCase()
-      if(dataObj[category] == undefined){
-        dataObj[category] = 0
-        dataObj[category] += expense.totalValue
-      } else {
-        dataObj[category] += expense.totalValue
+    for (let expense of expenses) {
+      let category = expense.category.toLowerCase() || 'outros'
+
+      if (!categories[category]) {
+        categories[category] = []
+        dataPoints[category] = 0
       }
-    })
 
-
-    const data = {
-      labels:Object.keys(dataObj),
-      series: Object.values(dataObj)
+      categories[category].push(expense)
     }
 
-    return data
+    for (let i = N_MONTHS - 1; i >= 0; i--) {
+      let date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i)
+      for (let category of Object.keys(categories)) {
+        dataPoints[category] += this.calculateMonthExpenses(categories[category], date)
+      }
+    }
+
+    for (let category of Object.keys(categories)) {
+      if (dataPoints[category] == 0)
+        delete dataPoints[category]
+    }
+
+    dataPoints = Object.fromEntries(Object.entries(dataPoints).sort())
+    return {
+      labels: Object.keys(dataPoints),
+      series: Object.values(dataPoints)
+    }
   }
 
   getUserFromToken = async () => {
@@ -236,25 +300,11 @@ class Dashboard extends Component {
     this.setState({userExpenses: expenses})
   }
 
-  calculateUserRent = async () => {
-    const incomes = await getIncomes()
+  calculateCurrentMonthIncomes = async () => {
     const currentDate = new Date()
-    let totalIncome = 0
+    let total = this.calculateMonthIncomes(this.state.userIncomes, currentDate)
 
-    incomes.map(income => {
-      if(income.periodicity === "MONTHLY") {
-        let canceledDate = new Date(income.canceledOn ? new Date(income.canceledOn) : currentDate)
-        if(currentDate.getFullYear() < canceledDate.getFullYear() ||
-          (currentDate.getFullYear() === canceledDate.getFullYear() && currentDate.getMonth() < canceledDate.getMonth()) ||
-          (currentDate.getFullYear() === canceledDate.getFullYear() && currentDate.getMonth() === canceledDate.getMonth() &&
-            currentDate.getDate() <= canceledDate.getDate())) {
-          totalIncome += income.value
-        }
-      }
-    })
-  
-    this.setState({userCurrentRent: totalIncome})
-
+    this.setState({monthIncomes: total})
   }
 
   setNLastMonths = (e) => {
@@ -265,27 +315,28 @@ class Dashboard extends Component {
   render() {
     return (
       <div className="content admin-flex-container-content">
+        <ControlLabel>Resumo financeiro do mês</ControlLabel>
         <Grid fluid>
           <Row>
             <Col lg={4} sm={6}>
               <StatsCard
                 bigIcon={<i className="pe-7s-server text-warning" />}
-                statsText="Renda Mensal"
-                statsValue={"R$ " + this.state.userCurrentRent}
+                statsText="Ganhos"
+                statsValue={"R$ " + this.state.monthIncomes.toFixed(2)}
               />
             </Col>
             <Col lg={4} sm={6}>
               <StatsCard
                 bigIcon={<i className="pe-7s-wallet text-danger" />}
-                statsText="Gastos deste mês"
-                statsValue={"R$ " + this.calculateMonthExpenses()}
+                statsText="Gastos"
+                statsValue={"R$ " + this.state.monthExpenses.toFixed(2)}
               />
             </Col>
             <Col lg={4} sm={6}>
               <StatsCard
-                bigIcon={<i className="pe-7s-graph1 text-primary" />}
-                statsText="Gastos deste ano"
-                statsValue={"R$ " + this.calculateYearExpenses()}
+                bigIcon={<i className="pe-7s-cash text-success" />}
+                statsText="Saldo"
+                statsValue={"R$ " + (this.state.monthIncomes - this.state.monthExpenses).toFixed(2)}
               />
             </Col>
           </Row>
@@ -305,7 +356,7 @@ class Dashboard extends Component {
               <Card
                 id="chartActivity"
                 title="Seus Ganhos x Suas Despesas"
-                category={new Date().getFullYear()}
+                category="Quanto foi ganho e gasto em cada mês"
                 legend={
                   <div className="legend">{this.createLegendBarPlot()}</div>
                 }
@@ -334,7 +385,7 @@ class Dashboard extends Component {
 
               <Card
                 title="Distribuição de Gastos"
-                category="Seus gastos agrupados por categoria"
+                category="Seus gastos agrupados por categorias"
                 content={
                   <div
                     id="chartPreferences"
