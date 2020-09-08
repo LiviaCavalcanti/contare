@@ -35,14 +35,14 @@ export default class ListExtract extends React.Component {
     }
 
     handleCheckbox(event, obj1) {
-      const {value, checked} = event.target; // get id and checked status
-      var selectedData = this.state.selectedData.slice();
+      const {value, checked} = event.target
+      var selectedData = this.state.selectedData.slice()
       
       // Add to an array if checked and remove - if uncheck
       if (checked) {
-        selectedData.push(obj1);
+        selectedData.push(obj1)
       } else {
-        selectedData = selectedData.filter(obj => obj !== obj1);
+        selectedData = selectedData.filter(obj => obj !== obj1)
       }
 
       this.setState({ selectedData: selectedData });
@@ -59,11 +59,11 @@ export default class ListExtract extends React.Component {
           <Table striped bordered hover>
             <thead>
               <tr>
-                <th style={{ width: "1%" }}></th>
-                <th style={{ width: "25%" }}>Título</th>
+                <th ></th>
+                <th >Título</th>
                 <th >Valor</th>
-                <th className="acao" style={{ width: "15%" }}>Tipo</th>
-                <th className="acao" style={{ width: "35%" }}>Descrição</th>
+                <th className="acao" >Tipo</th>
+                <th className="acao" >Descrição</th>
               </tr>
             </thead>
             <tbody>   
