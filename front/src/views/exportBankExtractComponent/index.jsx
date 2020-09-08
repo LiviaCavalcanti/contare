@@ -2,7 +2,6 @@ import React from "react"
 import {Modal, Button, Form, FormGroup, ControlLabel, FormControl, Alert} from "react-bootstrap"
 import {notifyFailure, notifySucess} from "../../services/notifyService"
 import ListExtract from "./ListExtract"
-// import {addExpenses} from "../../services/expenseService"
 
 export default class BankExtractModal extends React.Component {
     constructor(props, context) {
@@ -62,7 +61,6 @@ export default class BankExtractModal extends React.Component {
             break
         }
         this.setState(extractObjects=extractObjects)
-        // notifySucess("Foram criadas " + objValues["createdExpenses"] + " despesas e " + objValues["createdIncomes"]+ " rendas!")
       }
     }
 
@@ -102,20 +100,18 @@ export default class BankExtractModal extends React.Component {
           if(value > 0) {
             const extractObj = {title: objTitle, description: description, value: value, date:objDate, periodicity:"NONE", type: "Receita"}
             extractObjects.push(extractObj)
-            
           }
-          //  else {
-          //   const extractObj = {
-          //     type: "Despesa",
-          //     title: objTitle,
-          //     description: description,
-          //     date: objDate,
-          //     periodicity: "NONE",
-          //     value: (value * -1)
-          //   }
-
-          //   extractObjects.push(extractObj) 
-          // }
+           else {
+            const extractObj = {
+              type: "Despesa",
+              title: objTitle,
+              description: description,
+              date: objDate,
+              periodicity: "NONE",
+              value: (value * -1)
+            }
+            extractObjects.push(extractObj) 
+          }
         }
       }
        return {extractObjects}
@@ -136,21 +132,20 @@ export default class BankExtractModal extends React.Component {
           if(op_type === "C") {
             const extractObj = {title: objTitle, description: description, value: value, date:objDate, periodicity:"NONE", type: "Receita"}
             extractObjects.push(extractObj)
-            // createIncome(objTitle, description, value, objDate, "NONE", function(){})
-            // createdIncomes += 1
-          }
-          //  else {   DON'T DISPLAY CREDITANDOS
-          //   const extractObj = {
-          //     type: "Despesa",
-          //     title: objTitle,
-          //     description: description,
-          //     date: objDate,
-          //     periodicity: "NONE",
-          //     value: value
-          //   }
 
-          //   extractObjects.push(extractObj)
-          // }
+          }
+           else {   
+            const extractObj = {
+              type: "Despesa",
+              title: objTitle,
+              description: description,
+              date: objDate,
+              periodicity: "NONE",
+              value: value
+            }
+
+            extractObjects.push(extractObj)
+          }
         }
       }
        return {extractObjects}
