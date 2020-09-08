@@ -165,21 +165,16 @@ export default class BankExtractModal extends React.Component {
     }
 
     handleClose() {
-      this.setState({file:null})
-      this.setState({ showFileModal: false });
-      this.setState({ showExtractModal: false });
-      this.setState({ extractObjects: [] });
+      this.setState({file:null, showFileModal: false, showExtractModal: false, extractObjects: [] });
     }
   
     handleShow() {
-      this.setState({file:null})
-      this.setState({ showFileModal: true });
+      this.setState({file:null, showFileModal: true });
     }
 
     handleList() {
       this.handleSubmit()
-      this.setState({ showFileModal: false })
-      this.setState({ showExtractModal: true })
+      this.setState({ showFileModal: false, showExtractModal: true })
     }
   
     render() {  
