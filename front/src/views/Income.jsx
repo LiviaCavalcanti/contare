@@ -2,6 +2,7 @@ import React, {useState} from "react"
 import {Button, Grid, Row} from "react-bootstrap"
 import CreateIncome from '../components/Income/CreateIncome'
 import ListIncomes from '../components/Income/ListIncomes'
+import BankExtractModal from '../views/exportBankExtractComponent/index'
 
 export default function() {
     const [showModal, setShowModal] = useState(false)
@@ -13,9 +14,10 @@ export default function() {
             <CreateIncome show={showModal} setShow={setShowModal} created={setUpdateList} />
             <Grid fluid>
                 <Row>
-                    <Button variant={"primary"} className={"text-center"} onClick={() => setShowModal(true)}>
+                    <Button style={{float:"left", marginRight: "10px"}} variant={"primary"} className={"text-center"} onClick={() => setShowModal(true)}>
                         Adicionar Renda
                     </Button>
+                    <BankExtractModal/>
                     <span style={{float: "right"}}>
                         Total ganho: R$ {totalIncome}
                     </span>

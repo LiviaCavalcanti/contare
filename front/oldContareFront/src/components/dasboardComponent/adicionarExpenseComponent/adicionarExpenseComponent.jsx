@@ -174,7 +174,7 @@ class AdicionarExpenseComponent extends Component {
 
     body.listEmail = listEmail;
 
-    await addExpenses(localStorage.getItem("token-contare"), body);
+    await addExpenses(localStorage.getItem("token-contare"), body, true);
     this.props.updateCard();
   }
 

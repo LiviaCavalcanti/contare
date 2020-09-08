@@ -50,7 +50,6 @@ class Dashboard extends Component {
     this.createDataBarPlot = this.createDataBarPlot.bind(this)
     this.calculateCurrentMonthIncomes = this.calculateCurrentMonthIncomes.bind(this)
     this.getIncomes = this.getIncomes.bind(this)
-    //this.createDataPizzaPlot = this.createDataPizzaPlot.bind(this)
     this.state = {
       user: {},
       userExpenses: [],
@@ -106,7 +105,6 @@ class Dashboard extends Component {
 
   getIncomes = async () => {
     const incomes = await getIncomes()
-    
     this.setState({userIncomes:incomes})
   }
 

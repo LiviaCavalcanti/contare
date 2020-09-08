@@ -44,8 +44,6 @@ class DashboardComponent extends Component {
     }
 
     async getExpense() {
-        console.log("listw wag  inicio --------------- ");
-
         let listaRetorno = await getExpenses(localStorage.getItem("token-contare"));
         if(!Array.isArray(listaRetorno)){
             return;
@@ -61,14 +59,10 @@ class DashboardComponent extends Component {
             aux.isNew = false;
             list.push(aux);
         });
-
-        console.log("listw wag  --------------- ", list);
-
         this.setState({ list: list });
     }
 
     render() {
-        console.log("dashboard COmponent ----------------- ");
         return (
             <Container fluid={true}>
                 <Row>
