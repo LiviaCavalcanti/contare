@@ -19,9 +19,7 @@ export default class ListExtract extends React.Component {
 
     async handleSubmit(){
       var createdExpenses = 0
-      console.log(this.state.selectedData)
       for (var obj in this.state.selectedData) {
-        console.log(obj)
         var retorno = await addExpenses(obj, function(){})
         if (retorno) {
           createdExpenses += 1
