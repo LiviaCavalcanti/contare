@@ -4,14 +4,11 @@ import {API_URL} from './index'
 
 
 export const getExpenses = async (token) => {
-    // console.log("chamou getExpense ", token);
     return await axios.get( `${API_URL}/contare/user/expenses`, {headers: {Authorization : "Bearer " + token}})
      .then((response) => {
-        //  console.log("response ------------ ", response);
          return response.data;
         },
         (error) => {
-            // console.log("erro ao solicitar gastos: ", error);
             return error;
        }
      )
@@ -26,7 +23,9 @@ export const addExpenses = async (token, body, notify = false) => {
             return response;
        },
        (error) => {
-           notifyFailure("Você já adicionou uma despesa com esse nome! Tente outro")
+           if(notify) {
+            notifyFailure("Você já adicionou uma despesa com esse nome! Tente outro", error)
+           }
            return false;
         }
      )
@@ -64,7 +63,8 @@ export const getExpense = async (id, callback) => {
         callback(response.data)
     },
     (error) => {
-        //DO SOMETHING
+        notifyFailure(error.response.data.error)
+        return false;
         }
      )
 }

@@ -1,8 +1,7 @@
-import React, {useState} from "react"
+import React from "react"
 import {Modal, Button, Form, FormGroup, ControlLabel, FormControl, Alert} from "react-bootstrap"
 import {notifyFailure, notifySucess} from "../../services/notifyService"
 import ListExtract from "./ListExtract"
-// import {addExpenses} from "../../services/expenseService"
 
 export default class BankExtractModal extends React.Component {
     constructor(props, context) {
@@ -10,12 +9,12 @@ export default class BankExtractModal extends React.Component {
   
       this.handleShow = this.handleShow.bind(this);
       this.handleClose = this.handleClose.bind(this);
-      this.handleCloseExtract = this.handleCloseExtract.bind(this);
       this.handleFiles = this.handleFiles.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
       this.createExpenseAndIncomesForBB = this.createExpenseAndIncomesForBB.bind(this)
       this.readBankCSV = this.readBankCSV.bind(this)
       this.formatData = this.formatData.bind(this)
+      this.handleList = this.handleList.bind(this)
   
       this.state = {
         showFileModal: false,
@@ -61,12 +60,7 @@ export default class BankExtractModal extends React.Component {
             extractObjects = this.createExpenseAndIncomesForCaixa(lines)
             break
         }
-        this.setState({extractObjects})
-        this.setState({showExtractModal:true})
-        console.log(this.state)
-        // listExtractObjects(objValues)
-        // notifySucess("Foram criadas " + objValues["createdExpenses"] + " despesas e " + objValues["createdIncomes"]+ " rendas!")
-        this.handleClose()
+        this.setState(extractObjects=extractObjects)
       }
     }
 
@@ -106,8 +100,8 @@ export default class BankExtractModal extends React.Component {
           if(value > 0) {
             const extractObj = {title: objTitle, description: description, value: value, date:objDate, periodicity:"NONE", type: "Receita"}
             extractObjects.push(extractObj)
-            
-          } else {
+          }
+           else {
             const extractObj = {
               type: "Despesa",
               title: objTitle,
@@ -116,7 +110,6 @@ export default class BankExtractModal extends React.Component {
               periodicity: "NONE",
               value: (value * -1)
             }
-
             extractObjects.push(extractObj) 
           }
         }
@@ -139,9 +132,9 @@ export default class BankExtractModal extends React.Component {
           if(op_type === "C") {
             const extractObj = {title: objTitle, description: description, value: value, date:objDate, periodicity:"NONE", type: "Receita"}
             extractObjects.push(extractObj)
-            // createIncome(objTitle, description, value, objDate, "NONE", function(){})
-            // createdIncomes += 1
-          } else {
+
+          }
+           else {   
             const extractObj = {
               type: "Despesa",
               title: objTitle,
@@ -172,21 +165,17 @@ export default class BankExtractModal extends React.Component {
     }
 
     handleClose() {
-      this.setState({file:null})
-      this.setState({ showFileModal: false });
-      this.setState({ showExtractModal: true });
+      this.setState({file:null, showFileModal: false, showExtractModal: false, extractObjects: [] });
     }
   
     handleShow() {
-      this.setState({file:null})
-      this.setState({ showFileModal: true });
+      this.setState({file:null, showFileModal: true });
     }
 
-    handleCloseExtract() {
-      this.setState({extractObjects: []})
-      this.setState({ showExtractModal: false });
+    handleList() {
+      this.handleSubmit()
+      this.setState({ showFileModal: false, showExtractModal: true })
     }
-
   
     render() {  
       return (
@@ -194,7 +183,7 @@ export default class BankExtractModal extends React.Component {
           <Button style={{float:"left"}} variant={"primary"} className={"text-center"}  onClick={this.handleShow}>
             Importar Extrato
           </Button>
-          <ListExtract show={this.state.showExtractModal} onHide={this.handleCloseExtract} extractObjects={this.state.extractObjects}/>
+          <ListExtract show={this.state.showExtractModal} onHide={this.handleClose} extractObjects={this.state.extractObjects}/>
           <Modal show={this.state.showFileModal} onHide={this.handleClose}>
             <Modal.Header closeButton>
               <Modal.Title>Importe seu Extrato</Modal.Title>       
@@ -221,7 +210,7 @@ export default class BankExtractModal extends React.Component {
             </Modal.Body>
             <Modal.Footer>
               <Button onClick={this.handleClose}>Fechar</Button>
-              <Button onClick={this.handleSubmit}  bsStyle="primary">Exportar</Button>
+              <Button onClick={this.handleList}  bsStyle="primary">Exportar</Button>
             </Modal.Footer>
           </Modal>
         </div>
