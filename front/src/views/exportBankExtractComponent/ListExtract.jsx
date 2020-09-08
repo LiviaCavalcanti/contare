@@ -56,7 +56,7 @@ export default class ListExtract extends React.Component {
             </Modal.Header>
             <Modal.Body>
        
-          <Table striped bordered hover>
+          <Table >
             <thead>
               <tr>
                 <th ></th>
