@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const { emitFriendshipUpdate } = require("./ConnectionController");
 
 const Expense = mongoose.model("Expense");
 const User = mongoose.model("User");
@@ -91,8 +92,6 @@ module.exports = {
     },
 
     async addNewFriendship(req,res){
-        console.log("Request in addNewFriend: %o", req.body);
-        console.log("req.userId in addNewFriend: %o", req.userId);
         const user = await findUser(req.userId,res);
         if(!user) return res;
 
@@ -112,6 +111,9 @@ module.exports = {
 
             await User.findByIdAndUpdate(user.id,user,{new:true});
             await User.findByIdAndUpdate(friend.id,friend,{new:true});
+            
+            emitFriendshipUpdate(user.id);
+            emitFriendshipUpdate(friend.id);
         }
 
         return res.status(200).send(user.friends)
@@ -137,6 +139,9 @@ module.exports = {
 
             await User.findByIdAndUpdate(user.id,user,{new:true});
             await User.findByIdAndUpdate(friend.id,friend,{new:true});
+
+            emitFriendshipUpdate(user.id);
+            emitFriendshipUpdate(friend.id);
         }
         return res.status(200).send("Amizade desfeita.")
     },

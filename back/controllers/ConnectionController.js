@@ -90,6 +90,15 @@ module.exports = {
                 userConn.socket.emit("updateexpense");
             });
         }
+    },
+
+    emitFriendshipUpdate(userId) {
+        let userSockets = connectedClients[userId];
+        if (userSockets) {
+            userSockets.forEach(userConn => {
+                userConn.socket.emit("updatefriendship");
+            })
+        }
     }
 
 }

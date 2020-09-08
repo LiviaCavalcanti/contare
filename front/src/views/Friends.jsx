@@ -22,8 +22,8 @@ export default function(props) {
   useEffect(() => {
     if (initializing) {
         socket = initializeConnection()
-        socket.on("updateexpense", () => {
-            props.setUpdate(true)
+        socket.on("updatefriendship", () => {
+            setUpdateList(true)
         })
         setInitializing(false)   
     }
@@ -40,7 +40,7 @@ export default function(props) {
 
   useEffect(() => {
     sortFriends()
-}, [cachedFriends, sorting])
+  }, [cachedFriends, sorting])
 
 function sortFriends() {
   if (cachedFriends) {
@@ -54,11 +54,16 @@ function sortFriends() {
 function sendDeleteFriendRequest(friendEmail) {
   console.log(friendEmail, token)
   deleteFriend(friendEmail, token)
+  setUpdateList(true)
 }
 
   return (
     <div className="content admin-flex-container-content">
-      <AddFriend show={showAddFriendModal} setShow={setShowAddFriendModal} created={setUpdateList} />
+      <AddFriend
+        show={showAddFriendModal}
+        setShow={setShowAddFriendModal}
+        created={setUpdateList}
+        shouldUpdateList={updateList}/>
       <Grid fluid>
         <Row>
             <Button variant={"primary"} className={"text-center"} onClick={() => setShowAddFriendModal(true)}>

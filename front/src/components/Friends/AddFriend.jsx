@@ -7,7 +7,6 @@ export default function AddFriend(props) {
 
     // State variables
     const [friendIdInput, setFriendIdInput] = useState('')
-    const [userFound, setUserFound] = useState(null)
 
     // User Feedback
     const [showFriendIdAlert, setShowFriendIdAlert] = useState(false)
@@ -15,16 +14,6 @@ export default function AddFriend(props) {
     function clearForm() {
         setFriendIdInput('')
         setShowFriendIdAlert(false)
-    }
-
-    function addFriendResp(resp) {
-        if (resp && resp.statusText === "OK" || resp.status === 200) {
-            clearForm()
-            props.friendAdded(true)
-            notifySucess("Amigo(a) adicionado(a)!");
-        } else {
-            notifyFailure("Usuário inválido!");
-        }
     }
 
     async function validateFriendId(friendId) {
@@ -48,6 +37,7 @@ export default function AddFriend(props) {
             notifyFailure("Problema ao adicionar amigo(a)!");
         }
         setFriendIdInput("");
+        props.setShow(false);
     }
 
     return (
@@ -59,7 +49,15 @@ export default function AddFriend(props) {
                 <Form>
                     <FormGroup>
                         <ControlLabel>Nome de usuário (e-email) a ser adicionado(a)</ControlLabel>
-                        <FormControl type="text"  value={friendIdInput} onChange={val => setFriendIdInput(val.target.value) & validateFriendId(val.target.value)} style={showFriendIdAlert ? {borderColor: 'red', color: 'red'} : {}}/>
+                        <FormControl 
+                            type="text"
+                            value={friendIdInput}
+                            onChange={val => setFriendIdInput(val.target.value) & validateFriendId(val.target.value)} style={showFriendIdAlert ? {borderColor: 'red', color: 'red'} : {}}
+                            onKeyPress={event => {
+                                if (event.key === "Enter" && !showFriendIdAlert) {
+                                  submit();
+                                }
+                            }}/>
                         {showFriendIdAlert && <span style={{color: 'red'}}>Campo necessário para prosseguir</span>}
                     </FormGroup>
                 </Form>
