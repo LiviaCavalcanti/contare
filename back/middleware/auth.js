@@ -4,8 +4,8 @@ const authConfig = require("../config/auth.json");
 module.exports = (req, res, next)   =>{
     if(req.url === "/register" || req.url === "/authenticate") return next();
     
-    const authHeader = req.headers.authorization;
-
+    const authHeader = req.headers.authorization || req.body.headers.Authorization;
+    
     if(!authHeader)
         return res.status(401).send({ error: "No token provided"});
     

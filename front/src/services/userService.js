@@ -126,7 +126,6 @@ export const getFriends = async (token) => {
 
 export const deleteFriend = async (friendId, token) => {
     if (token == null) { token = localStorage.getItem('token-contare') }
-    let request = { friend: friendId }
     console.log('sending delete req with %o and token %s', friendId, token)
     let URL = `${API_URL}/contare/user/friends`
     return await axios.delete(URL, {
@@ -139,6 +138,73 @@ export const deleteFriend = async (friendId, token) => {
     })
     .then((response) => {
         notifySucess("Amizade deletada com sucesso!")
+        return response;
+    }, (error) => {
+        notifyFailure(error.response.data.error)
+        return false;
+    })
+}
+
+export const acceptFriend = async (friendId, token) => {
+    if (token == null) { token = localStorage.getItem('token-contare') }
+    console.log('sending accept req with %o and token %s', friendId, token)
+    let URL = `${API_URL}/contare/user/friendresponse`
+    let body = {
+        friend: friendId,
+        accept: true
+    }
+    return await axios.post(URL, body, {headers: {Authorization: "Bearer " + token}})
+    .then((response) => {
+        notifySucess("Amizade deletada com sucesso!")
+        return response;
+    }, (error) => {
+        notifyFailure(error.response.data.error)
+        return false;
+    })
+}
+
+export const refuseFriend = async (friendId, token) => {
+    if (token == null) { token = localStorage.getItem('token-contare') }
+    console.log('sending refuse req with %o and token %s', friendId, token)
+    let URL = `${API_URL}/contare/user/friendresponse`
+    let body = {
+        friend: friendId,
+        accept: false
+    }
+    return await axios.post(URL, body, {headers: {Authorization: "Bearer " + token}})
+    .then((response) => {
+        notifySucess("Amizade deletada com sucesso!")
+        return response;
+    }, (error) => {
+        notifyFailure(error.response.data.error)
+        return false;
+    })
+}
+
+export const getSentFriendRequests = async (token) => {
+    return axios.get( `${API_URL}/contare/user/sentFR`, {headers: {Authorization : "Bearer " + token}})
+    .then((response) => {
+        console.log("sentFriendRequests: %o", response.data)
+        return (response.data)
+    })
+}
+
+export const getReceivedFriendRequests = async (token) => {
+    return axios.get( `${API_URL}/contare/user/receivedFR`, {headers: {Authorization : "Bearer " + token}})
+    .then((response) => {
+        console.log(`receivedFriendRequests: ${response.data}`)
+        return (response.data)
+    })
+}
+
+export const cancelRequest = async (friendId, token) => {
+    let URL = `${API_URL}/contare/user/cancelrequest`
+    let body = {
+        friend: friendId
+    }
+    return await axios.post(URL, body, {headers: {Authorization: "Bearer " + token}})
+    .then((response) => {
+        notifySucess("Requisição cancelada!")
         return response;
     }, (error) => {
         notifyFailure(error.response.data.error)

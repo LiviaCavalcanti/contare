@@ -1,4 +1,3 @@
-const findUserById =  require("./UserController").findUserById;
 const jwt = require("jsonwebtoken");
 const authConfig = require("../config/auth.json");
 const mongoose = require("mongoose");

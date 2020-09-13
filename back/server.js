@@ -10,12 +10,18 @@ app.use(cors())
 app.use(express.json());
 
 // Iniciando e conectando o DB
-mongoose.connect('mongodb://localhost:27017/contare', {useNewUrlParser: true})
+const mongooseConfig = {
+    useNewUrlParser: true,
+    useFindAndModify: false,
+    useUnifiedTopology: true
+}
+
+mongoose.connect('mongodb://localhost:27017/contare', mongooseConfig)
     .then((msg) => {
         console.log("Connection to mongo successful!");
     })
     .catch((error) => {
-        console.error("ERROR!!!!!!!!!!!!!!! " + error)
+        console.error("Error on Mongoose connection! Error message: " + error)
     })
 requireDir("./models")
 
