@@ -56,7 +56,26 @@ const UserSchema = new mongoose.Schema({
         required: false,
         default: 0,
     },
+    // Friends after being accepted
     friends: [{
+        id: {
+            type: mongoose.Schema.Types.ObjectId,
+            required:true,
+            ref: 'User'
+        },
+        required:false
+    }],
+    // Sent friend requests
+    sentFriendRequests: [{
+        id: {
+            type: mongoose.Schema.Types.ObjectId,
+            required:true,
+            ref: 'User'
+        },
+        required:false
+    }],
+    // Friends not yet accepted
+    receivedFriendRequests: [{
         id: {
             type: mongoose.Schema.Types.ObjectId,
             required:true,

@@ -38,8 +38,12 @@ router.post("/user/invitations",InvitationController.refuse) // Recusar um convi
 
 // AMIGOS
 router.get("/user/friends", UserController.getFriends);
-router.post("/user/friends", UserController.addNewFriendship);
+router.get("/user/sentFR",UserController.getSentFriendRequests);
+router.get("/user/receivedFR",UserController.getReceivedFriendRequests);
+router.post("/user/friends", UserController.sendFriendRequest);
 router.delete("/user/friends",UserController.deleteFriendship);
+router.post("/user/friendresponse",UserController.handleFriendResponse);
+router.post("/user/cancelrequest",UserController.cancelFriendRequest);
 
 router.post("/register", authController.register);
 router.post("/authenticate", authController.authenticate);

@@ -3,3 +3,4 @@ node_modules/
 .Rhistory
 package-lock.json
 front/build/
+.DS_Store

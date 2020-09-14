@@ -1,4 +1,3 @@
-const findUserById =  require("./UserController").findUserById;
 const jwt = require("jsonwebtoken");
 const authConfig = require("../config/auth.json");
 const mongoose = require("mongoose");
@@ -89,6 +88,15 @@ module.exports = {
             userSockets.forEach(userConn => {
                 userConn.socket.emit("updateexpense");
             });
+        }
+    },
+
+    emitFriendshipUpdate(userId) {
+        let userSockets = connectedClients[userId];
+        if (userSockets) {
+            userSockets.forEach(userConn => {
+                userConn.socket.emit("updatefriendship");
+            })
         }
     }
 
