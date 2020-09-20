@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import {Modal, Button, Form, FormGroup, FormControl, ControlLabel} from 'react-bootstrap'
 import {addExpenses} from '../../services/expenseService'
 import { getUser } from 'services/userService'
+import {makeDate} from '../../utils/date'
 
 export default function CreateExpense(props) {
     const [title, setTitle] = useState('')
@@ -70,7 +71,7 @@ export default function CreateExpense(props) {
             let expenseBody = {
                 title: title,
                 description: description,
-                dueDate: date,
+                dueDate: makeDate(date),
                 owner: user.id,
                 totalValue: value,
                 category: category,
