@@ -16,10 +16,11 @@
 
 */
 import React, { Component } from "react";
-import {withRouter} from 'react-router'
+import {withRouter} from 'react-router';
 import { NavItem, Nav, NavDropdown, MenuItem } from "react-bootstrap";
 import {Img} from "react";
-import {getUser} from '../../services/userService'
+import {getUser} from '../../services/userService';
+import Invitation from '../Invitation/Invitation'
 
 class AdminNavbarLinks extends Component {
 
@@ -57,34 +58,18 @@ class AdminNavbarLinks extends Component {
   }
 
   render() {
-    const notification = (
-      <div>
-        <i className="fa fa-globe" />
-        <b className="caret" />
-        <span className="notification">2</span>
-        <p className="hidden-lg hidden-md">Notification</p>
-      </div>
-    );
+   
     return (
       <div>
         <Nav pullRight>
+          <NavItem >
+            <Invitation/>
+          </NavItem>
           <NavItem eventKey={1} href="/admin/user" onClick={e => e.preventDefault() &
             this.props.history.push('/admin/user')}>
             Bem-vindo, {this.state.user.name}
           </NavItem>
-          {/* <NavDropdown
-            eventKey={2}
-            title="Dropdown"
-            id="basic-nav-dropdown-right"
-          >
-            <MenuItem eventKey={2.1}>Action</MenuItem>
-            <MenuItem eventKey={2.2}>Another action</MenuItem>
-            <MenuItem eventKey={2.3}>Something</MenuItem>
-            <MenuItem eventKey={2.4}>Another action</MenuItem>
-            <MenuItem eventKey={2.5}>Something</MenuItem>
-            <MenuItem divider />
-            <MenuItem eventKey={2.5}>Separated link</MenuItem>
-          </NavDropdown> */}
+
           <NavItem eventKey={3} href="/login" onClick={e => e.preventDefault() & this.logOut()}>
             Sair
           </NavItem>
