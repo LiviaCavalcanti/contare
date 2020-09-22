@@ -18,7 +18,7 @@ module.exports = {
     async invite(req,res,userFrom,newExpense){
         let emailsParticipantes = req.body.listEmail;
             
-        for(let i = 1; i < emailsParticipantes.length;i++){
+        for(let i = 0; i < emailsParticipantes.length;i++){
             User.findOne({email:emailsParticipantes[i].email},async function(err,userTo){
                 await Invitation.create({
                     from:userFrom,

@@ -57,14 +57,13 @@ export const updateExpenses = async (token, id, body) => {
      )
 }
 
-export const getExpense = async (id, callback) => {
-    return await axios.get( `${API_URL}/contare/user/expenses/${id}`)
+export const getExpense = async (id,token) => {
+    return await axios.get( `${API_URL}/contare/user/expenses/${id}`,{headers: {Authorization : "Bearer " + token}})
     .then((response) => {
-        callback(response.data)
+        return(response.data)
     },
     (error) => {
-        notifyFailure(error.response.data.error)
-        return false;
+        return error
         }
      )
 }

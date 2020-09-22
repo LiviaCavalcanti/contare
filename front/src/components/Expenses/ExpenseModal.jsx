@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import {Modal, Button, Form, FormGroup, FormControl, ControlLabel} from 'react-bootstrap'
 import {updateExpenses, deleteExpense} from '../../services/expenseService'
+import {getFriends} from '../../services/userService'
 
 var token = localStorage.getItem("token-contare")
 

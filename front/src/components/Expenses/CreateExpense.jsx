@@ -1,7 +1,9 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Modal, Button, Form, FormGroup, FormControl, ControlLabel} from 'react-bootstrap'
 import {addExpenses} from '../../services/expenseService'
-import { getUser } from 'services/userService'
+import { getUser,getFriends } from '../../services/userService'
+import {Typeahead} from 'react-bootstrap-typeahead';
+import '../../../node_modules/react-bootstrap-typeahead/css/Typeahead.css';
 
 export default function CreateExpense(props) {
     const [title, setTitle] = useState('')
@@ -10,6 +12,11 @@ export default function CreateExpense(props) {
     const [category, setCategory] = useState('')
     const [date, setDate] = useState((new Date()).toISOString().slice(0, 10))
     const [periodicity, setPeriodicity] = useState('NONE')
+    
+    const [friends, setFriends] = useState([])
+    const [listEmail,setListEmail] = useState([])
+    const [selectedFriend, setSelectedFriend]=useState([])
+    const [friendPayValue, setFriendPayValue]=useState('')
 
     const [showSuccessAlert, setShowSuccessAlert] = useState(false)
     const [showFailureAlert, setShowFailureAlert] = useState(false)
@@ -18,8 +25,8 @@ export default function CreateExpense(props) {
     const [showValueAlert, setShowValueAlert] = useState(false)
 
     function clearForm() {
-        setTitle('')
-        setDescription('')
+        setTitle('');
+        setDescription('');
         setValue('')
         setCategory('')
         setDate((new Date()).toISOString().slice(0, 10))
@@ -30,7 +37,7 @@ export default function CreateExpense(props) {
     }
 
     function addExpensesResp(resp) {
-        console.log("resp: %o", resp)
+       // console.log("resp: %o", resp)
         if (resp.statusText === "OK" || resp.status === 200) {
             clearForm()
             props.created(true)
@@ -74,12 +81,39 @@ export default function CreateExpense(props) {
                 owner: user.id,
                 totalValue: value,
                 category: category,
-                periodicity: periodicity
+                periodicity: periodicity,
+                listEmail:listEmail
             };
             let resp = await addExpenses(localStorage.getItem("token-contare"), expenseBody, true);
             addExpensesResp(resp)
         }
     }
+
+    async function getThisFriends(){
+        let thisFriends = await getFriends(localStorage.getItem("token-contare"));
+        thisFriends.data.map(f=>{
+            friends.push(f);
+        })
+    }
+
+    function handleParticipationValueChange(){
+        const participantObj = {email:selectedFriend[0].email,payValue:parseInt(friendPayValue)}
+        listEmail.push(participantObj);
+        setSelectedFriend([])
+        setFriendPayValue('')
+    }
+
+    function removeInvite(participant){
+        const temp = [];
+        listEmail.map(p=>{
+            if(p.email != participant.email) temp.push(p)
+        })
+
+        setListEmail(temp);
+    }
+    useEffect(()=>{
+        getThisFriends();
+    },[])
 
     return (
         <Modal show={props.show} onHide={() => props.setShow(false) & clearForm() & setShowSuccessAlert(false) & setShowFailureAlert(false)}>
@@ -119,6 +153,36 @@ export default function CreateExpense(props) {
                             <option value='MONTHLY'>Mensal</option>
                             <option value='ANNUALLY'>Anual</option>
                         </FormControl>
+                    <FormGroup>
+                        <ControlLabel>Convide um amigo</ControlLabel>
+                            <Form inline>
+                                <FormGroup controlId="formInLineEmail">
+                                    <Typeahead
+                                        id="basic-typeahead-single"
+                                        onChange={setSelectedFriend}
+                                        options={friends}
+                                        selected={selectedFriend}
+                                        labelKey={option => `${option.name} (${option.email})`}
+                                        placeholder="Digite o EMAIL"
+                                    />
+                                </FormGroup>
+                                <FormGroup>
+                                    <ControlLabel>Valor: </ControlLabel>
+                                    <FormControl type="number" value={friendPayValue} onChange={val => setFriendPayValue(val.target.value) & validateValue(val.target.value)} style={showValueAlert ? {borderColor: 'red', color: 'red'} : {}}/>
+                                        {showValueAlert && <span style={{color: 'red'}}>Valor acima de zero necessário</span>}        
+                                </FormGroup>
+                                <FormGroup>
+                                    <Button className='pull-right' onClick={handleParticipationValueChange}>Convidar</Button>
+                                </FormGroup>
+                            </Form>
+                            <Form inline>
+                                {listEmail.map(p=><div>
+                                        <ControlLabel key={p.email}>Email: {p.email+" "}R${p.payValue}</ControlLabel>
+                                        <Button onClick={()=>removeInvite(p)}>REMOVER</Button>
+                                    </div>
+                                )} 
+                            </Form>
+                    </FormGroup>
                     </FormGroup>
                 </Form>
                 <div className={showSuccessAlert ? '' : 'hidden'}>
