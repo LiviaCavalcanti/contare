@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const authConfig = require("../config/auth.json");
 
 module.exports = (req, res, next)   =>{
-    if(req.url === "/register" || req.url === "/authenticate") return next();
+    if(["/register", "/authenticate", "/googleAuthenticate"].includes(req.url)) return next();
     
     const authHeader = req.headers.authorization || req.body.headers.Authorization;
     

@@ -45,8 +45,10 @@ router.delete("/user/friends",UserController.deleteFriendship);
 router.post("/user/friendresponse",UserController.handleFriendResponse);
 router.post("/user/cancelrequest",UserController.cancelFriendRequest);
 
+// AUTENTICACAO
 router.post("/register", authController.register);
 router.post("/authenticate", authController.authenticate);
+router.post("/googleAuthenticate", authController.googleAuthenticate);
 
 router.get("/user/:userID",UserController.getObjUSER)
 

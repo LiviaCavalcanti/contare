@@ -13,6 +13,7 @@ export default function ListIncomes(props) {
     const [incomeModals, setIncomeModals] = useState([])
     const [cachedIncomes, setCachedIncomes] = useState([])
     const [sorting, setSorting] = useState('Data de Criação')
+    const [filter, setFilter] = useState('Sem filtro')
     const [pageIndex, setPageIndex] = useState(0)
     const [pageIncomes, setPageIncomes] = useState([])
 
@@ -114,6 +115,26 @@ export default function ListIncomes(props) {
         })
     }
 
+    function monthDiff(d1, d2) {
+        var months;
+        months = (d2.getFullYear() - d1.getFullYear()) * 12;
+        months -= d1.getMonth();
+        months += d2.getMonth();
+        return months <= 0 ? 0 : months;
+    }
+
+    function filterIncomes(value) {
+        setFilter(value)
+        let allIncomes = incomes
+        if (value != 0) {
+            setPageIncomes(allIncomes.filter(income => monthDiff(new Date(income.receivedOn), new Date()) <= value))
+        } else {
+            setPageIncomes(allIncomes)
+        }
+
+
+    }
+
     return (
         <>
             <Grid fluid>
@@ -127,6 +148,18 @@ export default function ListIncomes(props) {
                                 <option>Valor</option>
                                 <option>Data de Recebimento</option>
                                 <option>Tipo de Recorrencia</option>
+                            </FormControl>
+                        </FormGroup>
+                    </Col>
+
+                    <Col lg={3} sm={4} xs={6}>
+                        <FormGroup>
+                            <ControlLabel>Filtrar por</ControlLabel>
+                            <FormControl componentClass="select" value={filter} onChange={val => filterIncomes(val.target.value)}>
+                                <option value={0}>Sem filtro</option>
+                                <option value={1}>Último mês</option>
+                                <option value={3}>Últimos 3 meses</option>
+                                <option value={6}>Últimos 6 meses</option>
                             </FormControl>
                         </FormGroup>
                     </Col>

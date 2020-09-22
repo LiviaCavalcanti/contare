@@ -1,17 +1,19 @@
 import React, { Component } from "react"
 import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap"
 import '../registerComponent/registerComponent.css'
-import { login } from '../../services/userService'
+import { login, loginWithGoogle } from '../../services/userService'
 import 'react-toastify/dist/ReactToastify.min.css';
 import { withRouter } from 'react-router';
 import HomeNavbar from '../HomeNavbar/HomeNavbar'
+import GoogleLogin from 'react-google-login'
+import { GOOGLE_API_CREDENTIAL } from '../../services/index'
 
 class LoginScreen extends Component {
     constructor(props) {
         super(props)
         this.handleSubmit = this.handleSubmit.bind(this)
         this.state = {
-            validated: false
+            validated: false,
         }
     }
     redirect = (path) => {
@@ -29,6 +31,11 @@ class LoginScreen extends Component {
         } else {
             this.setState({ validated: true });
         }
+    }
+
+    handleGoogleLogin = (response) => {
+        console.log (response.tokenId)
+        loginWithGoogle(response.tokenId)
     }
 
     render() {
@@ -59,7 +66,14 @@ class LoginScreen extends Component {
 
                     <Button className="login-bt" variant="success" type="submit">
                         Entrar
-                </Button>
+                    </Button>
+                    <GoogleLogin
+                        clientId={GOOGLE_API_CREDENTIAL}
+                        buttonText="Entre com o Google"
+                        onSuccess={this.handleGoogleLogin}
+                        onFailure={this.handleGoogleLogin}
+                        cookiePolicy={'single_host_origin'}
+                     />
                 </form>
                 <a className="footer-text">Não possui cadastro? <a className="footer-text-click" onClick={() => this.redirect("/register")}>Registre-se</a></a>
                 </div>
