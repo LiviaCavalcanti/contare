@@ -135,7 +135,7 @@ export default function ListIncomes(props) {
                     <Col lg={4} sm={6} key={income._id}>
                         <StatsCard bigIcon={<i className="pe-7s-server text-warning" />}
                             statsText={income.title}
-                            statsValue={"R$ " + income.value}
+                            statsValue={ income.value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                             statsIcon={<i className="fa fa-edit clickable" onClick={() => showModal(i)} />}
                             statsIconText={<span className="clickable" onClick={() => showModal(i)}>Editar renda</span>}
                         />
