@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import {Modal, Button, Form, FormGroup, FormControl, ControlLabel} from 'react-bootstrap'
 import {updateExpenses, deleteExpense} from '../../services/expenseService'
+import {makeDate} from '../../utils/date'
 
 var token = localStorage.getItem("token-contare")
 
@@ -82,9 +83,9 @@ export default function ExpenseModal(props) {
                     description: description,
                     category: category,
                     totalValue: totalValue,
-                    dueDate: dueDate,
+                    dueDate: makeDate(dueDate),
                     periodicity: periodicity,
-                    endDate: endDate,
+                    endDate: makeDate(endDate),
                     createdAt: createdAt
                 }
 

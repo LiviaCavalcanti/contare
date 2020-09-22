@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import {Modal, Button, Form, FormGroup, FormControl, ControlLabel} from 'react-bootstrap'
 import {createIncome} from '../../services/income'
+import {makeDate} from '../../utils/date'
 
 export default function CreateIncome(props) {
     const [title, setTitle] = useState('')
@@ -62,7 +63,7 @@ export default function CreateIncome(props) {
         let isValidTitle = validateTitle(title)
         let isValidValue = validateValue(value)
         if (isValidTitle && isValidValue)
-            createIncome(title, description, value, date, periodicity, createIncomeResp)
+            createIncome(title, description, value, makeDate(date), periodicity, createIncomeResp)
     }
 
     return (
