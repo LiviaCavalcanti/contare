@@ -6,6 +6,7 @@ import {notifyFailure} from '../../services/notifyService'
 import 'react-toastify/dist/ReactToastify.min.css';
 import { withRouter } from 'react-router';
 import HomeNavbar from '../HomeNavbar/HomeNavbar'
+import GoogleLoginButton from '../GoogleLoginComponent/index'
 
 class RegisterScreen extends Component {
     constructor(props) {
@@ -100,7 +101,8 @@ class RegisterScreen extends Component {
                     </FormGroup>
                     <Button className="login-bt" bsStyle="success" type="submit" >
                         Cadastrar
-                </Button>
+                    </Button>
+                    <GoogleLoginButton buttonText="Registre-se com o Google"/>
                 </form>
                 <a className="footer-text">Já possui cadastro? <a className="footer-text-click" onClick={() => this.redirect("/login")}>Faça login</a></a>
 
