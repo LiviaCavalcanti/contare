@@ -322,21 +322,21 @@ class Dashboard extends Component {
               <StatsCard
                 bigIcon={<i className="pe-7s-server text-warning" />}
                 statsText="Ganhos"
-                statsValue={"R$ " + this.state.monthIncomes.toFixed(2)}
+                statsValue={this.state.monthIncomes.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
               />
             </Col>
             <Col lg={4} sm={6}>
               <StatsCard
                 bigIcon={<i className="pe-7s-wallet text-danger" />}
                 statsText="Gastos"
-                statsValue={"R$ " + this.state.monthExpenses.toFixed(2)}
+                statsValue={this.state.monthExpenses.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
               />
             </Col>
             <Col lg={4} sm={6}>
               <StatsCard
                 bigIcon={<i className="pe-7s-cash text-success" />}
                 statsText="Saldo"
-                statsValue={"R$ " + (this.state.monthIncomes - this.state.monthExpenses).toFixed(2)}
+                statsValue={(this.state.monthIncomes - this.state.monthExpenses).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
               />
             </Col>
           </Row>

@@ -115,7 +115,7 @@ export default function ListExpenses(props) {
                 <Col lg={4} sm={6} key={expense._id}>
                     <StatsCard bigIcon={<i className="pe-7s-wallet text-danger" />}
                         statsText={expense.title}
-                        statsValue={"R$ " + expense.totalValue}
+                        statsValue={expense.totalValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                         statsIcon={<i className="fa fa-edit clickable" onClick={() => showModal(i)} />}
                         statsIconText={<span className="clickable" onClick={() => showModal(i)}>Editar gasto</span>}
                     />
