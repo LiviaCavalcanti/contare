@@ -79,7 +79,6 @@ class UserProfile extends Component {
 
     // UserCard fields (including picture)
     this.setState(function(oldState) {
-      console.log(user.image)
       let img = (user.image == null || user.image.url == "NONE") ? avatar : user.image.url;
       return {
         bgImage: defaultBgImg,
@@ -103,9 +102,8 @@ class UserProfile extends Component {
       notifyFailure("Preencher pelo menos os campos de nome, email e senha com alguma coisa.")
     } else {
         const token = localStorage.getItem('token-contare')
-        updateUser(token, newFields, function(response) {
-          this.updateUserFields(newFields);
-          notifySucess("Perfil alterado com sucesso!")
+        updateUser(token, newFields, function() {
+          this.updateUserFields();
       }.bind(this))
     }
   }
@@ -146,14 +144,18 @@ class UserProfile extends Component {
                           type: "text",
                           bsClass: "form-control",
                           placeholder: "Usuário",
-                          id: "username"
+                          id: "username",
+                          autocomplete:"off"
                         },
                         {
                           label: "Endereço de Email",
                           type: "email",
                           bsClass: "form-control",
                           placeholder: "Email",
-                          id: "email"
+                          id: "email",
+                          style: {pointerEvents: "none"},
+                          disabled: true,
+                          autocomplete:"off"
                         }
                       ]}
                     />

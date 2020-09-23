@@ -52,10 +52,27 @@ module.exports = {
 
         var user = await findUser(req.userId,res);
         if(!user) return res;
+        
+        // Check if username chosen is taken
+        let foundUsername = false;
+        if (req.body.username && req.body.username != user.username) {
+            let foundUser = await User.find({username: req.body.username});
+            if (foundUser.length > 0) {
+                foundUsername = true;
+            }
+        }
+        // If taken, send error message, but update what's possible
+        if (foundUsername) req.body.username = user.username;
+        req.body.email = user.email; // Guarantee email cannot be changed.
 
         user = await User.findByIdAndUpdate(req.userId,req.body,{new:true});
+        let code = foundUsername ? 403 : 200;
+        let message = foundUsername ? "Nome de usuário não disponível!" : "Usuário atualizado com sucesso!";
         await emitUserProfileUpdate(req.userId, user);
-        return res.status(200).send(user);
+        return res.status(code).send({
+            message: message,
+            user: req.body
+        });
     },
 
     async indexExpenses(req, res){

@@ -76,14 +76,10 @@ export const getAllEmail = async (token) => {
 export const updateUser = async (token, newUser, callback) => {
     axios.post(`${API_URL}/contare/user/edit`, newUser, {headers: {Authorization : "Bearer " + token}})
     .then((response) => {
-        console.log("update user post req came back with this obj: %o", response);
-        callback(response.data)
-    },
-    (error) => {
-        console.log("Response came back, but got this error: ", error)
-    }
-    ).catch((error) => {
-        console.log("Deu algum erro... This is what I know: ", error);
+        notifySucess(response.data.message);
+    }).catch((error) => {
+        console.log("%o", error);
+        notifyFailure("Nome de usuário indisponível! Os demais campos foram mantidos.");
     })
 }
 
