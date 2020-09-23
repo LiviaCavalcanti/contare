@@ -4,11 +4,12 @@ import { Table} from 'react-bootstrap';
 import "./ListExtract.css"
 import {addExpenses} from "../../services/expenseService"
 import {notifySucess} from "../../services/notifyService"
+import {createIncome} from "../../services/income"
 
 export default class ListExtract extends React.Component {
 
-    constructor(props) {
-        super(props);
+    constructor(props, context) {
+        super(props, context);
         this.handleSubmit=this.handleSubmit.bind(this)
         this.handleCheckbox=this.handleCheckbox.bind(this)
         this.state = {
@@ -19,12 +20,43 @@ export default class ListExtract extends React.Component {
 
     async handleSubmit(){
       var createdExpenses = 0
-      for (var obj in this.state.selectedData) {
-        var retorno = await addExpenses(obj, function(){})
-        if (retorno) {
-          createdExpenses += 1
+      
+      this.state.selectedData.forEach( async function(obj, index){
+        
+        const token = localStorage.getItem("token-contare")
+        console.log(token, obj)
+
+        if (obj.type === "Receita"){
+          console.log("here")
+          var retorno = await createIncome( obj.title, obj.description, obj.value, obj.date, "NONE", function(){})
+          
+          console.log(retorno)
+
+          if (retorno) {
+            console.log("tem retorno")
+            createdExpenses += 1
+          }
+          console.log(retorno)
+        } else {
+          console.log("here gasto")
+          var retorno = await addExpenses(token, {
+            category: obj.type,
+            title: obj.title,
+            description: obj.description,
+            dueDate: obj.date,
+            periodicity: "NONE",
+            totalValue: obj.value
+          }, function(){})
+
+          if (retorno) {
+            createdExpenses += 1
+          }
         }
+        
       }
+        
+      )
+      
       if (createdExpenses > 0) {
         notifySucess("Foram criadas " + createdExpenses + " despesas")
       }
