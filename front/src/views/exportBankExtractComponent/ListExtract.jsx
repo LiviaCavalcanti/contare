@@ -4,7 +4,7 @@ import { Table} from 'react-bootstrap';
 import "./ListExtract.css"
 import {addExpenses} from "../../services/expenseService"
 import {notifySucess} from "../../services/notifyService"
-import {createIncome} from "../../services/income"
+import {createIncomeWithoutCallback} from "../../services/income"
 
 export default class ListExtract extends React.Component {
 
@@ -19,52 +19,42 @@ export default class ListExtract extends React.Component {
     }
 
     async handleSubmit(){
-      var createdExpenses = 0
+      let createdIncomes = 0
+      let createdExpenses = 0
       
-      this.state.selectedData.forEach( async function(obj, index){
+      this.state.selectedData.forEach(async function(obj, index){
         
         const token = localStorage.getItem("token-contare")
-        console.log(token, obj)
-
         if (obj.type === "Receita"){
-          console.log("here")
-          var retorno = await createIncome( obj.title, obj.description, obj.value, obj.date, "NONE", function(){})
-          
-          console.log(retorno)
-
-          if (retorno) {
-            console.log("tem retorno")
-            createdExpenses += 1
-          }
-          console.log(retorno)
+          let income = await createIncomeWithoutCallback(obj.title, obj.description, obj.value, obj.date, "NONE")
+          if (income.status == 200) createdIncomes += 1
         } else {
-          console.log("here gasto")
-          var retorno = await addExpenses(token, {
+          let expense = await addExpenses(token, {
             category: obj.type,
             title: obj.title,
             description: obj.description,
             dueDate: obj.date,
             periodicity: "NONE",
             totalValue: obj.value
-          }, function(){})
+            })
 
-          if (retorno) {
+          if (expense.status == 200) {
             createdExpenses += 1
           }
         }
-        
-      }
-        
-      )
-      
-      if (createdExpenses > 0) {
-        notifySucess("Foram criadas " + createdExpenses + " despesas")
-      }
-      else {
-        notifySucess("Nenhuma despesa foi criada")
-      }
-      this.props.onHide()
-    }
+
+        if (index == this.state.selectedData.length - 1) {
+          if (createdExpenses > 0 || createdIncomes > 0) {
+            notifySucess(`Foram criadas ${createdExpenses} despesas e ${createdIncomes} rendas.`)
+          }
+          else {
+            notifySucess("Nenhum objeto foi criado")
+          }
+          this.props.onHide()
+        }
+    }.bind(this))
+
+  }
 
     handleCheckbox(event, obj1) {
       const {value, checked} = event.target

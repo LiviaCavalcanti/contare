@@ -13,6 +13,19 @@ export function createIncome(title, description, value, date, periodicity, callb
     }).then(callback)
 }
 
+export function createIncomeWithoutCallback(title, description, value, date, periodicity) {
+    fetch(`${API_URL}/contare/user/incomes`, {
+        method: 'POST',
+        headers: {
+            'Authorization': "Bearer " + localStorage.getItem("token-contare"),
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            title, description, value, receivedOn: date, periodicity
+        })
+    })
+}
+
 export function getIncomes() {
     return fetch(`${API_URL}/contare/user/incomes`, {
         method: 'GET',
