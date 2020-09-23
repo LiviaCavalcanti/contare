@@ -9,38 +9,32 @@ var token = localStorage.getItem('token-contare')
 export default function Invitation(props) {
     const [invitations,setInvitations] = useState([]);
     const [detailedInvitations, setDetailedInvitations]= useState([])
-    const [selectedExpense, setSelectedExpense] = useState({})
+    const [invitation, setInvitation] = useState({})
 
-    async function getInvitations(){
-        await   getAllInvitations(token).then((response)=>{
-                    setInvitations(response)
-                    console.log(response)
-                })
-    }
-
-    async function getInviteExpense(expenseId){
-        await getExpense(expenseId, token).then((response)=>{
-            setSelectedExpense(response)
-        })
-    }
 
     useEffect(()=>{
-        var tempInvitations=[]
+        getAllInvitations(token, async function(response){
+            if(response.length >= 0) {
+                setInvitations(response)
+            }
+        }.bind(this))
+    },[])
+
+    useEffect(()=>{
+        var tempInvitation={}
         var expTitle = ""
         var owner = ""
-
-        getInvitations()
         
         if(invitations.length === 0){
             document.getElementById('number').style.visibility='hidden'
         } else{
             document.getElementById('number').style.visibility='visible'
-            
+
             invitations.map(invite =>{
-                getInviteExpense(invite.expense,token).then((response)=>{
+                getExpense(invite.expense,token).then(response=>{
                     expTitle = response.title;
                     owner = response.participants[0].name
-                    tempInvitations.push({
+                    tempInvitation=({
                         _id:invite._id,
                         title:expTitle,
                         owner:owner+" ("+response.participants[0].email+")",
@@ -49,18 +43,24 @@ export default function Invitation(props) {
                         descricao:response.description,
                         expense:invite.expense
                     })
+                    setInvitation(tempInvitation)
+                    setInvitation({})
                 })
             })
         }
-        setDetailedInvitations(tempInvitations)
-        console.log(detailedInvitations)
-    },[])
+    },[invitations])
+    
+    useEffect(()=>{
+        
+        if(invitation._id !== undefined) detailedInvitations.push(invitation)
+        
+    },[invitation])
 
     const notification = (
         <div>
           <i className="fa fa-globe" />
           <b className="caret" />
-          <span id="number" className="notification">{invitations.length}</span>
+          <span id="number" className="notification">{detailedInvitations.length}</span>
           <p className="hidden-lg hidden-md">Notification</p>
         </div>
       );
@@ -77,7 +77,7 @@ export default function Invitation(props) {
             >
             {
                (detailedInvitations.length > 0) ? detailedInvitations.map(
-                    invite=>{}):
+                    invite=><MenuItem>{invite.title}</MenuItem>):
                      
                <MenuItem>Não há convites</MenuItem>
             }

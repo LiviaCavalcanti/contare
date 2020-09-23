@@ -34,13 +34,13 @@ export const rejectInviteReq = async (inviteID, token) => {
     )
 }
 
-export const getAllInvitations = async (token) => {
+export const getAllInvitations = async (token, callback) => {
     return await axios.get( `${API_URL}/contare/user/invitations` ,{headers: {Authorization : "Bearer " + token}})
     .then((response) => {
-        return response.data;
-    },
+        callback(response.data)
+    },  
     (error) => {
-        return error;
+        callback(error)
         }
     )
 }
