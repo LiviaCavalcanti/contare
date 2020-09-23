@@ -181,7 +181,8 @@ module.exports = {
             let friend = await User.findById(friendId._id)
             let friendRes = {
                                 name: friend.name,
-                                email: friend.email
+                                email: friend.email,
+                                image: friend.image
                             };
             return friendRes;
         })
@@ -201,7 +202,8 @@ module.exports = {
             let friend = await User.findById(friendId._id)
             let friendRes = {
                                 name: friend.name,
-                                email: friend.email
+                                email: friend.email,
+                                image: friend.image
                             };
             return friendRes;
         })

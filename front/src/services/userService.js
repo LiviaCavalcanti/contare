@@ -155,7 +155,7 @@ export const acceptFriend = async (friendId, token) => {
     }
     return await axios.post(URL, body, {headers: {Authorization: "Bearer " + token}})
     .then((response) => {
-        notifySucess("Amizade deletada com sucesso!")
+        notifySucess("Amizade aceita com sucesso!")
         return response;
     }, (error) => {
         notifyFailure(error.response.data.error)
@@ -173,7 +173,7 @@ export const refuseFriend = async (friendId, token) => {
     }
     return await axios.post(URL, body, {headers: {Authorization: "Bearer " + token}})
     .then((response) => {
-        notifySucess("Amizade deletada com sucesso!")
+        notifySucess("Amizade recusada com sucesso!")
         return response;
     }, (error) => {
         notifyFailure(error.response.data.error)
