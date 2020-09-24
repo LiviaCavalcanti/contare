@@ -1,3 +1,5 @@
+import axios from 'axios'
+import {notifyFailure, notifySucess} from './notifyService'
 import {API_URL} from './index'
 
 export function createIncome(title, description, value, date, periodicity, callback) {
@@ -13,17 +15,21 @@ export function createIncome(title, description, value, date, periodicity, callb
     }).then(callback)
 }
 
-export function createIncomeWithoutCallback(title, description, value, date, periodicity) {
-    fetch(`${API_URL}/contare/user/incomes`, {
-        method: 'POST',
-        headers: {
-            'Authorization': "Bearer " + localStorage.getItem("token-contare"),
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            title, description, value, receivedOn: date, periodicity
-        })
-    })
+export async function createIncomeWithoutCallback(token, body, notify=false) {
+    return await axios.post( `${API_URL}/contare/user/incomes`, body ,{headers: {Authorization : "Bearer " + token}})
+     .then((response) => {
+            if(notify) {
+                notifySucess("Despesa adicionada com sucesso!")
+            }
+            return response;
+       },
+       (error) => {
+           if(notify) {
+            notifyFailure("Você já adicionou uma despesa com esse nome! Tente outro", error)
+           }
+           return false;
+        }
+     )
 }
 
 export function getIncomes() {

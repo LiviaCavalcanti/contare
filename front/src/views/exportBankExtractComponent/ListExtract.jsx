@@ -25,18 +25,20 @@ export default class ListExtract extends React.Component {
       this.state.selectedData.forEach(async function(obj, index){
         
         const token = localStorage.getItem("token-contare")
+        let object2add = {title: obj.title, 
+          description: obj.description, 
+          periodicity: "NONE"}
         if (obj.type === "Receita"){
-          let income = await createIncomeWithoutCallback(obj.title, obj.description, obj.value, obj.date, "NONE")
+          object2add.receivedOn = obj.date
+          object2add.value= obj.value
+          let income = await createIncomeWithoutCallback(token, object2add)
           if (income.status == 200) createdIncomes += 1
         } else {
-          let expense = await addExpenses(token, {
-            category: obj.type,
-            title: obj.title,
-            description: obj.description,
-            dueDate: obj.date,
-            periodicity: "NONE",
-            totalValue: obj.value
-            })
+            object2add.category= obj.type
+            object2add.description= obj.description
+            object2add.dueDate = obj.date
+            object2add.totalValue= obj.value
+            let expense = await addExpenses(token, object2add)
 
           if (expense.status == 200) {
             createdExpenses += 1
