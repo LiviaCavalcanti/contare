@@ -1,57 +1,70 @@
-export function unfold(list, a, b) {
-  if (!b) {
-    b = new Date()
+/*
+ * list: Array(Incomes) | Array(Expenses)
+ * from (optional): Date()
+ * to (optional): Date()
+*/
+export function unfold(list, from, to) {
+  if (!to) {
+    to = new Date()
+  }
+
+  let dateStart = 'receivedOn'
+  let dateEnd = 'canceledOn'
+  if (list.length && list[0].dueDate) {
+    dateStart = 'dueDate'
+    dateEnd = 'endDate'
   }
 
   const newList = []
   list.map(obj => {
-    let objA = new Date(obj.receivedOn)
-    if (a && a > objA)
-      objA = a
-    let objB = b
-    if (obj.canceledOn && b > new Date(obj.canceledOn))
-      objB = new Date(obj.canceledOn)
+    let objFrom = new Date(obj[dateStart])
+    if (from && from > objFrom)
+      objFrom = from
+    let objTo = to
+    if (obj[dateEnd] && to > new Date(obj[dateEnd]))
+      objTo = new Date(obj[dateEnd])
 
-    if (objA > objB) return
+    if (objFrom > objTo) return
 
-    const day = objA.getDate()
+    const day = objFrom.getDate()
     let resetDay = false
     switch (obj.periodicity) {
       case 'NONE':
-        newList.push({...obj})
+        if (new Date(obj[dateStart]) >= objFrom)
+          newList.push({...obj})
         break
       case 'DAILY':
-        while (objA <= objB) {
+        while (objFrom <= objTo) {
           let newObj = {...obj}
-          newObj.receivedOn = objA.toJSON()
+          newObj[dateStart] = objFrom.toJSON()
           newList.push(newObj)
-          objA.setDate(objA.getDate() + 1)
+          objFrom.setDate(objFrom.getDate() + 1)
         }
         break
       case 'WEEKLY':
-        objA = new Date(obj.receivedOn)
-        while (objA <= objB) {
-          if (!a || objA >= a) {
+        objFrom = new Date(obj[dateStart])
+        while (objFrom <= objTo) {
+          if (!from || objFrom >= from) {
             let newObj = {...obj}
-            newObj.receivedOn = objA.toJSON()
+            newObj[dateStart] = objFrom.toJSON()
             newList.push(newObj)
           }
-          objA.setDate(objA.getDate() + 7)
+          objFrom.setDate(objFrom.getDate() + 7)
         }
         break
       case 'MONTHLY':
-        objA = new Date(obj.receivedOn)
-        while (objA <= objB) {
-          if (!a || objA >= a) {
+        objFrom = new Date(obj[dateStart])
+        while (objFrom <= objTo) {
+          if (!from || objFrom >= from) {
             let newObj = {...obj}
-            newObj.receivedOn = objA.toJSON()
+            newObj[dateStart] = objFrom.toJSON()
             newList.push(newObj)
           }
-          let temp = new Date(objA)
+          let temp = new Date(objFrom)
           temp.setMonth(temp.getMonth() + 1)
-          if (objA.getDate() !== temp.getDate()) {
+          if (objFrom.getDate() !== temp.getDate()) {
             temp.setDate(0)
-            objA.setDate(temp.getDate())
+            objFrom.setDate(temp.getDate())
           } else if (temp.getDate() !== day) {
             let month = temp.getMonth()
             temp.setDate(day)
@@ -59,35 +72,35 @@ export function unfold(list, a, b) {
               resetDay = true
             }
           }
-          objA.setMonth(objA.getMonth() + 1)
+          objFrom.setMonth(objFrom.getMonth() + 1)
           if (resetDay) {
-            objA.setDate(day)
+            objFrom.setDate(day)
             resetDay = false
           }
         }
         break
       case 'ANNUALLY':
-        objA = new Date(obj.receivedOn)
-        while (objA <= objB) {
-          if (!a || objA >= a) {
+        objFrom = new Date(obj[dateStart])
+        while (objFrom <= objTo) {
+          if (!from || objFrom >= from) {
             let newObj = {...obj}
-            newObj.receivedOn = objA.toJSON()
+            newObj[dateStart] = objFrom.toJSON()
             newList.push(newObj)
           }
-          let temp = new Date(objA)
+          let temp = new Date(objFrom)
           temp.setFullYear(temp.getFullYear() + 1)
-          if (objA.getMonth() !== temp.getMonth()) {
+          if (objFrom.getMonth() !== temp.getMonth()) {
             temp.setDate(0)
-            objA.setDate(temp.getDate())
+            objFrom.setDate(temp.getDate())
           } else if (temp.getDate() !== day) {
             temp.setDate(day)
-            if (objA.getMonth() === temp.getMonth()) {
+            if (objFrom.getMonth() === temp.getMonth()) {
               resetDay = true
             }
           }
-          objA.setFullYear(objA.getFullYear() + 1)
+          objFrom.setFullYear(objFrom.getFullYear() + 1)
           if (resetDay) {
-            objA.setDate(day)
+            objFrom.setDate(day)
             resetDay = false
           }
         }
