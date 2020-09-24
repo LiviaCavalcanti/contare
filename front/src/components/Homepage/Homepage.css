@@ -34,14 +34,12 @@ html, body {
   flex-flow: column;
   justify-content: center;
   align-items: center;
-  /* padding: 5vw 15px ; */
 }
 
 .homepage-lead-content-centered h2 {
   font-family: 'Playfair Display', serif;
   text-align: center;
   font-size: 350%;
-  /* padding: 0% 40% 20% 0%; */
   color:#363535;
   font-weight: 100;
 }
@@ -137,7 +135,6 @@ html, body {
 
 .homepage-secondary p {
   font-weight: 100;
-  /* font-size: 0.99vw; */
 }
 
 .homepage-footer {
