@@ -10,7 +10,7 @@ export function unfold(list, from, to) {
 
   let dateStart = 'receivedOn'
   let dateEnd = 'canceledOn'
-  if (list.length && list[0].dueDate) {
+  if (list[0] && list[0].dueDate) {
     dateStart = 'dueDate'
     dateEnd = 'endDate'
   }
@@ -28,15 +28,20 @@ export function unfold(list, from, to) {
 
     const day = objFrom.getDate()
     let resetDay = false
+    let seq = 1
     switch (obj.periodicity) {
       case 'NONE':
-        if (new Date(obj[dateStart]) >= objFrom)
-          newList.push({...obj})
+        if (new Date(obj[dateStart]) >= objFrom) {
+          let newObj = {...obj}
+          newObj[dateStart + 'Adjusted'] = objFrom.toJSON()
+          newList.push(newObj)
+        }
         break
       case 'DAILY':
         while (objFrom <= objTo) {
           let newObj = {...obj}
-          newObj[dateStart] = objFrom.toJSON()
+          newObj[dateStart + 'Adjusted'] = objFrom.toJSON()
+          newObj.seq = seq++
           newList.push(newObj)
           objFrom.setDate(objFrom.getDate() + 1)
         }
@@ -46,7 +51,8 @@ export function unfold(list, from, to) {
         while (objFrom <= objTo) {
           if (!from || objFrom >= from) {
             let newObj = {...obj}
-            newObj[dateStart] = objFrom.toJSON()
+            newObj[dateStart + 'Adjusted'] = objFrom.toJSON()
+            newObj.seq = seq++
             newList.push(newObj)
           }
           objFrom.setDate(objFrom.getDate() + 7)
@@ -57,7 +63,8 @@ export function unfold(list, from, to) {
         while (objFrom <= objTo) {
           if (!from || objFrom >= from) {
             let newObj = {...obj}
-            newObj[dateStart] = objFrom.toJSON()
+            newObj[dateStart + 'Adjusted'] = objFrom.toJSON()
+            newObj.seq = seq++
             newList.push(newObj)
           }
           let temp = new Date(objFrom)
@@ -84,7 +91,8 @@ export function unfold(list, from, to) {
         while (objFrom <= objTo) {
           if (!from || objFrom >= from) {
             let newObj = {...obj}
-            newObj[dateStart] = objFrom.toJSON()
+            newObj[dateStart + 'Adjusted'] = objFrom.toJSON()
+            newObj.seq = seq++
             newList.push(newObj)
           }
           let temp = new Date(objFrom)
