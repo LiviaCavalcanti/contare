@@ -6,6 +6,7 @@ import {daysDiff, weeksDiff, monthsDiff, yearsDiff} from '../../utils/date'
 import ExpenseModal from './ExpenseModal'
 import '../../assets/css/custom.css'
 import { initializeConnection } from 'services/ConnectionService'
+import { getUser } from 'services/userService'
 
 var token = localStorage.getItem("token-contare")
 var socket
@@ -16,6 +17,7 @@ export default function ListExpenses(props) {
     const [cachedExpenses, setCachedExpenses] = useState([])
     const [sorting, setSorting] = useState('Data do Gasto')
     const [initializing, setInitializing] = useState(true)
+    const [loggedUser, setLoggedUser] = useState({})
 
     useEffect(() => {
         if (initializing) {
@@ -31,26 +33,27 @@ export default function ListExpenses(props) {
         if (props.update) {
             props.setUpdate(false)
             let totalExpense = 0
-
-            getExpenses(token).then(resp => {
-                setCachedExpenses(resp)
-                
-                setExpenseModals(resp.map(expense => {
-                    let dueDate = new Date(expense.dueDate)
-                    let endDate = new Date(expense.endDate)
-
-                    if (expense.totalValue > 0 && dueDate <= endDate) {
-                        totalExpense += expense.totalValue
-                        if (expense.periodicity === 'DAILY') totalExpense += expense.totalValue * daysDiff(dueDate, endDate)
-                        else if (expense.periodicity === 'WEEKLY') totalExpense += expense.totalValue * weeksDiff(dueDate, endDate)
-                        else if (expense.periodicity === 'MONTHLY') totalExpense += expense.totalValue * monthsDiff(dueDate, endDate)
-                        else if (expense.periodicity === 'ANNUALLY') totalExpense += expense.totalValue * yearsDiff(dueDate, endDate)
-                    }
-
+            getUser(token).then(user =>{
+                setLoggedUser(user)
+                getExpenses(token).then(resp => {
+                    setCachedExpenses(resp)
+                    
+                    setExpenseModals(resp.map(expense => {
+                        let dueDate = new Date(expense.dueDate)
+                        let endDate = new Date(expense.endDate)
+                        let participant = expense.participants.find(p=> p._id === user._id)
+                        if (expense.totalValue > 0 && dueDate <= endDate) {
+                            totalExpense += participant.payValue
+                            if (expense.periodicity === 'DAILY') totalExpense += participant.payValue * daysDiff(dueDate, endDate)
+                            else if (expense.periodicity === 'WEEKLY') totalExpense += participant.payValue * weeksDiff(dueDate, endDate)
+                            else if (expense.periodicity === 'MONTHLY') totalExpense += participant.payValue * monthsDiff(dueDate, endDate)
+                            else if (expense.periodicity === 'ANNUALLY') totalExpense += participant.payValue * yearsDiff(dueDate, endDate)
+                        }
+                    
                     return false
-                }))
-
+                    }))
                 props.setTotalExpense(totalExpense)
+                })
             })
         }
     })
@@ -115,13 +118,13 @@ export default function ListExpenses(props) {
                 <Col lg={4} sm={6} key={expense._id}>
                     <StatsCard bigIcon={<i className="pe-7s-wallet text-danger" />}
                         statsText={expense.title}
-                        statsValue={"R$ " + expense.totalValue}
+                        statsValue={"R$ " + expense.participants.find(p=> p._id === loggedUser._id).payValue}
                         statsIcon={<i className="fa fa-edit clickable" onClick={() => showModal(i)} />}
-                        statsIconText={<span className="clickable" onClick={() => showModal(i)}>Editar gasto</span>}
+                        statsIconText={<span hidden={expense.owner !== loggedUser._id} className="clickable" onClick={() => showModal(i)}>Editar gasto</span>}
                     />
                     <ExpenseModal expense={expense} i={i} ExpenseModals={ExpenseModals} setExpenseModals={setExpenseModals} setUpdate={props.setUpdate} />
                 </Col>
-            )}
+                )}
         </Grid>
     )
 }

@@ -4,6 +4,7 @@ import {addExpenses} from '../../services/expenseService'
 import { getUser,getFriends } from '../../services/userService'
 import {Typeahead} from 'react-bootstrap-typeahead';
 import '../../../node_modules/react-bootstrap-typeahead/css/Typeahead.css';
+import './styles.css'
 
 export default function CreateExpense(props) {
     const [title, setTitle] = useState('')
@@ -15,14 +16,17 @@ export default function CreateExpense(props) {
     
     const [friends, setFriends] = useState([])
     const [listEmail,setListEmail] = useState([])
-    const [selectedFriend, setSelectedFriend]=useState([])
-    const [friendPayValue, setFriendPayValue]=useState('')
+    const [selectedFriend, setSelectedFriend] = useState([])
+    const [friendPayValue, setFriendPayValue] = useState(0)
+    const [sharedValue, setSharedValue] = useState(0)
 
     const [showSuccessAlert, setShowSuccessAlert] = useState(false)
     const [showFailureAlert, setShowFailureAlert] = useState(false)
 
     const [showTitleAlert, setShowTitleAlert] = useState(false)
     const [showValueAlert, setShowValueAlert] = useState(false)
+
+    const [friendValueAlert, setFriendValueAlert] = useState(false)
 
     function clearForm() {
         setTitle('');
@@ -34,6 +38,9 @@ export default function CreateExpense(props) {
 
         setShowTitleAlert(false)
         setShowValueAlert(false)
+        setSelectedFriend([])
+        setListEmail([])
+        setFriendPayValue(0)
     }
 
     function addExpensesResp(resp) {
@@ -69,10 +76,22 @@ export default function CreateExpense(props) {
         }
     }
 
+    function validateFriendValue(value) {
+        if (value > 0) {
+            setFriendValueAlert(false)
+            return true
+        } else {
+            setFriendValueAlert(true)
+            return false
+        }
+    }
+
     async function submit() {
         let isValidTitle = validateTitle(title)
         let isValidValue = validateValue(value)
         let user = await getUser(localStorage.getItem("token-contare"));
+        listEmail.unshift({email:user.email, payValue:value-sharedValue})
+        
         if (isValidTitle && isValidValue) {
             let expenseBody = {
                 title: title,
@@ -83,9 +102,10 @@ export default function CreateExpense(props) {
                 category: category,
                 periodicity: periodicity,
                 listEmail:listEmail
-            };
+            }
             let resp = await addExpenses(localStorage.getItem("token-contare"), expenseBody, true);
             addExpensesResp(resp)
+            closeModal();
         }
     }
 
@@ -97,6 +117,7 @@ export default function CreateExpense(props) {
     }
 
     function handleParticipationValueChange(){
+        setSharedValue(sharedValue+friendPayValue)
         const participantObj = {email:selectedFriend[0].email,payValue:parseInt(friendPayValue)}
         listEmail.push(participantObj);
         setSelectedFriend([])
@@ -115,8 +136,19 @@ export default function CreateExpense(props) {
         getThisFriends();
     },[])
 
+    function disableInviteFriendBtn(){
+        return (selectedFriend === null || selectedFriend.length=== 0 || friendPayValue <= 0 || friendPayValue > (value-sharedValue))
+    }
+
+    function closeModal(){
+        props.setShow(false)
+        clearForm()
+        setShowSuccessAlert(false)
+        setShowFailureAlert(false)
+    }
+
     return (
-        <Modal show={props.show} onHide={() => props.setShow(false) & clearForm() & setShowSuccessAlert(false) & setShowFailureAlert(false)}>
+        <Modal show={props.show} onHide={() => closeModal()}>
             <Modal.Header closeButton>
                 <Modal.Title>Criar novo gasto</Modal.Title>
             </Modal.Header>
@@ -168,17 +200,15 @@ export default function CreateExpense(props) {
                                 </FormGroup>
                                 <FormGroup>
                                     <ControlLabel>Valor: </ControlLabel>
-                                    <FormControl type="number" value={friendPayValue} onChange={val => setFriendPayValue(val.target.value) & validateValue(val.target.value)} style={showValueAlert ? {borderColor: 'red', color: 'red'} : {}}/>
-                                        {showValueAlert && <span style={{color: 'red'}}>Valor acima de zero necessário</span>}        
-                                </FormGroup>
-                                <FormGroup>
-                                    <Button className='pull-right' onClick={handleParticipationValueChange}>Convidar</Button>
+                                    <FormControl type="number" value={friendPayValue} onChange={val => setFriendPayValue(val.target.value) & validateFriendValue(val.target.value)} style={friendValueAlert ? {borderColor: 'red', color: 'red'} : {}}/>
+                                        {friendValueAlert && <span style={{color: 'red'}}>Valor acima de zero necessário</span>}        
+                                    <Button disabled={disableInviteFriendBtn()} bsStyle="success" className='pull-right' onClick={handleParticipationValueChange}>✔</Button>
                                 </FormGroup>
                             </Form>
                             <Form inline>
                                 {listEmail.map(p=><div>
                                         <ControlLabel key={p.email}>Email: {p.email+" "}R${p.payValue}</ControlLabel>
-                                        <Button onClick={()=>removeInvite(p)}>REMOVER</Button>
+                                        <Button  bsSize="xsmall" bsStyle="danger" onClick={()=>removeInvite(p)}>X</Button>
                                     </div>
                                 )} 
                             </Form>

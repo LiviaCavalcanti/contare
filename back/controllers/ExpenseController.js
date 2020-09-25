@@ -79,7 +79,7 @@ module.exports = {
                 let newExpense = await Expense.create(thisExpense);
                 
                 if (req.body.listEmail) {
-                    if(req.body.listEmail.length > 0){
+                    if(req.body.listEmail.length > 1){
                         return await InvitationController.invite(req,res,user,newExpense);
                     }
                 }
