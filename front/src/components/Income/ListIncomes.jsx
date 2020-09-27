@@ -15,6 +15,8 @@ export default function ListIncomes(props) {
     const [sorting, setSorting] = useState('Data de Criação')
     const [pageIndex, setPageIndex] = useState(0)
     const [pageIncomes, setPageIncomes] = useState([])
+    const [sortedIncomes, setSortedIncomes] = useState([])
+    const [search, setSearch] = useState('')
 
     const elemsPerPage = 12
     const [initializing, setInitializing] = useState(true)
@@ -72,21 +74,33 @@ export default function ListIncomes(props) {
         setPageIncomes(incomes.slice(elemsPerPage * pageIndex, elemsPerPage * pageIndex + elemsPerPage))
     }, [incomes])
 
+    useEffect(() => {
+        setIncomes(sortedIncomes.filter(income => {
+            let norm = str => str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            if (norm(income.title).includes(norm(search))) return true
+            if (norm(income.description).includes(norm(search))) return true
+        }))
+    }, [search, sortedIncomes])
+
+    useEffect(() => {
+        setPageIndex(0)
+    }, [search])
+
     function sortIncomes() {
-        if (sorting === 'Data de Criação') setIncomes(cachedIncomes.slice().reverse())
-        else if (sorting === 'Título') setIncomes(cachedIncomes.slice().sort((inc1, inc2) => {
+        if (sorting === 'Data de Criação') setSortedIncomes(cachedIncomes.slice().reverse())
+        else if (sorting === 'Título') setSortedIncomes(cachedIncomes.slice().sort((inc1, inc2) => {
             if (inc1.title.toLowerCase() < inc2.title.toLowerCase()) return -1
             return 1
         }))
-        else if (sorting === 'Valor') setIncomes(cachedIncomes.slice().sort((inc1, inc2) => {
+        else if (sorting === 'Valor') setSortedIncomes(cachedIncomes.slice().sort((inc1, inc2) => {
             if (inc1.value > inc2.value) return -1
             return 1
         }))
-        else if (sorting === 'Data de Recebimento') setIncomes(cachedIncomes.slice().sort((inc1, inc2) => {
+        else if (sorting === 'Data de Recebimento') setSortedIncomes(cachedIncomes.slice().sort((inc1, inc2) => {
             if (new Date(inc1.receivedOn) > new Date(inc2.receivedOn)) return -1
             return 1
         }))
-        else if (sorting === 'Tipo de Recorrencia') setIncomes(cachedIncomes.slice().sort((inc1, inc2) => {
+        else if (sorting === 'Tipo de Recorrencia') setSortedIncomes(cachedIncomes.slice().sort((inc1, inc2) => {
             if (inc1.periodicity > inc2.periodicity) return -1
             return 1
         }))
@@ -128,6 +142,15 @@ export default function ListIncomes(props) {
                                 <option>Data de Recebimento</option>
                                 <option>Tipo de Recorrencia</option>
                             </FormControl>
+                        </FormGroup>
+                    </Col>
+                    <Col lg={6} sm={8} xs={12}>
+                        <FormGroup>
+                            <ControlLabel>Pesquisar por rendas</ControlLabel>
+                            <FormControl
+                                placeholder="Título ou Descrição" componentClass="input"
+                                value={search} onChange={val => setSearch(val.target.value)}
+                            />
                         </FormGroup>
                     </Col>
                 </Row>

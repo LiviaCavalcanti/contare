@@ -16,6 +16,8 @@ export default function ListExpenses(props) {
     const [cachedExpenses, setCachedExpenses] = useState([])
     const [sorting, setSorting] = useState('Data do Gasto')
     const [initializing, setInitializing] = useState(true)
+    const [sortedExpenses, setSortedExpenses] = useState([])
+    const [search, setSearch] = useState('')
 
     useEffect(() => {
         if (initializing) {
@@ -59,29 +61,43 @@ export default function ListExpenses(props) {
         sortExpenses()
     }, [cachedExpenses, sorting])
 
+    useEffect(() => {
+        setExpenses(sortedExpenses.filter(expense => {
+            let norm = str => str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            if (norm(expense.title).includes(norm(search))) return true
+            if (norm(expense.category).includes(norm(search))) return true
+            if (norm(expense.description).includes(norm(search))) return true
+        }))
+    }, [search, sortedExpenses])
+
+    useEffect(() => {
+        // TODO: descomentar quando gastos tiver paginacao
+        // setPageIndex(0)
+    }, [search])
+
     function sortExpenses() {
         if (cachedExpenses) {
-            if (sorting === 'Título') setExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
+            if (sorting === 'Título') setSortedExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
                 if (inc1.title.toLowerCase() < inc2.title.toLowerCase()) return -1
                 return 1
             }))
-            else if (sorting === 'Valor') setExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
+            else if (sorting === 'Valor') setSortedExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
                 if (inc1.totalValue > inc2.totalValue) return -1
                 return 1
             }))
-            else if (sorting === 'Data do Gasto') setExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
+            else if (sorting === 'Data do Gasto') setSortedExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
                 if (new Date(inc1.dueDate) > new Date(inc2.dueDate)) return -1
                 return 1
             }))
-            else if (sorting === 'Tipo de Recorrencia') setExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
+            else if (sorting === 'Tipo de Recorrencia') setSortedExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
                 if (inc1.periodicity > inc2.periodicity) return -1
                 return 1
             }))
-            else if (sorting === 'Categoria') setExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
+            else if (sorting === 'Categoria') setSortedExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
                 if (inc1.category > inc2.category) return -1
                 return 1
             }))
-            else if (sorting === 'Descrição') setExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
+            else if (sorting === 'Descrição') setSortedExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
                 if (inc1.description > inc2.description) return -1
                 return 1
             }))
@@ -108,6 +124,15 @@ export default function ListExpenses(props) {
                             <option>Data do Gasto</option>
                             <option>Tipo de Recorrencia</option>
                         </FormControl>
+                    </FormGroup>
+                </Col>
+                <Col lg={6} sm={8} xs={12}>
+                    <FormGroup>
+                        <ControlLabel>Pesquisar por gastos</ControlLabel>
+                        <FormControl
+                            placeholder="Título, Categoria ou Descrição" componentClass="input"
+                            value={search} onChange={val => setSearch(val.target.value)}
+                        />
                     </FormGroup>
                 </Col>
             </Row>
