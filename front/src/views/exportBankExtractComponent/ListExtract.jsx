@@ -87,7 +87,7 @@ export default class ListExtract extends React.Component {
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.props.onHide}>Fechar</Button>
-            <Button onClick={this.handleSubmit}  bsStyle="primary">Exportar</Button>
+            <Button onClick={this.handleSubmit}  bsStyle="primary">Importar</Button>
           </Modal.Footer>
         </Modal>
     )}
