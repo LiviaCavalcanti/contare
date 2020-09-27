@@ -190,10 +190,7 @@ class DetalharExpenseComponent extends Component {
                             (p.participantStatus === 'ACTIVE' ? <b className="campo-pago">Aceito</b> : p.participantStatus === 'WAITING' ? <b className="campo-aguardando">Aguardando</b> : <b className="campo-pagar"> Rejeitado </b>)
                         }
                       </td>
-
-
                     </tr>
-
                   )
                 })
               }
