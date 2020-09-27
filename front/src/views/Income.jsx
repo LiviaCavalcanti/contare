@@ -19,7 +19,7 @@ export default function() {
                     </Button>
                     <BankExtractModal/>
                     <span style={{float: "right"}}>
-                        Total ganho: R$ {totalIncome}
+                        Total ganho: {totalIncome.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                     </span>
                 </Row>
                 <br/>

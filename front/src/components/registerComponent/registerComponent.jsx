@@ -87,17 +87,8 @@ class RegisterScreen extends Component {
                        <ControlLabel>Confirme sua senha</ControlLabel>
                         <FormControl className="inputRegister" required={true} type="password" placeholder="Confirme sua senha escolhida" />
                         <FormControl.Feedback type="invalid"/>
-    
-
                     </FormGroup>
-                    <FormGroup controlId="formBasicCheckbox">
 
-                    <div className="terms-div">
-                    <input className="checkbox-input" required type="checkbox">
-                    </input>
-                        Li e aceito os <a className="footer-text-term">termos de uso</a>
-                    </div>
-                    </FormGroup>
                     <Button className="login-bt" bsStyle="success" type="submit" >
                         Cadastrar
                 </Button>
@@ -105,14 +96,8 @@ class RegisterScreen extends Component {
                 <a className="footer-text">Já possui cadastro? <a className="footer-text-click" onClick={() => this.redirect("/login")}>Faça login</a></a>
 
                 </div>
-                
-                
-
-                </div>
-                </div>
-
-
-                
+            </div>
+        </div>        
         )
     }
 }
