@@ -78,8 +78,9 @@ export const updateUser = async (token, newUser, callback) => {
     .then((response) => {
         notifySucess(response.data.message);
     }).catch((error) => {
-        console.log("%o", error);
-        notifyFailure("Nome de usuário indisponível! Os demais campos foram mantidos.");
+        if (error.response) {
+            notifyFailure(error.response.data.message);
+        }        
     })
 }
 

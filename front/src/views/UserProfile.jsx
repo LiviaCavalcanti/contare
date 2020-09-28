@@ -94,17 +94,36 @@ class UserProfile extends Component {
     const token = localStorage.getItem("token-contare");
     let fieldNames = ["name", "lastName", "email", "username", "company", "address", "city", "country", "zip", "password", "bio"] 
     let newFields = {}
+
     fieldNames.forEach(field => {
       newFields[field] = document.getElementById(field).value || ""
     })
 
-    if(newFields["name"] == "" || newFields["email"] == "" || newFields["password"] == "") {
-      notifyFailure("Preencher pelo menos os campos de nome, email e senha com alguma coisa.")
-    } else {
-        const token = localStorage.getItem('token-contare')
-        updateUser(token, newFields, function() {
-          this.updateUserFields();
-      }.bind(this))
+    let newpass = document.getElementById("newpassword").value;
+    let newpass2 = document.getElementById("newpassword2").value;
+
+    let sendOk = true;
+    if (newpass != "") {
+      sendOk = false;
+      if (newpass != newpass2) {
+        notifyFailure("Campos de nova senha não conferem!");
+      } else if (newpass.length < 5) {
+        notifyFailure("Senha precisa ter pelo menos 5 caracteres!");
+      } else {
+        newFields["newpassword"] = newpass;
+        sendOk = true;
+      }
+    }
+
+    if (sendOk) {
+      if(newFields["name"] == "") {
+        notifyFailure("Obrigatório ter pelo menos o primeiro nome preenchido.")
+      } else {
+          const token = localStorage.getItem('token-contare')
+          updateUser(token, newFields, function() {
+            this.updateUserFields();
+        }.bind(this))
+      }
     }
   }
 
@@ -216,13 +235,12 @@ class UserProfile extends Component {
                         }
                       ]}
                     />
-
                     <Row>
-                      <Col md={12}>
+                      <Col md={6}>
                         <FormGroup controlId="formControlsTextarea">
                           <ControlLabel>Sobre mim</ControlLabel>
                           <FormControl
-                            rows="5"
+                            rows="2"
                             componentClass="textarea"
                             bsClass="form-control"
                             placeholder="Sua descrição"
@@ -232,12 +250,12 @@ class UserProfile extends Component {
                         </FormGroup>
                       </Col>
                     </Row>
-                    <Row>
-                      <Col md={8}>
-                        <FormGroup>
-                          <FormInputs ncols={["col-md-8"]}
+                    <Row> {/* Begin of row with passwords. */}
+                    <FormGroup>
+                      <Col md={4}>
+                          <FormInputs ncols={["col-md-12"]}
                             properties={[{
-                              label: "Senha",
+                              label: "Senha Atual",
                               type: "password",
                               bsClass: "form-control",
                               placeholder: "Para alterar dados, digite sua senha.",
@@ -245,8 +263,32 @@ class UserProfile extends Component {
                               id: "password"
                             }]}
                           />
-                        </FormGroup>
                       </Col>
+                      <Col md={4}>
+                        <FormInputs ncols={["col-md-12"]}
+                          properties={[{
+                            label: "Caso queira mudar a senha, preencha a seguir",
+                            type: "password",
+                            bsClass: "form-control",
+                            placeholder: "Nova senha.",
+                            defaultValue: "",
+                            id: "newpassword"
+                          }]}
+                        />
+                        <FormInputs ncols={["col-md-12"]}
+                          properties={[{
+                            label: "Confirme a nova senha",
+                            type: "password",
+                            bsClass: "form-control",
+                            placeholder: "Cópia da nova senha.",
+                            defaultValue: "",
+                            id: "newpassword2"
+                          }]}
+                        />
+                      </Col>
+                      </FormGroup>
+                    </Row> {/* End of row with passwords. */}
+                    <Row className={"row align-items-center"}>
                       <Col md={2}>
                         <Button bsStyle="info" pullRight fill onClick={this.handleUpdateUserProfile}>
                           Atualizar Perfil

@@ -107,10 +107,12 @@ export class UserCard extends Component {
                 ref={fileInput => this.fileInput = fileInput}>
               </input>
               <div>
-                <button onClick={() => this.fileInput.click()}>Mudar foto</button>
-                <button 
+                <button
+                  style={this.photoButtonStyle}
+                  onClick={() => this.fileInput.click()}>Mudar foto</button>
+                <button
+                  style={this.confirmPhotoButtonStyle}
                   onClick={this.fileUploadHandler}
-                  style={{display: "none"}}
                   ref={uploadButton => this.uploadButton = uploadButton}>
                     Confirmar foto</button>
               </div>
@@ -124,10 +126,21 @@ export class UserCard extends Component {
           </div>
           <p className="description text-center">{this.props.description}</p>
         </div>
-        <hr />
-        <div className="text-center">{this.props.socials}</div>
       </div>
     );
+  }
+
+  photoButtonStyle = {
+    color: "white",
+    margin: "10px",
+    backgroundColor: "blue",
+  }
+
+  confirmPhotoButtonStyle = {
+    color: this.photoButtonStyle.color,
+    margin: this.photoButtonStyle.margin,
+    backgroundColor: this.photoButtonStyle.backgroundColor,
+    display: "none"
   }
 }
 

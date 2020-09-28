@@ -17,6 +17,13 @@ function findUser(userId,res){
     })
 }
 
+function l(s, ...args) {
+    if (args)
+        console.log(s, args);
+    else
+        console.log(s);
+}
+
 module.exports = {
     async findUser(userId,res){
         return findUser(userId,res);
@@ -45,15 +52,30 @@ module.exports = {
     },
 
     async update(req, res) {
-        if(req.body.password){
-            const hash = await bcrypt.hash(req.body.password,10)
-            req.body.password = hash
-        }
 
-        var user = await findUser(req.userId,res);
-        if(!user) return res;
+        // Search for user
+        const { email, password } = req.body;
+        var user = await User.findOne( { email } ).select("+password");
+        if(!user) return res.status(404).send({message: "Usuário não encontrado!"});
+
+        // Verify password
+        l(password, user.password)
+        l('user ', user)
+        if(!await bcrypt.compare(password, user.password)) {
+            l('bcrypt false!')
+            return res.status(400).send({message: "Senha incorreta! Digite sua senha atual para alterar os dados!"});
+        }
+    
+        // If there is new password, replace with new one
+        if(req.body.hasOwnProperty("newpassword") && req.body.newpassword.length >= 5){
+            const hash = await bcrypt.hash(req.body.newpassword,10);
+            req.body.password = hash;
+            req.body.newpassword = null;
+        } else {
+            delete req.body.password
+        }
         
-        // Check if username chosen is taken
+        // Check if wants to update username and if it's taken
         let foundUsername = false;
         if (req.body.username && req.body.username != user.username) {
             let foundUser = await User.find({username: req.body.username});
@@ -65,6 +87,7 @@ module.exports = {
         if (foundUsername) req.body.username = user.username;
         req.body.email = user.email; // Guarantee email cannot be changed.
 
+        // Update all the fields
         user = await User.findByIdAndUpdate(req.userId,req.body,{new:true});
         let code = foundUsername ? 403 : 200;
         let message = foundUsername ? "Nome de usuário não disponível!" : "Usuário atualizado com sucesso!";
