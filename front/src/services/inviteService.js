@@ -44,3 +44,15 @@ export const getAllInvitations = async (token, callback) => {
         }
     )
 }
+
+export const deleteInvitation = async(userTo,expenseId, token)=>{
+    return await axios.delete(`${API_URL}/contare/user/invitations/${userTo}/${expenseId}`,{headers: {Authorization : "Bearer " + token}})
+    .then((response)=>{
+        notifySucess("Convite deletado com sucesso!")
+        return response;
+    },
+    (error)=>{
+        notifyFailure(error.response.data.error)
+        return false;
+    })
+}

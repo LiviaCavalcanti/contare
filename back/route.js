@@ -35,6 +35,7 @@ router.delete("/user/incomes/:incomeId", incomeController.delete);
 router.get("/user/invitations",UserController.indexInvitations) // Listar convites do cara atual
 router.put("/user/invitations",InvitationController.accept) // Aceitar um convite
 router.post("/user/invitations",InvitationController.refuse) // Recusar um convite
+router.delete("/user/invitations/:userTo/:exp", InvitationController.delete)
 
 // AMIGOS
 router.get("/user/friends", UserController.getFriends);

@@ -116,13 +116,14 @@ export default function ListExpenses(props) {
             </Row>
             {Expenses.map((expense, i) =>
                 <Col lg={4} sm={6} key={expense._id}>
-                    <StatsCard bigIcon={<i className="pe-7s-wallet text-danger" />}
+                    <StatsCard 
+                        bigIcon={expense.participants.length > 1?<i className="pe-7s-users text-success"/>:<i className="pe-7s-wallet text-danger"/>}
                         statsText={expense.title}
                         statsValue={"R$ " + expense.participants.find(p=> p._id === loggedUser._id).payValue}
-                        statsIcon={<i className="fa fa-edit clickable" onClick={() => showModal(i)} />}
-                        statsIconText={<span hidden={expense.owner !== loggedUser._id} className="clickable" onClick={() => showModal(i)}>Editar gasto</span>}
+                        statsIcon={<i hidden={expense.owner !== loggedUser._id} className="fa fa-edit clickable" onClick={() => showModal(i)} />}
+                        statsIconText={expense.owner !== loggedUser._id?<span  className="clickable" onClick={() => showModal(i)}>Visualizar gasto</span>:<span  className="clickable" onClick={() => showModal(i)}>Editar gasto</span>}
                     />
-                    <ExpenseModal expense={expense} i={i} ExpenseModals={ExpenseModals} setExpenseModals={setExpenseModals} setUpdate={props.setUpdate} />
+                    <ExpenseModal owner={expense.owner === loggedUser._id} expense={expense} i={i} ExpenseModals={ExpenseModals} setExpenseModals={setExpenseModals} setUpdate={props.setUpdate} />
                 </Col>
                 )}
         </Grid>

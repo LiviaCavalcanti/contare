@@ -91,8 +91,12 @@ module.exports = {
 
     async update(req, res) {
         var expense = await findExpenseById(req.params.expID,res);
+        const user = await findUser(req.userId,res);
         if(!expense) return res; 
-        else expense = await Expense.findByIdAndUpdate(expense.id, req.body, { new: true });
+        else {
+            expense = await Expense.findByIdAndUpdate(expense.id, req.body, { new: true });
+            if(req.body.listEmail.length > 1) await InvitationController.invite(req,res,user,expense)
+        }
         testAndEmitExpenseUpdate(expense)
         return res.status(200).send(expense);
     },

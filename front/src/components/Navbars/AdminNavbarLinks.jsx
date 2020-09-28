@@ -17,8 +17,7 @@
 */
 import React, { Component } from "react";
 import {withRouter} from 'react-router';
-import { NavItem, Nav, NavDropdown, MenuItem } from "react-bootstrap";
-import {Img} from "react";
+import { NavItem, Nav} from "react-bootstrap";
 import {getUser} from '../../services/userService';
 import Invitation from '../Invitation/Invitation'
 

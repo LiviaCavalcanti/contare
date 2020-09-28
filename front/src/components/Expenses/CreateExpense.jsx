@@ -132,6 +132,7 @@ export default function CreateExpense(props) {
 
         setListEmail(temp);
     }
+    
     useEffect(()=>{
         getThisFriends();
     },[])
