@@ -1,5 +1,5 @@
 import {StatsCard} from 'components/StatsCard/StatsCard.jsx'
-import {Grid, Col, FormGroup, FormControl, ControlLabel, Row} from 'react-bootstrap'
+import {Grid, Col, FormGroup, FormControl, ControlLabel, Row, Pager} from 'react-bootstrap'
 import React, {useState, useEffect} from 'react'
 import {getExpenses} from '../../services/expenseService'
 import {daysDiff, weeksDiff, monthsDiff, yearsDiff} from '../../utils/date'
@@ -19,6 +19,11 @@ export default function ListExpenses(props) {
     const [initializing, setInitializing] = useState(true)
     const [loggedUser, setLoggedUser] = useState({})
 
+    const [pageIndex, setPageIndex] = useState(0)
+    const [pageExpenses, setpageExpenses] = useState([])
+
+    const elemsPerPage = 12
+
     useEffect(() => {
         if (initializing) {
             socket = initializeConnection()
@@ -37,6 +42,9 @@ export default function ListExpenses(props) {
                 setLoggedUser(user)
                 getExpenses(token).then(resp => {
                     setCachedExpenses(resp)
+
+                    if (elemsPerPage * pageIndex >= resp.length && pageIndex > 0)
+                        setPageIndex(pageIndex - 1)
                     
                     setExpenseModals(resp.map(expense => {
                         let dueDate = new Date(expense.dueDate)
@@ -61,6 +69,26 @@ export default function ListExpenses(props) {
     useEffect(() => {
         sortExpenses()
     }, [cachedExpenses, sorting])
+
+    useEffect(() => {
+        setpageExpenses(Expenses.slice(elemsPerPage * pageIndex, elemsPerPage * pageIndex + elemsPerPage))
+    }, [Expenses])
+
+    function previous() {
+        setPageIndex(val => {
+            if (val > 0) val -= 1
+            setpageExpenses(Expenses.slice(elemsPerPage * val, elemsPerPage * val + elemsPerPage))
+            return val
+        })
+    }
+
+    function next() {
+        setPageIndex(val => {
+            if (elemsPerPage * (val + 1) < Expenses.length) val += 1
+            setpageExpenses(Expenses.slice(elemsPerPage * val, elemsPerPage * val + elemsPerPage))
+            return val
+        })
+    }
 
     function sortExpenses() {
         if (cachedExpenses) {
@@ -98,6 +126,7 @@ export default function ListExpenses(props) {
     }
 
     return (
+        <>
         <Grid fluid>
             <Row>
                 <Col lg={3} sm={4} xs={6}>
@@ -114,7 +143,7 @@ export default function ListExpenses(props) {
                     </FormGroup>
                 </Col>
             </Row>
-            {Expenses.map((expense, i) =>
+            {pageExpenses.map((expense, i) =>
                 <Col lg={4} sm={6} key={expense._id}>
                     <StatsCard 
                         bigIcon={expense.participants.length > 1?<i className="pe-7s-users text-success"/>:<i className="pe-7s-wallet text-danger"/>}
@@ -127,5 +156,14 @@ export default function ListExpenses(props) {
                 </Col>
                 )}
         </Grid>
+        <Pager>
+            <Pager.Item className={pageIndex <= 0 ? 'hidden' : ''} previous onClick={previous}>
+                &larr; Anterior
+            </Pager.Item>
+            <Pager.Item className={elemsPerPage * (pageIndex + 1) >= Expenses.length ? 'hidden' : ''} next onClick={next}>
+                Próximo &rarr;
+            </Pager.Item>
+        </Pager>
+    </>
     )
 }
