@@ -1,10 +1,13 @@
 import React, {useEffect, useState} from 'react'
 import {Modal, Button, Form, FormGroup, FormControl, ControlLabel} from 'react-bootstrap'
 import {addExpenses} from '../../services/expenseService'
+
 import { getUser,getFriends } from '../../services/userService'
 import {Typeahead} from 'react-bootstrap-typeahead';
 import '../../../node_modules/react-bootstrap-typeahead/css/Typeahead.css';
 import './styles.css'
+import {makeDate} from '../../utils/date'
+
 
 export default function CreateExpense(props) {
     const [title, setTitle] = useState('')
@@ -96,7 +99,7 @@ export default function CreateExpense(props) {
             let expenseBody = {
                 title: title,
                 description: description,
-                dueDate: date,
+                dueDate: makeDate(date),
                 owner: user.id,
                 totalValue: value,
                 category: category,

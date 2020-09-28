@@ -14,14 +14,14 @@ export const getExpenses = async (token, callback) => {
      )
 }
 
-export const addExpenses = async (token, body) => {
+export const addExpenses = async (token, body, showMessage = true) => {
     return await axios.post( `${API_URL}/contare/user/expenses`, body ,{headers: {"x-access-token" : token}})
      .then((response) => {
-            notifySucess("Despesa adicionada com sucesso!")
+            if (showMessage) notifySucess("Despesa adicionada com sucesso!")
             return response;
        },
        (error) => {
-           notifyFailure("Você já adicionou uma despesa com esse nome! Tente outro")
+           if (showMessage) notifyFailure("Você já adicionou uma despesa com esse nome! Tente outro")
            return false;
         }
      )
