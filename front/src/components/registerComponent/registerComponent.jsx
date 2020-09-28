@@ -62,7 +62,7 @@ class RegisterScreen extends Component {
              <HomeNavbar/>
             <div className="board"></div>
                 <div className="login-div" >
-             <h1 className="login-title">REGISTRE-SE</h1>  
+             <h1 className="login-title">Faça sua conta</h1>  
              <div className="form-div">
                 <form onSubmit={e => this.handleSubmit(e)}>
                     <FormGroup controlId="formBasicName">
@@ -91,7 +91,7 @@ class RegisterScreen extends Component {
                     </FormGroup>
 
                     <Button className="login-bt" bsStyle="success" type="submit" >
-                        Cadastrar
+                        Registre-se
                     </Button>
                     <GoogleLoginButton buttonText="Registre-se com o Google"/>
                 </form>
