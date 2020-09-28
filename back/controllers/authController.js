@@ -2,7 +2,9 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const authConfig = require("../config/auth");
+const {OAuth2Client} = require("google-auth-library")
 
+const client = new OAuth2Client(authConfig.google_api_key)
 
 function generateToken(params = {}){
     return jwt.sign(params,authConfig.secret,{
@@ -41,5 +43,31 @@ module.exports = {
         user.password = undefined;
            
         return res.send({ user , token: generateToken({id: user.id}),})
+     },
+
+     async googleAuthenticate(req, res) {
+        const { googleToken } = req.body;
+        client.verifyIdToken({idToken: googleToken, audience: authConfig.google_api_key}).then(async response => {
+            const {email_verified, name, email, picture} = response.payload
+            if (email_verified) {
+                const user = await User.findOne( { email } )
+                
+                if(!user) {
+                    const password = email+authConfig.secret
+                    const image = {url: picture}
+                    const createdUser = await User.create({email, password, name, image});
+                    createdUser.password = undefined
+                    return res.send({ createdUser , token: generateToken({id: createdUser.id}),  sucess: "Cadastrado com sucesso!"});
+                } else {
+                    user.password = undefined;
+                    return res.send({ user , token: generateToken({id: user.id}),})
+                }
+
+            } else {
+                return res.status(400).send({ error: "É necessário que sua conta google possua o e-mail verificado!" });
+            }
+        }).catch(error => {
+            return res.status(400).send({ error: "Houve um problema ao validar o token do Google" });
+        })
      }
 }

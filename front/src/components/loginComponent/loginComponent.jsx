@@ -5,13 +5,14 @@ import { login } from '../../services/userService'
 import 'react-toastify/dist/ReactToastify.min.css';
 import { withRouter } from 'react-router';
 import HomeNavbar from '../HomeNavbar/HomeNavbar'
+import GoogleLoginButton from '../GoogleLoginComponent/index'
 
 class LoginScreen extends Component {
     constructor(props) {
         super(props)
         this.handleSubmit = this.handleSubmit.bind(this)
         this.state = {
-            validated: false
+            validated: false,
         }
     }
     redirect = (path) => {
@@ -59,7 +60,9 @@ class LoginScreen extends Component {
 
                     <Button className="login-bt" variant="success" type="submit">
                         Entrar
-                </Button>
+                    </Button>
+
+                    <GoogleLoginButton buttonText="Entre com o Google"/>
                 </form>
                 <a className="footer-text">Não possui cadastro? <a className="footer-text-click" onClick={() => this.redirect("/register")}>Registre-se</a></a>
                 </div>

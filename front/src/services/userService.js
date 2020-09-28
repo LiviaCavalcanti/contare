@@ -28,6 +28,17 @@ export const login = async (email, password) => {
         })
 }
 
+export const loginWithGoogle = async (googleToken) => {
+    await axios.post(`${API_URL}/contare/googleAuthenticate`, {googleToken})
+    .then(function (response) {
+        localStorage.setItem('token-contare', response.data.token);
+        window.location.href = "/dashboard"
+    })
+    .catch(function (error) {
+        notifyFailure(error.error)
+    })
+}
+
 export const redirectLoggedUser = async (token) => {
     axios.get( `${API_URL}/contare/user`, {headers: {Authorization : "Bearer " + token}})
     .then((response) => {
