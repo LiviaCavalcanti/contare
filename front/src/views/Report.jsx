@@ -63,14 +63,14 @@ class Friends extends Component {
     const incomes = unfold(this.state.userIncomes)
     console.log (expenses)
     let data = []
-   expenses.map(expense => {
-      data.push([expense.title, expense.dueDateAdjusted, "Gasto", "-" + expense.totalValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })])
+    expenses.map(expense => {
+      data.push([expense.seq ? expense.title + " #" + expense.seq : expense.title, expense.dueDateAdjusted, "Gasto", "-" + expense.totalValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })])
    })
 
-   incomes.map(income => {
-    data.push([income.title,  income.receivedOnAdjusted, "Renda", "+" + income.value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })])
-   })
-
+    incomes.map(income => {
+      data.push([income.seq ? income.title + " #" + income.seq : income.title,  income.receivedOnAdjusted, "Renda", "+" + income.value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })])
+    })
+    
     data = this.formatData(data)
 
     return data.reverse()
