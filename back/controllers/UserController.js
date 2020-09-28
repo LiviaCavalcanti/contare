@@ -17,33 +17,10 @@ function findUser(userId,res){
     })
 }
 
-function l(s, ...args) {
-    if (args)
-        console.log(s, args);
-    else
-        console.log(s);
-}
-
 module.exports = {
     async findUser(userId,res){
         return findUser(userId,res);
     },
-
-    // async findUserById(userId) {
-    //     return User.findById(userId, {password: 0}, function (err, user) {
-    //         if (err) {
-    //             let msg = "Houve um problema ao encontrar o usuario";
-    //             console.error(msg);
-    //             return msg;
-    //         }
-    //         if (!user) {
-    //             let msg = "Nenhum usuário encontrado.";
-    //             console.error(msg);
-    //             return msg;
-    //         }
-    //         return user;
-    //     });
-    // },
 
     async show(req, res) {
         const user = await findUser(req.userId,res);
@@ -59,8 +36,6 @@ module.exports = {
         if(!user) return res.status(404).send({message: "Usuário não encontrado!"});
 
         // Verify password
-        l(password, user.password)
-        l('user ', user)
         if(!await bcrypt.compare(password, user.password)) {
             l('bcrypt false!')
             return res.status(400).send({message: "Senha incorreta! Digite sua senha atual para alterar os dados!"});
