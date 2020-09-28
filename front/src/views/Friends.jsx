@@ -126,12 +126,12 @@ function cancelFriendRequest(friendEmail) {
           <p style={{visibility: sentFriendRequests.length > 0 ? "hidden" : "visible"}}>Não há solicitações enviadas!</p>
           {sentFriendRequests.map((friend, i) =>
               <Col lg={4} sm={6} key={friend._id}>
-                  <StatsCard bigIcon={<i className="pe-7s-users text-info" />}
+                  <StatsCard bigIcon={(friend.image == null || friend.image.url == "NONE") ? <i className="pe-7s-users text-info" /> : <img style={{height:"60px", width:"60px", borderRadius:"25%", margin:"0px"}} src={`${friend.image.url}`} />}
                       statsText={friend.name}
                       statsValue={friend.email}
                       statsIconText={
                         <div>
-                          <span className="clickable" onClick={() => cancelFriendRequest(friend.email)}>[Cancelar]</span>
+                          <button type="button" class="btn btn-danger btn-sm" onClick={() => cancelFriendRequest(friend.email)}>Cancelar</button>
                         </div>
                       }
                   />
@@ -143,14 +143,14 @@ function cancelFriendRequest(friendEmail) {
           <p style={{visibility: receivedFriendRequests.length > 0 ? "hidden" : "visible"}}>Não há solicitações recebidas!</p>
           {receivedFriendRequests.map((friend, i) =>
               <Col lg={4} sm={6} key={friend._id}>
-                  <StatsCard bigIcon={<i className="pe-7s-users text-info" />}
+                  <StatsCard bigIcon={(friend.image == null || friend.image.url == "NONE") ? <i className="pe-7s-users text-info" /> : <img style={{height:"60px", width:"60px", borderRadius:"25%", margin:"0px"}} src={`${friend.image.url}`} />}
                       statsText={friend.name}
                       statsValue={friend.email}
                       statsIconText={
                         <div>
-                          <span className="clickable" onClick={() => acceptFriendRequest(friend.email)}>[Aceitar]</span>
+                          <button className="btn btn-primary btn-sm" onClick={() => acceptFriendRequest(friend.email)}>Aceitar</button>
                           <span style={{marginLeft: "4px"}}></span>
-                          <span className="clickable" onClick={() => refuseFriendRequest(friend.email)}>[Recusar]</span>
+                          <button className="btn btn-danger btn-sm" onClick={() => refuseFriendRequest(friend.email)}>Recusar</button>
                         </div>
                       }
                   />
@@ -161,10 +161,10 @@ function cancelFriendRequest(friendEmail) {
         <h3>Lista de Amigos</h3>
         {friends.map((friend, i) =>
               <Col lg={4} sm={6} key={friend._id}>
-                  <StatsCard bigIcon={<i className="pe-7s-users text-info" />}
+                  <StatsCard bigIcon={(friend.image == null || friend.image.url == "NONE") ? <i className="pe-7s-users text-info" /> : <img style={{height:"60px", width:"60px", borderRadius:"25%", margin:"0px"}} src={`${friend.image.url}`} />}
                       statsText={friend.name}
                       statsValue={friend.email}
-                      statsIconText={<span className="clickable" onClick={() => sendDeleteFriendRequest(friend.email)}>Deletar</span>}
+                      statsIconText={<button className="btn btn-danger  btn-sm" onClick={() => sendDeleteFriendRequest(friend.email)}>Deletar</button>}
                   />
               </Col>
             )}

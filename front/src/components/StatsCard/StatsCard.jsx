@@ -37,7 +37,7 @@ export class StatsCard extends Component {
         <div className="content">
           <Row>
             <Col xs={2}>
-              <div className="icon-big text-center icon-warning">
+              <div className="icon-big text-center">
                 {this.props.bigIcon}
               </div>
             </Col>

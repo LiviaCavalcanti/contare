@@ -79,7 +79,6 @@ class UserProfile extends Component {
 
     // UserCard fields (including picture)
     this.setState(function(oldState) {
-      console.log(user.image)
       let img = (user.image == null || user.image.url == "NONE") ? avatar : user.image.url;
       return {
         bgImage: defaultBgImg,
@@ -95,17 +94,38 @@ class UserProfile extends Component {
     const token = localStorage.getItem("token-contare");
     let fieldNames = ["name", "lastName", "email", "username", "company", "address", "city", "country", "zip", "password", "bio"] 
     let newFields = {}
+
     fieldNames.forEach(field => {
       newFields[field] = document.getElementById(field).value || ""
     })
 
-    if(newFields["name"] == "" || newFields["email"] == "" || newFields["password"] == "") {
-      notifyFailure("Preencher pelo menos os campos de nome, email e senha com alguma coisa.")
-    } else {
-        const token = localStorage.getItem('token-contare')
-        updateUser(token, newFields, function(response) {
-          this.updateUserFields(newFields);
-          notifySucess("Perfil alterado com sucesso!")
+    let newpass = document.getElementById("newpassword").value;
+    let newpass2 = document.getElementById("newpassword2").value;
+
+    let sendOk = true;
+    if (newFields['password'].length < 5) {
+      // First, check for current password validity
+      sendOk = false;
+      notifyFailure("Senha inválida!");
+    } else if(newFields["name"] == "") {
+      notifyFailure("Obrigatório ter pelo menos o primeiro nome preenchido.")
+    } else if (newpass != "" || newpass2 != "") { // Check if user wants to change password
+        sendOk = false; // Set ok to false until all validations are met.
+        if (newpass != newpass2) {
+          notifyFailure("Campos de nova senha não conferem!");
+        } else if (newpass.length < 5) {
+          notifyFailure("Senha precisa ter pelo menos 5 caracteres!");
+        } else {
+          newFields["newpassword"] = newpass;
+          // Can send new password
+          sendOk = true;
+        }
+    }
+
+    if (sendOk) {
+      const token = localStorage.getItem('token-contare')
+        updateUser(token, newFields, function() {
+          this.updateUserFields();
       }.bind(this))
     }
   }
@@ -146,14 +166,18 @@ class UserProfile extends Component {
                           type: "text",
                           bsClass: "form-control",
                           placeholder: "Usuário",
-                          id: "username"
+                          id: "username",
+                          autocomplete:"off"
                         },
                         {
                           label: "Endereço de Email",
                           type: "email",
                           bsClass: "form-control",
                           placeholder: "Email",
-                          id: "email"
+                          id: "email",
+                          style: {pointerEvents: "none"},
+                          disabled: true,
+                          autocomplete:"off"
                         }
                       ]}
                     />
@@ -214,13 +238,12 @@ class UserProfile extends Component {
                         }
                       ]}
                     />
-
                     <Row>
-                      <Col md={12}>
+                      <Col md={6}>
                         <FormGroup controlId="formControlsTextarea">
                           <ControlLabel>Sobre mim</ControlLabel>
                           <FormControl
-                            rows="5"
+                            rows="2"
                             componentClass="textarea"
                             bsClass="form-control"
                             placeholder="Sua descrição"
@@ -230,12 +253,12 @@ class UserProfile extends Component {
                         </FormGroup>
                       </Col>
                     </Row>
-                    <Row>
-                      <Col md={8}>
-                        <FormGroup>
-                          <FormInputs ncols={["col-md-8"]}
+                    <Row> {/* Begin of row with passwords. */}
+                    <FormGroup>
+                      <Col md={4}>
+                          <FormInputs ncols={["col-md-12"]}
                             properties={[{
-                              label: "Senha",
+                              label: "Senha Atual (Campo obrigatório)",
                               type: "password",
                               bsClass: "form-control",
                               placeholder: "Para alterar dados, digite sua senha.",
@@ -243,8 +266,32 @@ class UserProfile extends Component {
                               id: "password"
                             }]}
                           />
-                        </FormGroup>
                       </Col>
+                      <Col md={4}>
+                        <FormInputs ncols={["col-md-12"]}
+                          properties={[{
+                            label: "Caso queira mudar a senha, preencha a seguir",
+                            type: "password",
+                            bsClass: "form-control",
+                            placeholder: "Nova senha.",
+                            defaultValue: "",
+                            id: "newpassword"
+                          }]}
+                        />
+                        <FormInputs ncols={["col-md-12"]}
+                          properties={[{
+                            label: "Confirme a nova senha",
+                            type: "password",
+                            bsClass: "form-control",
+                            placeholder: "Cópia da nova senha.",
+                            defaultValue: "",
+                            id: "newpassword2"
+                          }]}
+                        />
+                      </Col>
+                      </FormGroup>
+                    </Row> {/* End of row with passwords. */}
+                    <Row className={"row align-items-center"}>
                       <Col md={2}>
                         <Button bsStyle="info" pullRight fill onClick={this.handleUpdateUserProfile}>
                           Atualizar Perfil
