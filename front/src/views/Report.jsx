@@ -10,6 +10,9 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import pdfImg from '../images/pdf.png'
 import './Report.css'
+import 'jspdf-autotable'
+import { unfold } from '../utils/periodicity'
+
 
 
 class Friends extends Component {
@@ -21,6 +24,7 @@ class Friends extends Component {
     this.createDataTable = this.createDataTable.bind(this)
     this.createTitleTable = this.createTitleTable.bind(this)
     this.formatData = this.formatData.bind(this)
+    this.printDocument = this.printDocument.bind(this)
     this.state = {
       userExpenses:[],
       userIncomes:[]
@@ -55,22 +59,17 @@ class Friends extends Component {
 
   createDataTable = () => {
 
-    const expenses = this.state.userExpenses
-    const incomes = this.state.userIncomes
+    const expenses = unfold(this.state.userExpenses)
+    const incomes = unfold(this.state.userIncomes)
+    console.log (expenses)
     let data = []
    expenses.map(expense => {
-      data.push([expense.title, expense.dueDate, "Gasto", "-" + expense.totalValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })])
+      data.push([expense.title, expense.dueDateAdjusted, "Gasto", "-" + expense.totalValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })])
    })
 
    incomes.map(income => {
-    data.push([income.title,  income.receivedOn, "Renda", "+" + income.value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })])
+    data.push([income.title,  income.receivedOnAdjusted, "Renda", "+" + income.value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })])
    })
-
-    data.sort(function(a, b) {
-      a = new Date(a[1]);
-      b = new Date(b[1]);
-      return a>b ? -1 : a<b ? 1 : 0;
-  })
 
     data = this.formatData(data)
 
@@ -89,15 +88,12 @@ class Friends extends Component {
   }
 
   printDocument() {
-    const input = document.getElementById('divtoprint');
-    console.log("aaa")
-    html2canvas(input)
-      .then((canvas) => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF();
-        pdf.addImage(imgData, 'JPEG',0, 0, 220, 160);
-        pdf.save("extrato.pdf");
-      })
+    const table = document.getElementById('report-table');
+    let doc = new jsPDF('1', 'pt', 'letter', true)
+    doc.text("Relatório detalhado Contare", doc.internal.pageSize.getWidth()/2, 30, { align: "center" })
+    doc.setFontSize(10)
+    doc.autoTable({ html: '#report-table', theme: 'grid' })
+    doc.save('extrato.pdf')
   }
 
   render() {
@@ -113,7 +109,7 @@ class Friends extends Component {
                 ctTableFullWidth
                 ctTableResponsive
                 content={
-                  <Table striped hover>
+                  <Table striped hover id="report-table">
                     <thead>
                       <tr>
                         {this.createTitleTable().map((prop, key) => {
@@ -132,7 +128,6 @@ class Friends extends Component {
                                 return <td style={{color:"red"}} key={key}>{prop}</td>;
                               } else {
                                 return <td  key={key}>{prop}</td>;
-
                               }
                             })}
                           </tr>
