@@ -4,11 +4,12 @@ import { Table} from 'react-bootstrap';
 import "./ListExtract.css"
 import {addExpenses} from "../../services/expenseService"
 import {notifySucess} from "../../services/notifyService"
+import {createIncomeWithoutCallback} from "../../services/income"
 
 export default class ListExtract extends React.Component {
 
-    constructor(props) {
-        super(props);
+    constructor(props, context) {
+        super(props, context);
         this.handleSubmit=this.handleSubmit.bind(this)
         this.handleCheckbox=this.handleCheckbox.bind(this)
         this.state = {
@@ -18,21 +19,44 @@ export default class ListExtract extends React.Component {
     }
 
     async handleSubmit(){
-      var createdExpenses = 0
-      for (var obj in this.state.selectedData) {
-        var retorno = await addExpenses(obj, function(){})
-        if (retorno) {
-          createdExpenses += 1
+      let createdIncomes = 0
+      let createdExpenses = 0
+      
+      this.state.selectedData.forEach(async function(obj, index){
+        
+        const token = localStorage.getItem("token-contare")
+        let object2add = {title: obj.title, 
+          description: obj.description, 
+          periodicity: "NONE"}
+        if (obj.type === "Receita"){
+          object2add.receivedOn = obj.date
+          object2add.value= obj.value
+          let income = await createIncomeWithoutCallback(token, object2add)
+          if (income.status == 200) createdIncomes += 1
+        } else {
+            object2add.category= obj.type
+            object2add.description= obj.description
+            object2add.dueDate = obj.date
+            object2add.totalValue= obj.value
+            let expense = await addExpenses(token, object2add)
+
+          if (expense.status == 200) {
+            createdExpenses += 1
+          }
         }
-      }
-      if (createdExpenses > 0) {
-        notifySucess("Foram criadas " + createdExpenses + " despesas")
-      }
-      else {
-        notifySucess("Nenhuma despesa foi criada")
-      }
-      this.props.onHide()
-    }
+
+        if (index == this.state.selectedData.length - 1) {
+          if (createdExpenses > 0 || createdIncomes > 0) {
+            notifySucess(`Foram criadas ${createdExpenses} despesas e ${createdIncomes} rendas.`)
+          }
+          else {
+            notifySucess("Nenhum objeto foi criado")
+          }
+          this.props.onHide()
+        }
+    }.bind(this))
+
+  }
 
     handleCheckbox(event, obj1) {
       const {value, checked} = event.target
@@ -87,7 +111,7 @@ export default class ListExtract extends React.Component {
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.props.onHide}>Fechar</Button>
-            <Button onClick={this.handleSubmit}  bsStyle="primary">Exportar</Button>
+            <Button onClick={this.handleSubmit}  bsStyle="primary">Importar</Button>
           </Modal.Footer>
         </Modal>
     )}

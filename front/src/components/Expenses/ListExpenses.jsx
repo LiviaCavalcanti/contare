@@ -2,7 +2,7 @@ import {StatsCard} from 'components/StatsCard/StatsCard.jsx'
 import {Grid, Col, FormGroup, FormControl, ControlLabel, Row} from 'react-bootstrap'
 import React, {useState, useEffect} from 'react'
 import {getExpenses} from '../../services/expenseService'
-import {daysDiff, weeksDiff, monthsDiff, yearsDiff} from '../../utils/date'
+import {unfold} from '../../utils/periodicity'
 import ExpenseModal from './ExpenseModal'
 import '../../assets/css/custom.css'
 import { initializeConnection } from 'services/ConnectionService'
@@ -32,26 +32,18 @@ export default function ListExpenses(props) {
     useEffect(() => {
         if (props.update) {
             props.setUpdate(false)
-            let totalExpense = 0
 
             getExpenses(token).then(resp => {
                 setCachedExpenses(resp)
                 
-                setExpenseModals(resp.map(expense => {
-                    let dueDate = new Date(expense.dueDate)
-                    let endDate = new Date(expense.endDate)
-
-                    if (expense.totalValue > 0 && dueDate <= endDate) {
-                        totalExpense += expense.totalValue
-                        if (expense.periodicity === 'DAILY') totalExpense += expense.totalValue * daysDiff(dueDate, endDate)
-                        else if (expense.periodicity === 'WEEKLY') totalExpense += expense.totalValue * weeksDiff(dueDate, endDate)
-                        else if (expense.periodicity === 'MONTHLY') totalExpense += expense.totalValue * monthsDiff(dueDate, endDate)
-                        else if (expense.periodicity === 'ANNUALLY') totalExpense += expense.totalValue * yearsDiff(dueDate, endDate)
-                    }
-
+                setExpenseModals(resp.map(_ => {
                     return false
                 }))
 
+                let totalExpense = 0
+                for (const expense of unfold(resp)) {
+                    totalExpense += expense.totalValue
+                }
                 props.setTotalExpense(totalExpense)
             })
         }

@@ -38,7 +38,7 @@ import {
 } from "variables/Variables.jsx";
 import { initializeConnection } from 'services/ConnectionService'
 import './Dashboard.css'
-import {daysDiff, weeksDiff, monthsDiff, yearsDiff} from '../utils/date'
+import {unfold} from '../utils/periodicity'
 
 class Dashboard extends Component {
 
@@ -113,42 +113,8 @@ class Dashboard extends Component {
     let monthStart = new Date(date.getFullYear(), date.getMonth(), 1)
     let monthEnd = new Date(date.getFullYear(), date.getMonth()+1, 0)
 
-    incomes.map(income => {
-      let receivedDate = new Date(income.receivedOn)
-      let canceledDate = monthEnd
-      if (income.canceledOn) {
-        canceledDate = new Date(income.canceledOn)
-      }
-
-      // startDate and endDate are the interval used in the calculation
-      // basically from wich day in the month start counting
-      // until which day
-      let startDate = monthStart > receivedDate ? monthStart : receivedDate
-      let endDate = monthEnd < canceledDate ? monthEnd : canceledDate
-
-      if (receivedDate > canceledDate) return
-      if (receivedDate > monthEnd || canceledDate < monthStart) return
-
-      if (income.periodicity == 'NONE' &&
-        date.getFullYear() == receivedDate.getFullYear() &&
-        date.getMonth() == receivedDate.getMonth()) {
-          total += income.value
-      } else if (income.periodicity == 'DAILY') {
-          total += income.value * (daysDiff(startDate, endDate) + 1)
-      } else if (income.periodicity == 'WEEKLY') {
-          total += income.value * (weeksDiff(startDate, endDate) + 1)
-      } else if (income.periodicity == 'MONTHLY' &&
-        startDate.getDate() <= receivedDate.getDate() &&
-        (endDate.getDate() >= receivedDate.getDate() ||
-        endDate.getDate() == monthEnd.getDate())) {
-          total += income.value
-      } else if (income.periodicity == 'ANNUALLY' &&
-        date.getMonth() == receivedDate.getMonth() &&
-        startDate.getDate() <= receivedDate.getDate() &&
-        (endDate.getDate() >= receivedDate.getDate() ||
-        endDate.getDate() == monthEnd.getDate())) {
-          total += income.value
-      }
+    unfold(incomes, monthStart, monthEnd).map(income => {
+      total += income.value
     })
 
     return total
@@ -159,42 +125,8 @@ class Dashboard extends Component {
     let monthStart = new Date(date.getFullYear(), date.getMonth(), 1)
     let monthEnd = new Date(date.getFullYear(), date.getMonth()+1, 0)
 
-    expenses.map(expense => {
-      let dueDate = new Date(expense.dueDate)
-      let canceledDate = monthEnd
-      if (expense.endDate) {
-        canceledDate = new Date(expense.endDate)
-      }
-
-      // startDate and endDate are the interval used in the calculation
-      // basically from wich day in the month start counting
-      // until which day
-      let startDate = monthStart > dueDate ? monthStart : dueDate
-      let endDate = monthEnd < canceledDate ? monthEnd : canceledDate
-
-      if (dueDate > canceledDate) return
-      if (dueDate > monthEnd || canceledDate < monthStart) return
-
-      if (expense.periodicity == 'NONE' &&
-        date.getFullYear() == dueDate.getFullYear() &&
-        date.getMonth() == dueDate.getMonth()) {
-          total += expense.totalValue
-      } else if (expense.periodicity == 'DAILY') {
-          total += expense.totalValue * (daysDiff(startDate, endDate) + 1)
-      } else if (expense.periodicity == 'WEEKLY') {
-          total += expense.totalValue * (weeksDiff(startDate, endDate) + 1)
-      } else if (expense.periodicity == 'MONTHLY' &&
-        startDate.getDate() <= dueDate.getDate() &&
-        (endDate.getDate() >= dueDate.getDate() ||
-        endDate.getDate() == monthEnd.getDate())) {
-          total += expense.totalValue
-      } else if (expense.periodicity == 'ANNUALLY' &&
-        date.getMonth() == dueDate.getMonth() &&
-        startDate.getDate() <= dueDate.getDate() &&
-        (endDate.getDate() >= dueDate.getDate() ||
-        endDate.getDate() == monthEnd.getDate())) {
-          total += expense.totalValue
-      }
+    unfold(expenses, monthStart, monthEnd).map(expense => {
+      total += expense.totalValue
     })
 
     return total
