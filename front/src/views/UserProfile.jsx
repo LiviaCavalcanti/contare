@@ -103,27 +103,30 @@ class UserProfile extends Component {
     let newpass2 = document.getElementById("newpassword2").value;
 
     let sendOk = true;
-    if (newpass != "") {
+    if (newFields['password'].length < 5) {
+      // First, check for current password validity
       sendOk = false;
-      if (newpass != newpass2) {
-        notifyFailure("Campos de nova senha não conferem!");
-      } else if (newpass.length < 5) {
-        notifyFailure("Senha precisa ter pelo menos 5 caracteres!");
-      } else {
-        newFields["newpassword"] = newpass;
-        sendOk = true;
-      }
+      notifyFailure("Senha inválida!");
+    } else if(newFields["name"] == "") {
+      notifyFailure("Obrigatório ter pelo menos o primeiro nome preenchido.")
+    } else if (newpass != "" || newpass2 != "") { // Check if user wants to change password
+        sendOk = false; // Set ok to false until all validations are met.
+        if (newpass != newpass2) {
+          notifyFailure("Campos de nova senha não conferem!");
+        } else if (newpass.length < 5) {
+          notifyFailure("Senha precisa ter pelo menos 5 caracteres!");
+        } else {
+          newFields["newpassword"] = newpass;
+          // Can send new password
+          sendOk = true;
+        }
     }
 
     if (sendOk) {
-      if(newFields["name"] == "") {
-        notifyFailure("Obrigatório ter pelo menos o primeiro nome preenchido.")
-      } else {
-          const token = localStorage.getItem('token-contare')
-          updateUser(token, newFields, function() {
-            this.updateUserFields();
-        }.bind(this))
-      }
+      const token = localStorage.getItem('token-contare')
+        updateUser(token, newFields, function() {
+          this.updateUserFields();
+      }.bind(this))
     }
   }
 
@@ -255,7 +258,7 @@ class UserProfile extends Component {
                       <Col md={4}>
                           <FormInputs ncols={["col-md-12"]}
                             properties={[{
-                              label: "Senha Atual",
+                              label: "Senha Atual (Campo obrigatório)",
                               type: "password",
                               bsClass: "form-control",
                               placeholder: "Para alterar dados, digite sua senha.",

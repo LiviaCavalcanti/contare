@@ -36,10 +36,15 @@ module.exports = {
         if(!user) return res.status(404).send({message: "Usuário não encontrado!"});
 
         // Verify password
-        if(!await bcrypt.compare(password, user.password)) {
-            l('bcrypt false!')
-            return res.status(400).send({message: "Senha incorreta! Digite sua senha atual para alterar os dados!"});
+        let passwordCheck = false;
+        try {
+            passwordCheck = await bcrypt.compare(password, user.password);
+        } catch (error) {
+            passwordCheck = false;
         }
+
+        if (!passwordCheck)
+            return res.status(400).send({message: "Senha incorreta! Digite sua senha atual para alterar os dados!"});
     
         // If there is new password, replace with new one
         if(req.body.hasOwnProperty("newpassword") && req.body.newpassword.length >= 5){
