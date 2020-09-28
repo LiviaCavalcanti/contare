@@ -11,3 +11,7 @@
 .admin-flex-container-content {
     flex: 1 1 auto;
 }
+
+input.form-control::placeholder, textarea.form-control::placeholder {
+    color: #aaa;
+}
