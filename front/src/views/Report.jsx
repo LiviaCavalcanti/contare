@@ -10,6 +10,7 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import pdfImg from '../images/pdf.png'
 import './Report.css'
+import { getUser } from "services/userService";
 
 
 class Friends extends Component {
@@ -21,9 +22,11 @@ class Friends extends Component {
     this.createDataTable = this.createDataTable.bind(this)
     this.createTitleTable = this.createTitleTable.bind(this)
     this.formatData = this.formatData.bind(this)
+    this.getUserFromToken = this.getUserFromToken.bind(this)
     this.state = {
       userExpenses:[],
-      userIncomes:[]
+      userIncomes:[],
+      user:{}
     }
   }
 
@@ -53,13 +56,18 @@ class Friends extends Component {
     return data
   }
 
-  createDataTable = () => {
+  getUserFromToken= async () =>{
+    const user = await getUser(localStorage.getItem("token-contare"))
+    this.setState({user})
+  }
 
+  createDataTable = () => {
+    this.getUserFromToken();
     const expenses = this.state.userExpenses
     const incomes = this.state.userIncomes
     let data = []
    expenses.map(expense => {
-      data.push([expense.title, expense.dueDate, "Gasto", "-" + expense.totalValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })])
+      data.push([expense.title, expense.dueDate, "Gasto", "-" + expense.participants.find(p=>p._id===this.state.user._id).payValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })])
    })
 
    incomes.map(income => {
