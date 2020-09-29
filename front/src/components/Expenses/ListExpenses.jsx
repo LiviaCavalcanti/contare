@@ -52,7 +52,6 @@ export default function ListExpenses(props) {
 
                 let totalExpense = 0
                 for (const expense of unfold(resp)) {
-                    console.log(user)
                     totalExpense += expense.participants.find(p=>p._id === user._id).payValue
                 }
                 props.setTotalExpense(totalExpense)

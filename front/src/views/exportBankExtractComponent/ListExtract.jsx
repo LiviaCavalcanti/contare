@@ -5,6 +5,7 @@ import "./ListExtract.css"
 import {addExpenses} from "../../services/expenseService"
 import {notifySucess} from "../../services/notifyService"
 import {createIncomeWithoutCallback} from "../../services/income"
+import { getUser } from 'services/userService';
 
 export default class ListExtract extends React.Component {
 
@@ -21,10 +22,10 @@ export default class ListExtract extends React.Component {
     async handleSubmit(){
       let createdIncomes = 0
       let createdExpenses = 0
-      
       this.state.selectedData.forEach(async function(obj, index){
         
         const token = localStorage.getItem("token-contare")
+        const user = getUser(token)
         let object2add = {title: obj.title, 
           description: obj.description, 
           periodicity: "NONE"}
@@ -38,6 +39,7 @@ export default class ListExtract extends React.Component {
             object2add.description= obj.description
             object2add.dueDate = obj.date
             object2add.totalValue= obj.value
+            object2add.payValue = obj.participants.find(p=>p._id === user._id).payValue
             let expense = await addExpenses(token, object2add)
 
           if (expense.status == 200) {
