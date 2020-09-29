@@ -66,22 +66,23 @@ export default function ListIncomes(props) {
     useEffect(() => {
         setIncomes(sortedIncomes.filter(income => {
             let norm = str => str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-            if (norm(income.title).includes(norm(search))) return true
-            if (norm(income.description).includes(norm(search))) return true
+            let inFilter = false
+            if (norm(income.title).includes(norm(search)) ||
+            norm(income.description).includes(norm(search))){
+                inFilter = true
+            }
+            if (select==='' || income.periodicity===select) {
+                inFilter = true && inFilter
+            } else {
+                inFilter = false && inFilter
+            }
+            return inFilter
         }))
-    }, [search, sortedIncomes])
-
-    useEffect(() => {
-        setIncomes(sortedIncomes.filter(income => {
-            if (select==='') return true
-            else if (income.periodicity===select) return true
-            else return false
-        }))
-    }, [select, sortedIncomes])
+    }, [search, sortedIncomes, select])
 
     useEffect(() => {
         setPageIndex(0)
-    }, [search])
+    }, [search, select])
 
     function sortIncomes() {
         console.log(sorting)
