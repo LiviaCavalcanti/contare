@@ -64,7 +64,7 @@ module.exports = {
 
     emitUserProfileUpdate(userId, user) {
         let userSockets = connectedClients[userId];
-        if (userSockets !== "undefined" && user !== "undefined") {
+        if (userSockets && userSockets !== "undefined" && user !== "undefined") {
             userSockets.forEach(userConn => {
                 userConn.socket.emit("updateprofile", user);
             });

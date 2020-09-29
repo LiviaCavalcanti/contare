@@ -1,11 +1,12 @@
 import {StatsCard} from 'components/StatsCard/StatsCard.jsx'
-import {Grid, Col, FormGroup, FormControl, ControlLabel, Row} from 'react-bootstrap'
+import {Grid, Col, FormGroup, FormControl, ControlLabel, Row, Pager} from 'react-bootstrap'
 import React, {useState, useEffect} from 'react'
 import {getExpenses} from '../../services/expenseService'
 import {unfold} from '../../utils/periodicity'
 import ExpenseModal from './ExpenseModal'
 import '../../assets/css/custom.css'
 import { initializeConnection } from 'services/ConnectionService'
+import { getUser } from 'services/userService'
 
 var token = localStorage.getItem("token-contare")
 var socket
@@ -16,9 +17,16 @@ export default function ListExpenses(props) {
     const [cachedExpenses, setCachedExpenses] = useState([])
     const [sorting, setSorting] = useState('Data do Gasto')
     const [initializing, setInitializing] = useState(true)
+    const [loggedUser, setLoggedUser] = useState({})
     const [sortedExpenses, setSortedExpenses] = useState([])
     const [search, setSearch] = useState('')
     const [select, setSelect] = useState('')
+
+
+    const [pageIndex, setPageIndex] = useState(0)
+    const [pageExpenses, setpageExpenses] = useState([])
+
+    const elemsPerPage = 12
 
     useEffect(() => {
         if (initializing) {
@@ -33,8 +41,10 @@ export default function ListExpenses(props) {
     useEffect(() => {
         if (props.update) {
             props.setUpdate(false)
+            getUser(token).then(user =>{
+                setLoggedUser(user)
+                getExpenses(token).then(resp => {
 
-            getExpenses(token).then(resp => {
                 setCachedExpenses(resp)
                 
                 setExpenseModals(resp.map(_ => {
@@ -43,9 +53,10 @@ export default function ListExpenses(props) {
 
                 let totalExpense = 0
                 for (const expense of unfold(resp)) {
-                    totalExpense += expense.totalValue
+                    totalExpense += expense.participants.find(p=>p._id === user._id).payValue
                 }
                 props.setTotalExpense(totalExpense)
+                })
             })
         }
     })
@@ -55,6 +66,25 @@ export default function ListExpenses(props) {
     }, [cachedExpenses, sorting])
 
     useEffect(() => {
+        setpageExpenses(Expenses.slice(elemsPerPage * pageIndex, elemsPerPage * pageIndex + elemsPerPage))
+    }, [Expenses])
+
+    function previous() {
+        setPageIndex(val => {
+            if (val > 0) val -= 1
+            setpageExpenses(Expenses.slice(elemsPerPage * val, elemsPerPage * val + elemsPerPage))
+            return val
+        })
+    }
+
+    function next() {
+        setPageIndex(val => {
+            if (elemsPerPage * (val + 1) < Expenses.length) val += 1
+            setpageExpenses(Expenses.slice(elemsPerPage * val, elemsPerPage * val + elemsPerPage))
+            return val
+        })
+    }
+    useEffect(()=>{
         setExpenses(sortedExpenses.filter(expense => {
             let norm = str => str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
             let inFilter = false
@@ -73,9 +103,8 @@ export default function ListExpenses(props) {
     }, [search, sortedExpenses, select])
 
     useEffect(() => {
-        // TODO: descomentar quando gastos tiver paginacao
-        // setPageIndex(0)
-    }, [search, select])
+         setPageIndex(0)
+    }, [search])
 
     function sortExpenses() {
         if (cachedExpenses) {
@@ -113,6 +142,7 @@ export default function ListExpenses(props) {
     }
 
     return (
+        <>
         <Grid fluid>
             <Row>
             <Col lg={6} sm={8} xs={12}>
@@ -152,17 +182,27 @@ export default function ListExpenses(props) {
                 </Col>
                 
             </Row>
-            {Expenses.map((expense, i) =>
+            {pageExpenses.map((expense, i) =>
                 <Col lg={4} sm={6} key={expense._id}>
-                    <StatsCard bigIcon={<i className="pe-7s-wallet text-danger" />}
+                    <StatsCard 
+                        bigIcon={expense.participants.length > 1?<i className="pe-7s-users text-success"/>:<i className="pe-7s-wallet text-danger"/>}
                         statsText={expense.title}
-                        statsValue={expense.totalValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                        statsIcon={<i className="fa fa-edit clickable" onClick={() => showModal(i)} />}
-                        statsIconText={<span className="clickable" onClick={() => showModal(i)}>Editar gasto</span>}
+                        statsIcon={<i hidden={expense.owner !== loggedUser._id} className="fa fa-edit clickable" onClick={() => showModal(i)} />}
+                        statsIconText={expense.owner !== loggedUser._id?<span  className="clickable" onClick={() => showModal(i)}>Visualizar gasto</span>:<span  className="clickable" onClick={() => showModal(i)}>Editar gasto</span>}
+                        statsValue={expense.participants.find(p=> p._id === loggedUser._id).payValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                     />
-                    <ExpenseModal expense={expense} i={i} ExpenseModals={ExpenseModals} setExpenseModals={setExpenseModals} setUpdate={props.setUpdate} />
+                    <ExpenseModal owner={expense.owner === loggedUser._id} expense={expense} i={i} ExpenseModals={ExpenseModals} setExpenseModals={setExpenseModals} setUpdate={props.setUpdate} />
                 </Col>
-            )}
+                )}
         </Grid>
+        <Pager>
+            <Pager.Item className={pageIndex <= 0 ? 'hidden' : ''} previous onClick={previous}>
+                &larr; Anterior
+            </Pager.Item>
+            <Pager.Item className={elemsPerPage * (pageIndex + 1) >= Expenses.length ? 'hidden' : ''} next onClick={next}>
+                Próximo &rarr;
+            </Pager.Item>
+        </Pager>
+    </>
     )
 }

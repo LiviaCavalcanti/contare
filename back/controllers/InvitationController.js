@@ -77,5 +77,11 @@ module.exports = {
         invitation = await Invitation.findByIdAndRemove(invitation.id);
 
         return res.status(200).send({"Expense":exp,"Invitation":invitation});
+    },
+    async delete(req,res){
+        
+        const invitation = await Invitation.findOneAndDelete({to:req.params.userTo,expense:req.params.exp})
+        
+        return res.status.send(invitation)
     }
 }
