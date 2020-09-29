@@ -6,6 +6,7 @@ import {notifyFailure} from '../../services/notifyService'
 import 'react-toastify/dist/ReactToastify.min.css';
 import { withRouter } from 'react-router';
 import HomeNavbar from '../HomeNavbar/HomeNavbar'
+import GoogleLoginButton from '../GoogleLoginComponent/index'
 
 class RegisterScreen extends Component {
     constructor(props) {
@@ -61,7 +62,7 @@ class RegisterScreen extends Component {
              <HomeNavbar/>
             <div className="board"></div>
                 <div className="login-div" >
-             <h1 className="login-title">REGISTRE-SE</h1>  
+             <h1 className="login-title">Faça sua conta</h1>  
              <div className="form-div">
                 <form onSubmit={e => this.handleSubmit(e)}>
                     <FormGroup controlId="formBasicName">
@@ -87,32 +88,18 @@ class RegisterScreen extends Component {
                        <ControlLabel>Confirme sua senha</ControlLabel>
                         <FormControl className="inputRegister" required={true} type="password" placeholder="Confirme sua senha escolhida" />
                         <FormControl.Feedback type="invalid"/>
-    
-
                     </FormGroup>
-                    <FormGroup controlId="formBasicCheckbox">
 
-                    <div className="terms-div">
-                    <input className="checkbox-input" required type="checkbox">
-                    </input>
-                        Li e aceito os <a className="footer-text-term">termos de uso</a>
-                    </div>
-                    </FormGroup>
                     <Button className="login-bt" bsStyle="success" type="submit" >
-                        Cadastrar
-                </Button>
+                        Registre-se
+                    </Button>
+                    <GoogleLoginButton buttonText="Registre-se com o Google"/>
                 </form>
                 <a className="footer-text">Já possui cadastro? <a className="footer-text-click" onClick={() => this.redirect("/login")}>Faça login</a></a>
 
                 </div>
-                
-                
-
-                </div>
-                </div>
-
-
-                
+            </div>
+        </div>        
         )
     }
 }

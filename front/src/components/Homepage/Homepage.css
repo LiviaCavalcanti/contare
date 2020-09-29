@@ -1,12 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&display=swap');
 
+html, body {
+  height: 100%;
+}
+
 .homepage-container {
   font-family: 'Playfair Display', serif;
   flex-flow: column;
+  display: flex;
 }
 
 .homepage-lead {
-  flex: 1 0 100vh;
+  flex: 1 0 95vh;
   display: flex; 
   flex-flow: column;
   background-image: url('../../images/homeBlur.jpg');
@@ -29,14 +34,12 @@
   flex-flow: column;
   justify-content: center;
   align-items: center;
-  /* padding: 5vw 15px ; */
 }
 
 .homepage-lead-content-centered h2 {
   font-family: 'Playfair Display', serif;
   text-align: center;
-  font-size: 3vw;
-  /* padding: 0% 40% 20% 0%; */
+  font-size: 350%;
   color:#363535;
   font-weight: 100;
 }
@@ -82,6 +85,7 @@
   flex-flow: row wrap;
   justify-content: center;
   padding-bottom: 5vh;
+  
 }
 
 .homepage-secondary-title {
@@ -131,7 +135,6 @@
 
 .homepage-secondary p {
   font-weight: 100;
-  font-size: 0.99vw;
 }
 
 .homepage-footer {

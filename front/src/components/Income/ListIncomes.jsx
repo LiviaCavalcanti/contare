@@ -3,7 +3,7 @@ import {Grid, Col, FormGroup, FormControl, ControlLabel, Row, Pager} from 'react
 import React, {useState, useEffect} from 'react'
 import {getIncomes} from '../../services/income'
 import Income from './Income'
-import {daysDiff, weeksDiff, monthsDiff, yearsDiff} from '../../utils/date'
+import {unfold} from '../../utils/periodicity'
 import '../../assets/css/custom.css'
 import { initializeConnection } from 'services/ConnectionService'
 var socket
@@ -15,6 +15,8 @@ export default function ListIncomes(props) {
     const [sorting, setSorting] = useState('Data de Criação')
     const [pageIndex, setPageIndex] = useState(0)
     const [pageIncomes, setPageIncomes] = useState([])
+    const [sortedIncomes, setSortedIncomes] = useState([])
+    const [search, setSearch] = useState('')
 
     const elemsPerPage = 12
     const [initializing, setInitializing] = useState(true)
@@ -32,7 +34,6 @@ export default function ListIncomes(props) {
     useEffect(() => {
         if (props.update) {
             props.setUpdate(false)
-            let totalIncome = 0
 
             getIncomes().then(resp => {
                 setCachedIncomes(resp)
@@ -40,25 +41,14 @@ export default function ListIncomes(props) {
                 if (elemsPerPage * pageIndex >= resp.length && pageIndex > 0)
                     setPageIndex(pageIndex - 1)
 
-                setIncomeModals(resp.map(income => {
-                    let receivedDate = new Date(income.receivedOn)
-                    let tillDate = new Date()
-                    if (income.canceledOn && income.periodicity !== 'NONE') {
-                        let canceledDate = new Date(income.canceledOn)
-                        if (canceledDate < tillDate) tillDate = canceledDate
-                    }
-
-                    if (income.value > 0 && receivedDate <= tillDate) {
-                        totalIncome += income.value
-                        if (income.periodicity === 'DAILY') totalIncome += income.value * daysDiff(receivedDate, tillDate)
-                        else if (income.periodicity === 'WEEKLY') totalIncome += income.value * weeksDiff(receivedDate, tillDate)
-                        else if (income.periodicity === 'MONTHLY') totalIncome += income.value * monthsDiff(receivedDate, tillDate)
-                        else if (income.periodicity === 'ANNUALLY') totalIncome += income.value * yearsDiff(receivedDate, tillDate)
-                    }
-
+                setIncomeModals(resp.map(_ => {
                     return false
                 }))
 
+                let totalIncome = 0
+                for (const income of unfold(resp)) {
+                    totalIncome += income.value
+                }
                 props.setTotalIncome(totalIncome)
             })
         }
@@ -72,21 +62,33 @@ export default function ListIncomes(props) {
         setPageIncomes(incomes.slice(elemsPerPage * pageIndex, elemsPerPage * pageIndex + elemsPerPage))
     }, [incomes])
 
+    useEffect(() => {
+        setIncomes(sortedIncomes.filter(income => {
+            let norm = str => str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            if (norm(income.title).includes(norm(search))) return true
+            if (norm(income.description).includes(norm(search))) return true
+        }))
+    }, [search, sortedIncomes])
+
+    useEffect(() => {
+        setPageIndex(0)
+    }, [search])
+
     function sortIncomes() {
-        if (sorting === 'Data de Criação') setIncomes(cachedIncomes.slice().reverse())
-        else if (sorting === 'Título') setIncomes(cachedIncomes.slice().sort((inc1, inc2) => {
+        if (sorting === 'Data de Criação') setSortedIncomes(cachedIncomes.slice().reverse())
+        else if (sorting === 'Título') setSortedIncomes(cachedIncomes.slice().sort((inc1, inc2) => {
             if (inc1.title.toLowerCase() < inc2.title.toLowerCase()) return -1
             return 1
         }))
-        else if (sorting === 'Valor') setIncomes(cachedIncomes.slice().sort((inc1, inc2) => {
+        else if (sorting === 'Valor') setSortedIncomes(cachedIncomes.slice().sort((inc1, inc2) => {
             if (inc1.value > inc2.value) return -1
             return 1
         }))
-        else if (sorting === 'Data de Recebimento') setIncomes(cachedIncomes.slice().sort((inc1, inc2) => {
+        else if (sorting === 'Data de Recebimento') setSortedIncomes(cachedIncomes.slice().sort((inc1, inc2) => {
             if (new Date(inc1.receivedOn) > new Date(inc2.receivedOn)) return -1
             return 1
         }))
-        else if (sorting === 'Tipo de Recorrencia') setIncomes(cachedIncomes.slice().sort((inc1, inc2) => {
+        else if (sorting === 'Tipo de Recorrencia') setSortedIncomes(cachedIncomes.slice().sort((inc1, inc2) => {
             if (inc1.periodicity > inc2.periodicity) return -1
             return 1
         }))
@@ -130,12 +132,21 @@ export default function ListIncomes(props) {
                             </FormControl>
                         </FormGroup>
                     </Col>
+                    <Col lg={6} sm={8} xs={12}>
+                        <FormGroup>
+                            <ControlLabel>Pesquisar por rendas</ControlLabel>
+                            <FormControl
+                                placeholder="Título ou Descrição" componentClass="input"
+                                value={search} onChange={val => setSearch(val.target.value)}
+                            />
+                        </FormGroup>
+                    </Col>
                 </Row>
                 {pageIncomes.map((income, i) =>
                     <Col lg={4} sm={6} key={income._id}>
                         <StatsCard bigIcon={<i className="pe-7s-server text-warning" />}
                             statsText={income.title}
-                            statsValue={"R$ " + income.value}
+                            statsValue={ income.value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                             statsIcon={<i className="fa fa-edit clickable" onClick={() => showModal(i)} />}
                             statsIconText={<span className="clickable" onClick={() => showModal(i)}>Editar renda</span>}
                         />

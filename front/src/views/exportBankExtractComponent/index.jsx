@@ -44,7 +44,7 @@ export default class BankExtractModal extends React.Component {
   
     handleSubmit = () => {
       if (this.state.file == null) {
-        notifyFailure("É necessário selecionar um arquivo para exportar!")
+        notifyFailure("É necessário selecionar um arquivo para importar!")
       } else {
         let bankOption = document.getElementById('bankSelect')
         bankOption = bankOption.options[bankOption.selectedIndex].value
@@ -210,7 +210,7 @@ export default class BankExtractModal extends React.Component {
             </Modal.Body>
             <Modal.Footer>
               <Button onClick={this.handleClose}>Fechar</Button>
-              <Button onClick={this.handleList}  bsStyle="primary">Exportar</Button>
+              <Button onClick={this.handleList}  bsStyle="primary">Importar</Button>
             </Modal.Footer>
           </Modal>
         </div>

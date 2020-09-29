@@ -5,6 +5,8 @@ import {updateExpenses, deleteExpense} from '../../services/expenseService'
 import { getFriends } from '../../services/userService'
 import "./styles.css"
 import { Typeahead } from 'react-bootstrap-typeahead'
+import {makeDate} from '../../utils/date'
+
 
 var token = localStorage.getItem("token-contare")
 
@@ -128,12 +130,12 @@ export default function ExpenseModal(props) {
                     description: description,
                     category: category,
                     totalValue: totalValue,
-                    dueDate: dueDate,
+                    dueDate: makeDate(dueDate),
                     periodicity: periodicity,
-                    endDate: endDate,
-                    createdAt: createdAt,
                     participants:participants,
-                    listEmail:listEmail
+                    listEmail:listEmail,
+                    endDate: makeDate(endDate),
+                    createdAt: createdAt
                 }
 
                 await updateExpenses(token, props.expense._id, expense)
@@ -290,7 +292,7 @@ export default function ExpenseModal(props) {
                         <OverlayTrigger placement="right" overlay={tooltip}>
                             <Button 
                                 style={!props.owner?{marginLeft:"5px", visibility:"hidden"}:{marginLeft:"5px",}} 
-                                onClick={()=>createNewParticipant()} bsSize="medium" 
+                                onClick={()=>createNewParticipant()} bsSize="sm" 
                                 bsStyle="success" className="pe-7s-plus text-success"/>
                             </OverlayTrigger>
                         </ControlLabel>

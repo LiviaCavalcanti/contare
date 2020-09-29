@@ -2,7 +2,7 @@ import {StatsCard} from 'components/StatsCard/StatsCard.jsx'
 import {Grid, Col, FormGroup, FormControl, ControlLabel, Row, Pager} from 'react-bootstrap'
 import React, {useState, useEffect} from 'react'
 import {getExpenses} from '../../services/expenseService'
-import {daysDiff, weeksDiff, monthsDiff, yearsDiff} from '../../utils/date'
+import {unfold} from '../../utils/periodicity'
 import ExpenseModal from './ExpenseModal'
 import '../../assets/css/custom.css'
 import { initializeConnection } from 'services/ConnectionService'
@@ -18,6 +18,9 @@ export default function ListExpenses(props) {
     const [sorting, setSorting] = useState('Data do Gasto')
     const [initializing, setInitializing] = useState(true)
     const [loggedUser, setLoggedUser] = useState({})
+    const [sortedExpenses, setSortedExpenses] = useState([])
+    const [search, setSearch] = useState('')
+
 
     const [pageIndex, setPageIndex] = useState(0)
     const [pageExpenses, setpageExpenses] = useState([])
@@ -37,29 +40,21 @@ export default function ListExpenses(props) {
     useEffect(() => {
         if (props.update) {
             props.setUpdate(false)
-            let totalExpense = 0
             getUser(token).then(user =>{
                 setLoggedUser(user)
                 getExpenses(token).then(resp => {
-                    setCachedExpenses(resp)
 
-                    if (elemsPerPage * pageIndex >= resp.length && pageIndex > 0)
-                        setPageIndex(pageIndex - 1)
-                    
-                    setExpenseModals(resp.map(expense => {
-                        let dueDate = new Date(expense.dueDate)
-                        let endDate = new Date(expense.endDate)
-                        let participant = expense.participants.find(p=> p._id === user._id)
-                        if (expense.totalValue > 0 && dueDate <= endDate) {
-                            totalExpense += participant.payValue
-                            if (expense.periodicity === 'DAILY') totalExpense += participant.payValue * daysDiff(dueDate, endDate)
-                            else if (expense.periodicity === 'WEEKLY') totalExpense += participant.payValue * weeksDiff(dueDate, endDate)
-                            else if (expense.periodicity === 'MONTHLY') totalExpense += participant.payValue * monthsDiff(dueDate, endDate)
-                            else if (expense.periodicity === 'ANNUALLY') totalExpense += participant.payValue * yearsDiff(dueDate, endDate)
-                        }
-                    
+                setCachedExpenses(resp)
+                
+                setExpenseModals(resp.map(_ => {
                     return false
-                    }))
+                }))
+
+                let totalExpense = 0
+                for (const expense of unfold(resp)) {
+                    console.log(user)
+                    totalExpense += expense.participants.find(p=>p._id === user._id).payValue
+                }
                 props.setTotalExpense(totalExpense)
                 })
             })
@@ -89,30 +84,42 @@ export default function ListExpenses(props) {
             return val
         })
     }
+    useEffect(()=>{
+        setExpenses(sortedExpenses.filter(expense => {
+            let norm = str => str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            if (norm(expense.title).includes(norm(search))) return true
+            if (norm(expense.category).includes(norm(search))) return true
+            if (norm(expense.description).includes(norm(search))) return true
+        }))
+    }, [search, sortedExpenses])
+
+    useEffect(() => {
+         setPageIndex(0)
+    }, [search])
 
     function sortExpenses() {
         if (cachedExpenses) {
-            if (sorting === 'Título') setExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
+            if (sorting === 'Título') setSortedExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
                 if (inc1.title.toLowerCase() < inc2.title.toLowerCase()) return -1
                 return 1
             }))
-            else if (sorting === 'Valor') setExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
+            else if (sorting === 'Valor') setSortedExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
                 if (inc1.totalValue > inc2.totalValue) return -1
                 return 1
             }))
-            else if (sorting === 'Data do Gasto') setExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
+            else if (sorting === 'Data do Gasto') setSortedExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
                 if (new Date(inc1.dueDate) > new Date(inc2.dueDate)) return -1
                 return 1
             }))
-            else if (sorting === 'Tipo de Recorrencia') setExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
+            else if (sorting === 'Tipo de Recorrencia') setSortedExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
                 if (inc1.periodicity > inc2.periodicity) return -1
                 return 1
             }))
-            else if (sorting === 'Categoria') setExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
+            else if (sorting === 'Categoria') setSortedExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
                 if (inc1.category > inc2.category) return -1
                 return 1
             }))
-            else if (sorting === 'Descrição') setExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
+            else if (sorting === 'Descrição') setSortedExpenses(cachedExpenses.slice().sort((inc1, inc2) => {
                 if (inc1.description > inc2.description) return -1
                 return 1
             }))
@@ -142,15 +149,24 @@ export default function ListExpenses(props) {
                         </FormControl>
                     </FormGroup>
                 </Col>
+                <Col lg={6} sm={8} xs={12}>
+                    <FormGroup>
+                        <ControlLabel>Pesquisar por gastos</ControlLabel>
+                        <FormControl
+                            placeholder="Título, Categoria ou Descrição" componentClass="input"
+                            value={search} onChange={val => setSearch(val.target.value)}
+                        />
+                    </FormGroup>
+                </Col>
             </Row>
             {pageExpenses.map((expense, i) =>
                 <Col lg={4} sm={6} key={expense._id}>
                     <StatsCard 
                         bigIcon={expense.participants.length > 1?<i className="pe-7s-users text-success"/>:<i className="pe-7s-wallet text-danger"/>}
                         statsText={expense.title}
-                        statsValue={"R$ " + expense.participants.find(p=> p._id === loggedUser._id).payValue}
                         statsIcon={<i hidden={expense.owner !== loggedUser._id} className="fa fa-edit clickable" onClick={() => showModal(i)} />}
                         statsIconText={expense.owner !== loggedUser._id?<span  className="clickable" onClick={() => showModal(i)}>Visualizar gasto</span>:<span  className="clickable" onClick={() => showModal(i)}>Editar gasto</span>}
+                        statsValue={expense.participants.find(p=> p._id === loggedUser._id).payValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                     />
                     <ExpenseModal owner={expense.owner === loggedUser._id} expense={expense} i={i} ExpenseModals={ExpenseModals} setExpenseModals={setExpenseModals} setUpdate={props.setUpdate} />
                 </Col>

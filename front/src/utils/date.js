@@ -24,3 +24,7 @@ export function yearsDiff(d1, d2) {
     else if (d2.getMonth() == d1.getMonth() && d2.getDate() < d1.getDate()) diffYears--
     return diffYears
 }
+
+export function makeDate(dateString) {
+    return new Date(dateString + 'T00:00')
+}

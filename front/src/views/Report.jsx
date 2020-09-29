@@ -59,12 +59,11 @@ class Friends extends Component {
     const incomes = this.state.userIncomes
     let data = []
    expenses.map(expense => {
-     //const expenseDate = new Date(expense.dueDate).toString()
-      data.push([expense.title, expense.dueDate, "Gasto", "-" + expense.totalValue])
+      data.push([expense.title, expense.dueDate, "Gasto", "-" + expense.totalValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })])
    })
 
    incomes.map(income => {
-    data.push([income.title,  income.receivedOn, "Renda", "+" + income.value])
+    data.push([income.title,  income.receivedOn, "Renda", "+" + income.value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })])
    })
 
     data.sort(function(a, b) {

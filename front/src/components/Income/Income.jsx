@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import {Modal, Button, Form, FormGroup, FormControl, ControlLabel} from 'react-bootstrap'
 import {updateIncome, deleteIncome} from '../../services/income'
+import {makeDate} from '../../utils/date'
 
 export default function Income(props) {
     const [title, setTitle] = useState(props.income.title)
@@ -71,7 +72,7 @@ export default function Income(props) {
         let isValidValue = validateValue(value)
         let isValidCanceledDate = validateCanceledDate(canceledDate)
         if (isValidTitle && isValidValue && isValidCanceledDate) {
-            updateIncome(props.income._id, title, description, value, date, periodicity, canceledDate)
+            updateIncome(props.income._id, title, description, value, makeDate(date), periodicity, makeDate(canceledDate))
             props.setUpdate(true)
         }
     }
