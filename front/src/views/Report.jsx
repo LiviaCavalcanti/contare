@@ -62,7 +62,6 @@ class Friends extends Component {
   }
 
   createDataTable = () => {
-    this.getUserFromToken();
     const expenses = this.state.userExpenses
     const incomes = this.state.userIncomes
     let data = []
@@ -92,6 +91,7 @@ class Friends extends Component {
     return thArray
   } 
   componentWillMount() {
+    this.getUserFromToken();
     this.loadUserExpenses()
     this.loadUserIncomes()
   }
