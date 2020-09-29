@@ -77,6 +77,12 @@ class UserProfile extends Component {
       }
     });
 
+    // Password field
+    if (user.isOAuth) {
+      let passRow = document.getElementById("passwordRow");
+      passRow.style.display = "none";
+    }
+
     // UserCard fields (including picture)
     this.setState(function(oldState) {
       let img = (user.image == null || user.image.url == "NONE") ? avatar : user.image.url;
@@ -91,7 +97,6 @@ class UserProfile extends Component {
   }
 
   async handleUpdateUserProfile() {
-    const token = localStorage.getItem("token-contare");
     let fieldNames = ["name", "lastName", "email", "username", "company", "address", "city", "country", "zip", "password", "bio"] 
     let newFields = {}
 
@@ -99,27 +104,32 @@ class UserProfile extends Component {
       newFields[field] = document.getElementById(field).value || ""
     })
 
-    let newpass = document.getElementById("newpassword").value;
-    let newpass2 = document.getElementById("newpassword2").value;
-
     let sendOk = true;
-    if (newFields['password'].length < 5) {
-      // First, check for current password validity
-      sendOk = false;
-      notifyFailure("Senha inválida!");
-    } else if(newFields["name"] == "") {
-      notifyFailure("Obrigatório ter pelo menos o primeiro nome preenchido.")
-    } else if (newpass != "" || newpass2 != "") { // Check if user wants to change password
-        sendOk = false; // Set ok to false until all validations are met.
-        if (newpass != newpass2) {
-          notifyFailure("Campos de nova senha não conferem!");
-        } else if (newpass.length < 5) {
-          notifyFailure("Senha precisa ter pelo menos 5 caracteres!");
-        } else {
-          newFields["newpassword"] = newpass;
-          // Can send new password
-          sendOk = true;
-        }
+    const token = localStorage.getItem("token-contare");
+    let user = await getUser(token);
+    if (!user.isOAuth) {
+      // If not oauth, check for password fields
+      let newpass = document.getElementById("newpassword").value;
+      let newpass2 = document.getElementById("newpassword2").value;
+      
+      if (newFields['password'].length < 5) {
+        // First, check for current password validity
+        sendOk = false;
+        notifyFailure("Senha inválida!");
+      } else if(newFields["name"] == "") {
+        notifyFailure("Obrigatório ter pelo menos o primeiro nome preenchido.")
+      } else if (newpass != "" || newpass2 != "") { // Check if user wants to change password
+          sendOk = false; // Set ok to false until all validations are met.
+          if (newpass != newpass2) {
+            notifyFailure("Campos de nova senha não conferem!");
+          } else if (newpass.length < 5) {
+            notifyFailure("Senha precisa ter pelo menos 5 caracteres!");
+          } else {
+            newFields["newpassword"] = newpass;
+            // Can send new password
+            sendOk = true;
+          }
+      }
     }
 
     if (sendOk) {
@@ -253,7 +263,7 @@ class UserProfile extends Component {
                         </FormGroup>
                       </Col>
                     </Row>
-                    <Row> {/* Begin of row with passwords. */}
+                    <Row id={"passwordRow"}> {/* Begin of row with passwords. */}
                     <FormGroup>
                       <Col md={4}>
                           <FormInputs ncols={["col-md-12"]}

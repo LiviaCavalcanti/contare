@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const authConfig = require("../config/auth.json");
 const { emitFriendshipUpdate } = require("./ConnectionController");
 const { restart } = require("nodemon");
 
@@ -31,14 +32,19 @@ module.exports = {
     async update(req, res) {
 
         // Search for user
-        const { email, password } = req.body;
+        const { email } = req.body;
         var user = await User.findOne( { email } ).select("+password");
         if(!user) return res.status(404).send({message: "Usuário não encontrado!"});
 
         // Verify password
         let passwordCheck = false;
         try {
-            passwordCheck = await bcrypt.compare(password, user.password);
+            if (user.isOAuth) {
+                const pass = email+authConfig.secret;
+                passwordCheck = await bcrypt.compare(pass, user.password);
+            } else {
+                passwordCheck = await bcrypt.compare(req.body.password, user.password);
+            }
         } catch (error) {
             passwordCheck = false;
         }
