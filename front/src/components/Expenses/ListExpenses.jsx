@@ -18,6 +18,7 @@ export default function ListExpenses(props) {
     const [initializing, setInitializing] = useState(true)
     const [sortedExpenses, setSortedExpenses] = useState([])
     const [search, setSearch] = useState('')
+    const [select, setSelect] = useState('')
 
     useEffect(() => {
         if (initializing) {
@@ -56,16 +57,25 @@ export default function ListExpenses(props) {
     useEffect(() => {
         setExpenses(sortedExpenses.filter(expense => {
             let norm = str => str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-            if (norm(expense.title).includes(norm(search))) return true
-            if (norm(expense.category).includes(norm(search))) return true
-            if (norm(expense.description).includes(norm(search))) return true
+            let inFilter = false
+            if (norm(expense.title).includes(norm(search)) ||
+            norm(expense.category).includes(norm(search)) ||
+             norm(expense.description).includes(norm(search))) {
+                inFilter = true
+            }
+            if (select==='' || expense.periodicity===select) {
+                inFilter = true && inFilter
+            } else {
+                inFilter = false && inFilter
+            }
+            return inFilter
         }))
-    }, [search, sortedExpenses])
+    }, [search, sortedExpenses, select])
 
     useEffect(() => {
         // TODO: descomentar quando gastos tiver paginacao
         // setPageIndex(0)
-    }, [search])
+    }, [search, select])
 
     function sortExpenses() {
         if (cachedExpenses) {
@@ -105,7 +115,29 @@ export default function ListExpenses(props) {
     return (
         <Grid fluid>
             <Row>
+            <Col lg={6} sm={8} xs={12}>
+                    <FormGroup>
+                        <ControlLabel>Pesquisar por gastos</ControlLabel>
+                        <FormControl
+                            placeholder="Título, Categoria ou Descrição" componentClass="input"
+                            value={search} onChange={val => setSearch(val.target.value)}
+                        />
+                    </FormGroup>
+                </Col>
                 <Col lg={3} sm={4} xs={6}>
+                        <FormGroup>
+                            <ControlLabel>Gastos por Período</ControlLabel>
+                            <FormControl componentClass="select" value={select} onChange={val => setSelect(val.target.value)}>
+                            <option value=''>Selecione uma periodicidade</option>
+                            <option value='NONE'>Sem recorrencia</option>
+                            <option value='DAILY'>Diária</option>
+                            <option value='WEEKLY'>Semanal</option>
+                            <option value='MONTHLY'>Mensal</option>
+                            <option value='ANNUALLY'>Anual</option>
+                            </FormControl>
+                        </FormGroup>
+                    </Col>
+                    <Col lg={3} sm={4} xs={6}>
                     <FormGroup>
                         <ControlLabel>Ordenar os gastos por</ControlLabel>
                         <FormControl componentClass="select" value={sorting} onChange={val => setSorting(val.target.value)}>
@@ -118,15 +150,7 @@ export default function ListExpenses(props) {
                         </FormControl>
                     </FormGroup>
                 </Col>
-                <Col lg={6} sm={8} xs={12}>
-                    <FormGroup>
-                        <ControlLabel>Pesquisar por gastos</ControlLabel>
-                        <FormControl
-                            placeholder="Título, Categoria ou Descrição" componentClass="input"
-                            value={search} onChange={val => setSearch(val.target.value)}
-                        />
-                    </FormGroup>
-                </Col>
+                
             </Row>
             {Expenses.map((expense, i) =>
                 <Col lg={4} sm={6} key={expense._id}>

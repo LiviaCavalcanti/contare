@@ -154,7 +154,7 @@ export default function ListIncomes(props) {
                     </Col>
                     <Col lg={3} sm={4} xs={6}>
                         <FormGroup>
-                            <ControlLabel>Ordenar as rendas por</ControlLabel>
+                            <ControlLabel>Rendas por Período</ControlLabel>
                             <FormControl componentClass="select" value={select} onChange={val => setSelect(val.target.value)}>
                             <option value=''>Selecione uma periodicidade</option>
                             <option value='NONE'>Sem recorrencia</option>
