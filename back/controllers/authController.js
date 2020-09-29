@@ -55,7 +55,8 @@ module.exports = {
                 if(!user) {
                     const password = email+authConfig.secret
                     const image = {url: picture}
-                    const createdUser = await User.create({email, password, name, image});
+                    const isOAuth = true;
+                    const createdUser = await User.create({email, password, name, image, isOAuth});
                     createdUser.password = undefined
                     return res.send({ createdUser , token: generateToken({id: createdUser.id}),  sucess: "Cadastrado com sucesso!"});
                 } else {
