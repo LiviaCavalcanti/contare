@@ -18,9 +18,41 @@ export default function ListIncomes(props) {
     const [sortedIncomes, setSortedIncomes] = useState([])
     const [search, setSearch] = useState('')
     const [select, setSelect] = useState('')
+    const [checkedItems, setCheckedItems] = useState([]);
 
     const elemsPerPage = 12
     const [initializing, setInitializing] = useState(true)
+
+
+    const Checkbox = ({ type = "checkbox", name, checked = false, onChange }) => {
+        console.log("Checkbox: ", name, checked);
+      
+        return (
+          <input type={type} name={name} checked={checked} onChange={onChange} />
+        );
+      };
+        
+    const handleChange = event => {
+        setCheckedItems({
+        ...checkedItems,
+        [event.target.name]: event.target.checked
+        });
+        console.log(event.target)
+        console.log("checkedItems: ", checkedItems);
+    };
+    
+    const checkboxes = [
+        {
+        name: "semanal",
+        key: "WEEKLY",
+        label: "Check Box 1"
+        },
+        {
+        name: "check-box-2",
+        key: "checkBox2",
+        label: "Check Box 2"
+        }
+    ];
 
     useEffect(() => {
         if (initializing) {
@@ -64,25 +96,37 @@ export default function ListIncomes(props) {
     }, [incomes])
 
     useEffect(() => {
+        
+        
+        
         setIncomes(sortedIncomes.filter(income => {
+            console.log("===============================")
+            console.log(checkedItems)
+
+            console.log(Object.keys(Object.fromEntries(Object.entries(checkedItems).filter(([k,v]) => v===true ))).filter(e=> e===income.periodicity).length > 0)
+            
             let norm = str => str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
             let inFilter = false
             if (norm(income.title).includes(norm(search)) ||
             norm(income.description).includes(norm(search))){
                 inFilter = true
             }
-            if (select==='' || income.periodicity===select) {
-                inFilter = true && inFilter
+            console.log(checkedItems)
+            if (checkedItems.size === 0 || checkedItems.size === undefined || checkedItems.filter(e=> e===income.periodicity).length > 0) {
+                
+                inFilter = true 
             } else {
-                inFilter = false && inFilter
+                inFilter = false
             }
             return inFilter
         }))
-    }, [search, sortedIncomes, select])
+    }, [search, checkedItems, sortedIncomes])
 
     useEffect(() => {
         setPageIndex(0)
     }, [search, select])
+
+    
 
     function sortIncomes() {
         console.log(sorting)
@@ -165,6 +209,21 @@ export default function ListIncomes(props) {
                             </FormControl>
                         </FormGroup>
                     </Col>
+                    <Col>
+                    <div>
+      <label>Checked item name : {checkedItems["check-box-1"]} </label> <br />
+      {checkboxes.map(item => (
+        <label key={item.key}>
+          {item.name}
+          <Checkbox
+            name={item.name}
+            checked={checkedItems[item.name]}
+            onChange={handleChange}
+          />
+        </label>
+      ))}
+    </div>
+    </Col>
                 </Row>
                 {pageIncomes.map((income, i) =>
                     <Col lg={4} sm={6} key={income._id}>
