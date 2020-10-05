@@ -17,6 +17,7 @@ export default function ListIncomes(props) {
     const [pageIncomes, setPageIncomes] = useState([])
     const [sortedIncomes, setSortedIncomes] = useState([])
     const [search, setSearch] = useState('')
+    const [select, setSelect] = useState('')
 
     const elemsPerPage = 12
     const [initializing, setInitializing] = useState(true)
@@ -65,16 +66,26 @@ export default function ListIncomes(props) {
     useEffect(() => {
         setIncomes(sortedIncomes.filter(income => {
             let norm = str => str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-            if (norm(income.title).includes(norm(search))) return true
-            if (norm(income.description).includes(norm(search))) return true
+            let inFilter = false
+            if (norm(income.title).includes(norm(search)) ||
+            norm(income.description).includes(norm(search))){
+                inFilter = true
+            }
+            if (select==='' || income.periodicity===select) {
+                inFilter = true && inFilter
+            } else {
+                inFilter = false && inFilter
+            }
+            return inFilter
         }))
-    }, [search, sortedIncomes])
+    }, [search, sortedIncomes, select])
 
     useEffect(() => {
         setPageIndex(0)
-    }, [search])
+    }, [search, select])
 
     function sortIncomes() {
+        console.log(sorting)
         if (sorting === 'Data de Criação') setSortedIncomes(cachedIncomes.slice().reverse())
         else if (sorting === 'Título') setSortedIncomes(cachedIncomes.slice().sort((inc1, inc2) => {
             if (inc1.title.toLowerCase() < inc2.title.toLowerCase()) return -1
@@ -120,6 +131,15 @@ export default function ListIncomes(props) {
         <>
             <Grid fluid>
                 <Row>
+                    <Col lg={6} sm={8} xs={12}>
+                        <FormGroup>
+                            <ControlLabel>Pesquisar por rendas</ControlLabel>
+                            <FormControl
+                                placeholder="Título ou Descrição" componentClass="input"
+                                value={search} onChange={val => setSearch(val.target.value)}
+                            />
+                        </FormGroup>
+                    </Col>
                     <Col lg={3} sm={4} xs={6}>
                         <FormGroup>
                             <ControlLabel>Ordenar as rendas por</ControlLabel>
@@ -132,13 +152,17 @@ export default function ListIncomes(props) {
                             </FormControl>
                         </FormGroup>
                     </Col>
-                    <Col lg={6} sm={8} xs={12}>
+                    <Col lg={3} sm={4} xs={6}>
                         <FormGroup>
-                            <ControlLabel>Pesquisar por rendas</ControlLabel>
-                            <FormControl
-                                placeholder="Título ou Descrição" componentClass="input"
-                                value={search} onChange={val => setSearch(val.target.value)}
-                            />
+                            <ControlLabel>Rendas por Período</ControlLabel>
+                            <FormControl componentClass="select" value={select} onChange={val => setSelect(val.target.value)}>
+                            <option value=''>Selecione uma periodicidade</option>
+                            <option value='NONE'>Sem recorrencia</option>
+                            <option value='DAILY'>Diária</option>
+                            <option value='WEEKLY'>Semanal</option>
+                            <option value='MONTHLY'>Mensal</option>
+                            <option value='ANNUALLY'>Anual</option>
+                            </FormControl>
                         </FormGroup>
                     </Col>
                 </Row>
