@@ -67,8 +67,8 @@ class Friends extends Component {
 
 
   createDataTable = () => {
-    const expenses = this.state.userExpenses
-    const incomes = this.state.userIncomes
+    const expenses = unfold(this.state.userExpenses)
+    const incomes = unfold(this.state.userIncomes)
     let data = []
     expenses.map(expense => {
         data.push([expense.seq ? expense.title + " #" + expense.seq : expense.title, expense.dueDateAdjusted, "Gasto", "-" + expense.participants.filter(p=>p._id===this.state.user._id)[0].payValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })])
