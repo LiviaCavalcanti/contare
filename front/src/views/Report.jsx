@@ -62,12 +62,11 @@ class Friends extends Component {
   }
 
   createDataTable = () => {
-    this.getUserFromToken();
     const expenses = this.state.userExpenses
     const incomes = this.state.userIncomes
     let data = []
    expenses.map(expense => {
-      data.push([expense.title, expense.dueDate, "Gasto", "-" + expense.participants.find(p=>p._id===this.state.user._id).payValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })])
+      data.push([expense.title, expense.dueDate, "Gasto", "-" + expense.participants.filter(p=>p._id===this.state.user._id)[0].payValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })])
    })
 
    incomes.map(income => {
@@ -92,6 +91,7 @@ class Friends extends Component {
     return thArray
   } 
   componentWillMount() {
+    this.getUserFromToken();
     this.loadUserExpenses()
     this.loadUserIncomes()
   }
