@@ -124,11 +124,10 @@ class Dashboard extends Component {
     let total = 0
     let monthStart = new Date(date.getFullYear(), date.getMonth(), 1)
     let monthEnd = new Date(date.getFullYear(), date.getMonth()+1, 0)
-
+   
     unfold(expenses, monthStart, monthEnd).map(expense => {
-      total += expense.totalValue
+      total += expense.participants.find(p => p._id === this.state.user._id).payValue
     })
-
     return total
   }
 

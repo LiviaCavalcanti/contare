@@ -13,6 +13,7 @@ import './Report.css'
 import 'jspdf-autotable'
 import { unfold } from '../utils/periodicity'
 
+import { getUser } from "services/userService";
 
 
 class Friends extends Component {
@@ -25,9 +26,11 @@ class Friends extends Component {
     this.createTitleTable = this.createTitleTable.bind(this)
     this.formatData = this.formatData.bind(this)
     this.printDocument = this.printDocument.bind(this)
+    this.getUserFromToken = this.getUserFromToken.bind(this)
     this.state = {
       userExpenses:[],
-      userIncomes:[]
+      userIncomes:[],
+      user:{}
     }
   }
 
@@ -57,15 +60,19 @@ class Friends extends Component {
     return data
   }
 
-  createDataTable = () => {
+  getUserFromToken= async () =>{
+    const user = await getUser(localStorage.getItem("token-contare"))
+    this.setState({user})
+  }
 
-    const expenses = unfold(this.state.userExpenses)
-    const incomes = unfold(this.state.userIncomes)
-    console.log (expenses)
+
+  createDataTable = () => {
+    const expenses = this.state.userExpenses
+    const incomes = this.state.userIncomes
     let data = []
     expenses.map(expense => {
-      data.push([expense.seq ? expense.title + " #" + expense.seq : expense.title, expense.dueDateAdjusted, "Gasto", "-" + expense.totalValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })])
-   })
+        data.push([expense.seq ? expense.title + " #" + expense.seq : expense.title, expense.dueDateAdjusted, "Gasto", "-" + expense.participants.filter(p=>p._id===this.state.user._id)[0].payValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })])
+     })
 
     incomes.map(income => {
       data.push([income.seq ? income.title + " #" + income.seq : income.title,  income.receivedOnAdjusted, "Renda", "+" + income.value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })])
@@ -83,6 +90,7 @@ class Friends extends Component {
     return thArray
   } 
   componentWillMount() {
+    this.getUserFromToken();
     this.loadUserExpenses()
     this.loadUserIncomes()
   }

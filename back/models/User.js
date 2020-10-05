@@ -21,6 +21,10 @@ const UserSchema = new mongoose.Schema({
         required: true,
         lowercase: true,
     },
+    isOAuth : {
+        type: Boolean,
+        required: false
+    },
     password: {
         type: String,
         required: true,

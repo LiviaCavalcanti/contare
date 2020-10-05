@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const authConfig = require("../config/auth.json");
 const { emitFriendshipUpdate } = require("./ConnectionController");
 const { restart } = require("nodemon");
 
@@ -22,22 +23,6 @@ module.exports = {
         return findUser(userId,res);
     },
 
-    // async findUserById(userId) {
-    //     return User.findById(userId, {password: 0}, function (err, user) {
-    //         if (err) {
-    //             let msg = "Houve um problema ao encontrar o usuario";
-    //             console.error(msg);
-    //             return msg;
-    //         }
-    //         if (!user) {
-    //             let msg = "Nenhum usuário encontrado.";
-    //             console.error(msg);
-    //             return msg;
-    //         }
-    //         return user;
-    //     });
-    // },
-
     async show(req, res) {
         const user = await findUser(req.userId,res);
         if(!user) return res;
@@ -45,17 +30,58 @@ module.exports = {
     },
 
     async update(req, res) {
-        if(req.body.password){
-            const hash = await bcrypt.hash(req.body.password,10)
-            req.body.password = hash
+
+        // Search for user
+        const { email } = req.body;
+        var user = await User.findOne( { email } ).select("+password");
+        if(!user) return res.status(404).send({message: "Usuário não encontrado!"});
+
+        // Verify password
+        let passwordCheck = false;
+        try {
+            if (user.isOAuth) {
+                const pass = email+authConfig.secret;
+                passwordCheck = await bcrypt.compare(pass, user.password);
+            } else {
+                passwordCheck = await bcrypt.compare(req.body.password, user.password);
+            }
+        } catch (error) {
+            passwordCheck = false;
         }
 
-        var user = await findUser(req.userId,res);
-        if(!user) return res;
+        if (!passwordCheck)
+            return res.status(400).send({message: "Senha incorreta! Digite sua senha atual para alterar os dados!"});
+    
+        // If there is new password, replace with new one
+        if(req.body.hasOwnProperty("newpassword") && req.body.newpassword.length >= 5){
+            const hash = await bcrypt.hash(req.body.newpassword,10);
+            req.body.password = hash;
+            req.body.newpassword = null;
+        } else {
+            delete req.body.password
+        }
+        
+        // Check if wants to update username and if it's taken
+        let foundUsername = false;
+        if (req.body.username && req.body.username != user.username) {
+            let foundUser = await User.find({username: req.body.username});
+            if (foundUser.length > 0) {
+                foundUsername = true;
+            }
+        }
+        // If taken, send error message, but update what's possible
+        if (foundUsername) req.body.username = user.username;
+        req.body.email = user.email; // Guarantee email cannot be changed.
 
+        // Update all the fields
         user = await User.findByIdAndUpdate(req.userId,req.body,{new:true});
+        let code = foundUsername ? 403 : 200;
+        let message = foundUsername ? "Nome de usuário não disponível!" : "Usuário atualizado com sucesso!";
         await emitUserProfileUpdate(req.userId, user);
-        return res.status(200).send(user);
+        return res.status(code).send({
+            message: message,
+            user: req.body
+        });
     },
 
     async indexExpenses(req, res){
@@ -160,7 +186,8 @@ module.exports = {
             let friend = await User.findById(friendId._id)
             let friendRes = {
                                 name: friend.name,
-                                email: friend.email
+                                email: friend.email,
+                                image: friend.image
                             };
             return friendRes;
         })
@@ -180,7 +207,8 @@ module.exports = {
             let friend = await User.findById(friendId._id)
             let friendRes = {
                                 name: friend.name,
-                                email: friend.email
+                                email: friend.email,
+                                image: friend.image
                             };
             return friendRes;
         })
@@ -200,7 +228,8 @@ module.exports = {
             let friend = await User.findById(friendId._id)
             let friendRes = {
                                 name: friend.name,
-                                email: friend.email
+                                email: friend.email,
+                                image: friend.image
                             };
             return friendRes;
         })

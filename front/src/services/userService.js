@@ -87,14 +87,11 @@ export const getAllEmail = async (token) => {
 export const updateUser = async (token, newUser, callback) => {
     axios.post(`${API_URL}/contare/user/edit`, newUser, {headers: {Authorization : "Bearer " + token}})
     .then((response) => {
-        console.log("update user post req came back with this obj: %o", response);
-        callback(response.data)
-    },
-    (error) => {
-        console.log("Response came back, but got this error: ", error)
-    }
-    ).catch((error) => {
-        console.log("Deu algum erro... This is what I know: ", error);
+        notifySucess(response.data.message);
+    }).catch((error) => {
+        if (error.response) {
+            notifyFailure(error.response.data.message);
+        }        
     })
 }
 
@@ -166,7 +163,7 @@ export const acceptFriend = async (friendId, token) => {
     }
     return await axios.post(URL, body, {headers: {Authorization: "Bearer " + token}})
     .then((response) => {
-        notifySucess("Amizade deletada com sucesso!")
+        notifySucess("Amizade aceita com sucesso!")
         return response;
     }, (error) => {
         notifyFailure(error.response.data.error)
@@ -184,7 +181,7 @@ export const refuseFriend = async (friendId, token) => {
     }
     return await axios.post(URL, body, {headers: {Authorization: "Bearer " + token}})
     .then((response) => {
-        notifySucess("Amizade deletada com sucesso!")
+        notifySucess("Amizade recusada com sucesso!")
         return response;
     }, (error) => {
         notifyFailure(error.response.data.error)
