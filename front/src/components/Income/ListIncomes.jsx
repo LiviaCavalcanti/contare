@@ -1,9 +1,10 @@
 import {StatsCard} from 'components/StatsCard/StatsCard.jsx'
-import {Grid, Col, FormGroup, FormControl, ControlLabel, Row, Pager} from 'react-bootstrap'
+import {Grid, Col, FormGroup, FormControl, ControlLabel, Row, Pager, Button} from 'react-bootstrap'
 import React, {useState, useEffect} from 'react'
 import {getIncomes} from '../../services/income'
 import Income from './Income'
 import {unfold} from '../../utils/periodicity'
+import {makeDate} from '../../utils/date'
 import '../../assets/css/custom.css'
 import { initializeConnection } from 'services/ConnectionService'
 var socket
@@ -18,6 +19,8 @@ export default function ListIncomes(props) {
     const [sortedIncomes, setSortedIncomes] = useState([])
     const [search, setSearch] = useState('')
     const [select, setSelect] = useState('')
+    const [dateRangeA, setDateRangeA] = useState('')
+    const [dateRangeB, setDateRangeB] = useState('')
 
     const elemsPerPage = 12
     const [initializing, setInitializing] = useState(true)
@@ -64,12 +67,24 @@ export default function ListIncomes(props) {
     }, [incomes])
 
     useEffect(() => {
+        const incs = unfold(
+            cachedIncomes,
+            dateRangeA && makeDate(dateRangeA),
+            dateRangeB && makeDate(dateRangeB)
+        )
+
         setIncomes(sortedIncomes.filter(income => {
-            let norm = str => str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
             let inFilter = false
+            incs.map(inc => {
+                if (inc._id == income._id) inFilter = true
+            })
+
+            let norm = str => str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
             if (norm(income.title).includes(norm(search)) ||
             norm(income.description).includes(norm(search))){
-                inFilter = true
+                inFilter = inFilter
+            } else {
+                inFilter = false
             }
             if (select==='' || income.periodicity===select) {
                 inFilter = true && inFilter
@@ -78,11 +93,11 @@ export default function ListIncomes(props) {
             }
             return inFilter
         }))
-    }, [search, sortedIncomes, select])
+    }, [search, sortedIncomes, select, dateRangeA, dateRangeB])
 
     useEffect(() => {
         setPageIndex(0)
-    }, [search, select])
+    }, [search, select, dateRangeA, dateRangeB])
 
     function sortIncomes() {
         console.log(sorting)
@@ -127,6 +142,11 @@ export default function ListIncomes(props) {
         })
     }
 
+    function clearDateRanges() {
+        setDateRangeA('')
+        setDateRangeB('')
+    }
+
     return (
         <>
             <Grid fluid>
@@ -154,15 +174,43 @@ export default function ListIncomes(props) {
                     </Col>
                     <Col lg={3} sm={4} xs={6}>
                         <FormGroup>
-                            <ControlLabel>Rendas por Período</ControlLabel>
+                            <ControlLabel>Filtrar por periodicidade</ControlLabel>
                             <FormControl componentClass="select" value={select} onChange={val => setSelect(val.target.value)}>
-                            <option value=''>Selecione uma periodicidade</option>
+                            <option value=''>Mostrar todas</option>
                             <option value='NONE'>Sem recorrencia</option>
                             <option value='DAILY'>Diária</option>
                             <option value='WEEKLY'>Semanal</option>
                             <option value='MONTHLY'>Mensal</option>
                             <option value='ANNUALLY'>Anual</option>
                             </FormControl>
+                        </FormGroup>
+                    </Col>
+                    <Col lg={3} sm={4} xs={6}>
+                        <FormGroup>
+                            <ControlLabel>A partir de</ControlLabel>
+                            <FormControl
+                                type="date" componentClass="input"
+                                value={dateRangeA} onChange={val => setDateRangeA(val.target.value)}
+                            />
+                        </FormGroup>
+                    </Col>
+                    <Col lg={3} sm={4} xs={6}>
+                        <FormGroup>
+                            <ControlLabel>Até</ControlLabel>
+                            <FormControl
+                                type="date" componentClass="input"
+                                value={dateRangeB} onChange={val => setDateRangeB(val.target.value)}
+                            />
+                        </FormGroup>
+                    </Col>
+                    <Col lg={3} sm={4} xs={6}>
+                        <FormGroup>
+                            <ControlLabel style={{ display: 'block' }}>
+                                &nbsp;
+                            </ControlLabel>
+                            <Button onClick={clearDateRanges}>
+                                Limpar datas
+                            </Button>
                         </FormGroup>
                     </Col>
                 </Row>
