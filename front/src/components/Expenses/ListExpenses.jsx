@@ -1,8 +1,9 @@
 import {StatsCard} from 'components/StatsCard/StatsCard.jsx'
-import {Grid, Col, FormGroup, FormControl, ControlLabel, Row, Pager} from 'react-bootstrap'
+import {Grid, Col, FormGroup, FormControl, ControlLabel, Row, Pager, Button} from 'react-bootstrap'
 import React, {useState, useEffect} from 'react'
 import {getExpenses} from '../../services/expenseService'
 import {unfold} from '../../utils/periodicity'
+import {makeDate} from '../../utils/date'
 import ExpenseModal from './ExpenseModal'
 import '../../assets/css/custom.css'
 import { initializeConnection } from 'services/ConnectionService'
@@ -21,7 +22,8 @@ export default function ListExpenses(props) {
     const [sortedExpenses, setSortedExpenses] = useState([])
     const [search, setSearch] = useState('')
     const [select, setSelect] = useState('')
-
+    const [dateRangeA, setDateRangeA] = useState('')
+    const [dateRangeB, setDateRangeB] = useState('')
 
     const [pageIndex, setPageIndex] = useState(0)
     const [pageExpenses, setpageExpenses] = useState([])
@@ -85,13 +87,25 @@ export default function ListExpenses(props) {
         })
     }
     useEffect(()=>{
+        const exps = unfold(
+            cachedExpenses,
+            dateRangeA && makeDate(dateRangeA),
+            dateRangeB && makeDate(dateRangeB)
+        )
+
         setExpenses(sortedExpenses.filter(expense => {
-            let norm = str => str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
             let inFilter = false
+            exps.map(exp => {
+                if (exp._id == expense._id) inFilter = true
+            })
+
+            let norm = str => str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
             if (norm(expense.title).includes(norm(search)) ||
             norm(expense.category).includes(norm(search)) ||
              norm(expense.description).includes(norm(search))) {
-                inFilter = true
+                inFilter = inFilter
+            } else {
+                inFilter = false
             }
             if (select==='' || expense.periodicity===select) {
                 inFilter = true && inFilter
@@ -100,11 +114,11 @@ export default function ListExpenses(props) {
             }
             return inFilter
         }))
-    }, [search, sortedExpenses, select])
+    }, [search, sortedExpenses, select, dateRangeA, dateRangeB])
 
     useEffect(() => {
          setPageIndex(0)
-    }, [search])
+    }, [search, select, dateRangeA, dateRangeB])
 
     function sortExpenses() {
         if (cachedExpenses) {
@@ -141,6 +155,11 @@ export default function ListExpenses(props) {
         setExpenseModals(expModals)
     }
 
+    function clearDateRanges() {
+        setDateRangeA('')
+        setDateRangeB('')
+    }
+
     return (
         <>
         <Grid fluid>
@@ -155,19 +174,6 @@ export default function ListExpenses(props) {
                     </FormGroup>
                 </Col>
                 <Col lg={3} sm={4} xs={6}>
-                        <FormGroup>
-                            <ControlLabel>Gastos por Período</ControlLabel>
-                            <FormControl componentClass="select" value={select} onChange={val => setSelect(val.target.value)}>
-                            <option value=''>Selecione uma periodicidade</option>
-                            <option value='NONE'>Sem recorrencia</option>
-                            <option value='DAILY'>Diária</option>
-                            <option value='WEEKLY'>Semanal</option>
-                            <option value='MONTHLY'>Mensal</option>
-                            <option value='ANNUALLY'>Anual</option>
-                            </FormControl>
-                        </FormGroup>
-                    </Col>
-                    <Col lg={3} sm={4} xs={6}>
                     <FormGroup>
                         <ControlLabel>Ordenar os gastos por</ControlLabel>
                         <FormControl componentClass="select" value={sorting} onChange={val => setSorting(val.target.value)}>
@@ -180,7 +186,47 @@ export default function ListExpenses(props) {
                         </FormControl>
                     </FormGroup>
                 </Col>
-                
+                <Col lg={3} sm={4} xs={6}>
+                    <FormGroup>
+                        <ControlLabel>Filtrar por periodicidade</ControlLabel>
+                        <FormControl componentClass="select" value={select} onChange={val => setSelect(val.target.value)}>
+                        <option value=''>Mostrar todas</option>
+                        <option value='NONE'>Sem recorrencia</option>
+                        <option value='DAILY'>Diária</option>
+                        <option value='WEEKLY'>Semanal</option>
+                        <option value='MONTHLY'>Mensal</option>
+                        <option value='ANNUALLY'>Anual</option>
+                        </FormControl>
+                    </FormGroup>
+                </Col>
+                <Col lg={3} sm={4} xs={6}>
+                    <FormGroup>
+                        <ControlLabel>A partir de</ControlLabel>
+                        <FormControl
+                            type="date" componentClass="input"
+                            value={dateRangeA} onChange={val => setDateRangeA(val.target.value)}
+                        />
+                    </FormGroup>
+                </Col>
+                <Col lg={3} sm={4} xs={6}>
+                    <FormGroup>
+                        <ControlLabel>Até</ControlLabel>
+                        <FormControl
+                            type="date" componentClass="input"
+                            value={dateRangeB} onChange={val => setDateRangeB(val.target.value)}
+                        />
+                    </FormGroup>
+                </Col>
+                <Col lg={3} sm={4} xs={6}>
+                    <FormGroup>
+                        <ControlLabel style={{ display: 'block' }}>
+                            &nbsp;
+                        </ControlLabel>
+                        <Button onClick={clearDateRanges}>
+                            Limpar datas
+                        </Button>
+                    </FormGroup>
+                </Col>
             </Row>
             {pageExpenses.map((expense, i) =>
                 <Col lg={4} sm={6} key={expense._id}>
