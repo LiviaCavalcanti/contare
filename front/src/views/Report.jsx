@@ -50,7 +50,7 @@ class Friends extends Component {
   formatData = (data) => {
     data.map(elem => {
       const newDate = new Date(elem[1])
-      const day = newDate.getUTCDate() - 1
+      const day = newDate.getUTCDate()
       const month = newDate.getMonth() + 1
       const year = newDate.getFullYear()
       const toStringDate = (day < 10 ? "0" : "") + day + "/" + month + "/" + year
@@ -60,21 +60,20 @@ class Friends extends Component {
     return data
   }
 
-  getUserFromToken= async () =>{
+  getUserFromToken = async () =>{
     const user = await getUser(localStorage.getItem("token-contare"))
     this.setState({user})
   }
 
 
   createDataTable = () => {
-    this.getUserFromToken()
     const expenses = unfold(this.state.userExpenses)
     const incomes = unfold(this.state.userIncomes)
     let currentExpensePaid = {}
     let data = []
 
     expenses.forEach(expense => {
-      if (expense.participants && this.state.user) {
+      if (expense.participants) {
         currentExpensePaid = expense.participants.filter(p=>p._id===this.state.user._id)[0].payValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
       } else {
         currentExpensePaid = expense.totalValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
@@ -134,7 +133,7 @@ class Friends extends Component {
                       </tr>
                     </thead>
                     <tbody>
-                      {this.createDataTable().map((prop, key) => {
+                      {Object.keys(this.state.user).length > 0 ? this.createDataTable().map((prop, key) => {
                         return (
                           <tr key={key}>
                             {prop.map((prop, key) => {
@@ -148,7 +147,7 @@ class Friends extends Component {
                             })}
                           </tr>
                         );
-                      })}
+                      }) : ""}
                     </tbody>
                   </Table>
                   
