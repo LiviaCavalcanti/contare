@@ -67,12 +67,20 @@ class Friends extends Component {
 
 
   createDataTable = () => {
+    this.getUserFromToken()
     const expenses = unfold(this.state.userExpenses)
     const incomes = unfold(this.state.userIncomes)
+    let currentExpensePaid = {}
     let data = []
-    expenses.map(expense => {
-        data.push([expense.seq ? expense.title + " #" + expense.seq : expense.title, expense.dueDateAdjusted, "Gasto", "-" + expense.participants.filter(p=>p._id===this.state.user._id)[0].payValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })])
-     })
+
+    expenses.forEach(expense => {
+      if (expense.participants && this.state.user) {
+        currentExpensePaid = expense.participants.filter(p=>p._id===this.state.user._id)[0].payValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+      } else {
+        currentExpensePaid = expense.totalValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+      }
+      data.push([expense.seq ? expense.title + " #" + expense.seq : expense.title, expense.dueDateAdjusted, "Gasto", "-" + currentExpensePaid ])
+    })
 
     incomes.map(income => {
       data.push([income.seq ? income.title + " #" + income.seq : income.title,  income.receivedOnAdjusted, "Renda", "+" + income.value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })])
