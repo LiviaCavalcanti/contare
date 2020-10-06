@@ -19,7 +19,7 @@ export function unfold(list, from, to) {
   list.map(obj => {
     let objFrom = new Date(obj[dateStart])
     if (from && from > objFrom)
-      objFrom = from
+      objFrom = new Date(from)
     let objTo = to
     if (obj[dateEnd] && to > new Date(obj[dateEnd]))
       objTo = new Date(obj[dateEnd])
