@@ -26,7 +26,7 @@ export function unfold(list, from, to) {
 
     if (objFrom > objTo) return
 
-    const day = objFrom.getDate()
+    let day
     let resetDay = false
     let seq = 1
     switch (obj.periodicity) {
@@ -60,6 +60,7 @@ export function unfold(list, from, to) {
         break
       case 'MONTHLY':
         objFrom = new Date(obj[dateStart])
+        day = objFrom.getDate()
         while (objFrom <= objTo) {
           if (!from || objFrom >= from) {
             let newObj = {...obj}
@@ -88,6 +89,7 @@ export function unfold(list, from, to) {
         break
       case 'ANNUALLY':
         objFrom = new Date(obj[dateStart])
+        day = objFrom.getDate()
         while (objFrom <= objTo) {
           if (!from || objFrom >= from) {
             let newObj = {...obj}
