@@ -26,7 +26,7 @@
     "multer-storage-cloudinary": "^2.2.1",
     "request": "^2.88.0",
     "require-dir": "^1.2.0",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.4.0"
   },
   "devDependencies": {
     "agent": "^0.2.1",
