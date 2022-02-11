@@ -15,7 +15,7 @@
     "jquery": "^3.5.1",
     "jspdf": "^1.5.3",
     "jspdf-autotable": "^3.5.13",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-bootstrap": "0.32.4",
